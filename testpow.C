@@ -1,0 +1,59 @@
+#include "TH1F.h"
+//#include <cmath>
+#include <stdlib.h>
+#include "TMinuit.h"
+#include "TFumili.h"
+#include "TFile.h"
+#include "TCanvas.h"
+#include "TGraphErrors.h"
+#include "TGraphAsymmErrors.h"
+#include "TStyle.h"
+#include "TLine.h"
+#include <iostream>
+#include <fstream>
+#include <math.h>
+#include "math.h"
+#include <time.h>
+#include <map>
+#include <TROOT.h>
+#include <TSystem.h>
+#include <TStyle.h>
+#include <TCutG.h>
+#include <TChain.h>
+#include <TMinuit.h>
+#include "TChain.h"
+#include "TStyle.h"
+#include "TCanvas.h"
+#include "TEllipse.h"
+#include "TString.h"
+#include "TGraph.h"
+#include "TSpectrum.h"
+#include "TVirtualFitter.h"
+#include "TFitResult.h"
+#include "TFitResultPtr.h"
+#include "TRandom.h"
+#include <TRandom3.h>
+#include "TFile.h"
+#include "TTree.h"
+#include "TH1.h"
+#include "TH2.h"
+#include "TH3.h"
+#include "TF1.h"
+#include "TMath.h"
+#include "TPaveText.h"
+#include "TPad.h"
+#include "string.h"
+#include "stdlib.h"
+#include "stdio.h"
+#include "TLegend.h"
+#include "TPaletteAxis.h"
+using namespace std;
+
+void testpow()
+{
+	double la;
+	cout<<"L_Bayesian= "<<la<<endl;
+	la=pow(3,2);
+	cout<<"L_Bayesian= "<<la<<endl;
+	//cout<<"L_Bayesian= "<<L_Bayesian<<endl;
+}

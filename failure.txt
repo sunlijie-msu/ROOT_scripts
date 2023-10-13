@@ -1,0 +1,365 @@
+#include "TH1F.h"
+#include "TF1.h"
+#include <cmath>
+#include <stdlib.h>
+#include "TMinuit.h"
+#include "TFile.h"
+#include "TCanvas.h"
+#include "TGraphErrors.h"
+#include "TStyle.h"
+#include "TLine.h"
+#define Nbpk 10 //Number of bins per keV
+#define binwidth 0.1 //Number of bins per keV
+#define centroid 2754 //peak of fit
+#define minrange centroid-25 //
+#define maxrange centroid+25 //
+#define nBranches 3 //
+
+using namespace std;
+
+//float minrange=centroid-25;//lower bound of fit
+//float maxrange=centroid+25;//upper bound of fit
+TFile *inFile,*inFile2,*outFile;
+TH1F *hFit;
+
+TH1F *p1,*p2,*p3,*p4,*p5,*p6,*hSega,*hSega_data,*background;//>
+TH1F *proton[nBranches];
+float E_CoM[nBranches] = {1.805,1.501,1.040};         //Center of Mass energy (MeV) in descending order
+float feed[nBranches]={6.73/(6.73+2.90+1.53),2.90/(6.73+2.90+1.53),1.53/(6.73+2.90+1.53)};		//beta feeding intensity of each proton, if the sum of all the feeding intensities is less than 1, the extra events will assume a En=0.
+TCanvas *c1;
+int Nbins=(maxrange-minrange)*Nbpk;//make sure this is an integer
+
+void readHists()
+	//generate example histograms
+{
+	char hname[300];
+	inFile = new TFile("D:/X/out/Sim_T32_Step300_Eg2754_feed3_En1804_SP1_Det1_Ang1_Escape0_P10_Aaron.root"); //Rootfile with Simulation histograms
+	inFile2 = new TFile("D:/X/out/Si25/100eV-bin-ungated.root"); //Rootfile with Experimental Data Histogram
+
+	//Get Histograms from Simulation
+	for(int ii=0;ii<nBranches;ii++)
+	{
+		sprintf(hname,"n%df2",int(ii));
+		proton[ii]=(TH1F*)inFile->Get(hname);
+	}
+
+	//   p3= (TH1F*)inFile->Get("Ecm1039keVneutronf2");
+	//   p2= (TH1F*)inFile->Get("Ecm1501keVneutronf2");
+	//   p1= (TH1F*)inFile->Get("Ecm1804keVneutronf2");
+
+	hSega_data= (TH1F*)inFile2->Get("SeGA_00"); //Get Gamma ray spectrum
+
+	hSega=new TH1F("hSega","hSega",Nbins,minrange,maxrange);
+	background=new TH1F("background","Background",Nbins,minrange,maxrange);
+
+	for(int i=0;i<Nbins;i++)
+	{
+		int power=1;//change this to whatever you want. 3 for high statistics
+		TF1 *f1=new TF1("f1","[0]+x*[1]",minrange,minrange+6);//range of left half of hist you want to fit the background to
+		TF1 *f2=new TF1("f2","[0]+x*[1]",maxrange-6,maxrange);//range of right half of hist you want to fit the background to
+		hSega_data->Fit("f1","qR");
+		hSega_data->Fit("f2","qR");
+
+		float a = (f1->GetParameter(0)+(minrange+(float)i/(float)Nbpk)*f1->GetParameter(1));//Lower BG
+		float c = (f2->GetParameter(0)+(minrange+(float)i/(float)Nbpk)*f2->GetParameter(1));//Upper BG
+		float f=((float)Nbins-(float)i)/(float)Nbins;
+		float g =(float)i/(float)Nbins;
+		float h =pow(f,power)+pow(g,power);
+
+		float x = (a*pow(f,power)+c*pow(g,power))/h;
+		float b = x;
+		hSega->AddBinContent(i+1,hSega_data->GetBinContent(minrange*Nbpk+i));//part of the original data are stored in hSega
+		background->AddBinContent(i+1,b);//fit data, get bkg hist
+	}
+
+	for(int ii=0;ii<nBranches;ii++)
+	{
+		//proton[ii]->SetStats(0);
+		//proton[ii]->SetLineColor((Color_t)(ii+1));
+		//proton[ii]->SetMarkerColor((Color_t)(ii+1));
+	}
+	//   p1->SetStats(0);
+	//   p2->SetStats(0);
+	//   p3->SetStats(0);
+	//  p4->SetStats(0);
+
+	background->SetStats(0);
+	hSega->SetStats(0);
+
+	//   p1->SetLineColor(4); 
+	//   p2->SetLineColor(3); 
+	//   p3->SetLineColor(6); 
+	//  p4->SetLineColor(12); 
+
+	background->SetLineColor(7);
+	hSega->SetLineColor(1);
+
+	//   p1->SetMarkerColor(4); 
+	//   p2->SetMarkerColor(3); 
+	//   p3->SetMarkerColor(6); 
+	//  p4->SetMarkerColor(12); 
+
+	background->SetMarkerColor(7);
+	hSega->SetMarkerColor(1);
+	hSega->SetLineWidth(1);
+	// 	int minim=0; //Only change this if you need to shift the histogram some amount of bins. Wouldn't recommend for bins larger than 0.1 keV
+	// 	if(minim>=0)
+	// 	{
+	// 		for(int i=0;i<(p1->GetNbinsX()-minim);i++)
+	// 		{
+	// 			p1->SetBinContent(p1->GetNbinsX()-i,p1->GetBinContent(p1->GetNbinsX()-i-minim));
+	// 			p2->SetBinContent(p1->GetNbinsX()-i,p2->GetBinContent(p1->GetNbinsX()-i-minim));
+	// 			p3->SetBinContent(p1->GetNbinsX()-i,p3->GetBinContent(p1->GetNbinsX()-i-minim));
+	// 			//p4->SetBinContent(p1->GetNbinsX()-i,p4->GetBinContent(p1->GetNbinsX()-i-minim));
+	// 			//p5->SetBinContent(p1->GetNbinsX()-i,p5->GetBinContent(p1->GetNbinsX()-i-minim));
+	// 			//p6->SetBinContent(p1->GetNbinsX()-i,p6->GetBinContent(p1->GetNbinsX()-i-minim));
+	// 		}
+	// 	}
+	// 	else
+	// 	{
+	// 		for(int i=0;i<(p1->GetNbinsX()+minim);i++)
+	// 		{
+	// 			p1->SetBinContent(i,p1->GetBinContent(i-minim));
+	// 			p2->SetBinContent(i,p2->GetBinContent(i-minim));
+	// 			p3->SetBinContent(i,p3->GetBinContent(i-minim));
+	// 			//p4->SetBinContent(i,p4->GetBinContent(i-minim));
+	// 		}
+	// 	}
+
+}
+
+double CompareHists(TH1F* his1, TH1F* his2, int binMin = 1, int binMax = 1000000)
+	//compare two histograms (data and simulation). returns chi-square
+	//Two histograms must be with the same length
+{
+	double chiSquare = 0;                                   //chi square 
+	int N = his1->GetNbinsX();                         //get number of bins in his1
+	//   return 0;
+
+	//if not identical to his2, exit with error.
+	if (N!=his2->GetNbinsX())
+	{
+		printf("ERROR <CompareHists>: Different number of bins in histograms!%d\t%d\n",N,his2->GetNbinsX());
+		exit(1);
+	}
+
+	if (N>binMax)
+		N = binMax;
+
+	double y[2],dy[2];                                         //bin information
+	double delta,err;                                            //bin difference and relevant uncertainty
+	for (int i=binMin;i<=N;i++)                         //loop over all bins   
+	{
+		//if(i<251||i>301){
+		//get bin information
+		y[0] = his1->GetBinContent(i); 
+		dy[0] = his1->GetBinError(i);
+		y[1] = his2->GetBinContent(i);
+		// dy[1] = his2->GetBinError(i);
+		dy[1] =0; //Set this to zero because simulation uncertainty double counts uncertainty
+		delta = y[1]-y[0];
+		err = sqrt(dy[0]*dy[0]+dy[1]*dy[1]);   //common uncertainty
+		chiSquare += delta*delta/err/err;        
+		//}      //add to chi square    
+	} //for 
+	return chiSquare;
+}
+
+
+void fcn(Int_t &npar, Double_t *gin, Double_t &f, Double_t *par, Int_t iflag)
+	//npar number of free parameters involved in minimization
+	//gin partial derivatives (return values) computed gradient values (optional)
+	//f the function value itself (return value)
+	//par parameter values
+	//iflag flag word to switch between several actions of FCN	//Usually only f and par are important
+{
+	if (hFit) delete hFit;
+	cout<<"lalala"<<endl;
+	hFit = (TH1F*)proton[0]->Clone("hFit");//Making a copy of histogram p1
+	hFit->Sumw2();//histogram is already filled, the sum of squares of weights is filled with the existing bin contents
+	hFit->Scale(par[0]);  //Multiply this histogram by a constant
+	//Set your different feeding intensities here
+	for(int ii=1;ii<nBranches;ii++)
+	{
+		hFit->Add(proton[ii],feed[ii]/feed[0]*par[0]);
+	}
+	// 	hFit->Add(p2,2.9/6.73*par[0]);//PIE-2547 from 6.266
+	// 	hFit->Add(p3,1.53/6.73*par[0]);//PIE-1056 from 4.8 state
+	//   hFit->Add(p5,0.0392*par[0]);//PIE-3194 from 6.92
+	//   hFit->Add(p6,0.0196*par[0]);//PIE-3714 from 7.44
+
+	hFit->Add(background,par[1]);//Make sure binning is 100 eV//hFit=p1+p2+p3+bkg
+	f = CompareHists(hFit,hSega,1,Nbins);//Nbpk
+	cout<<"ChiSquare is " <<f<<endl;
+}
+
+int main()
+{
+	readHists();
+	//   elasticH->Draw();
+	//   int i;
+	//   cin >> i;
+	const int nParams=2;//number of parameters that are to be found 
+	TMinuit *gMin = new TMinuit(nParams);  //initialize TMinuit with a maximum of 4 params
+	gMin->SetFCN(fcn);//set the address of the minimization function
+	Double_t arglist[10];
+	Int_t ierflg = 0;//command executed normally
+	arglist[0] = 1;
+	static Double_t vstart[2] = {0.07,1.0};//initial guess par_Fit, par_bkg
+	static Double_t step[2] = {0.0007,0.01};                //fitting step
+
+	gMin->mnparm(0, "a1", vstart[0], step[0], 0,25,ierflg);// par for simu
+	//parID, parName, initialGuess, step, lowLimit, highLimit, irrelevant
+	gMin->mnparm(1, "a2", vstart[1], step[1], 0.8,1.5,ierflg);// par for bkg
+	//gMin->mnparm(2, "a3", vstart[2], step[2], 0,25,ierflg);  
+
+	arglist[0] = 1000;                             //number if fitting iterations
+	arglist[1] = 1.;
+	gMin->mnexcm("MIGRAD", arglist ,1,ierflg);  //invokes the MIGRAD minimizer	//minuit.mnexcm(command, argument list, argument number, error flag);	//command is a character array holding the command
+	//argument list a double array as the arguments
+	//argument number is the number of arguments	//error flag return value (!= 0)	//Precisely find the minimum, but you need to be careful since it assumes the inputs are close to the minimum
+	Double_t amin,edm,errdef;
+	Int_t nvpar,nparx,icstat;
+	gMin->mnstat(amin,edm,errdef,nvpar,nparx,icstat);
+
+	double pars[nParams],errs[nParams];
+	for (int i=0;i<nParams;i++)
+	{
+		gMin->GetParameter(i,pars[i],errs[i]);
+		printf("pars=%f errs=%f\n",pars[i],errs[i]);    
+	}
+
+
+	//visualization
+
+	hFit->SetLineColor(2);
+	hFit->SetMarkerColor(2);
+	hFit->SetLineWidth(2);
+
+	for(int ii=0;ii<nBranches;ii++)
+	{
+		proton[ii]->Scale(pars[0]*feed[ii]/feed[0]);
+		proton[ii]->Add(background,pars[1]);
+	}
+	// 	p1->Scale(pars[0]);
+	// 	p2->Scale(2.9/6.73*pars[0]);
+	// 	p3->Scale(1.53/6.73*pars[0]);
+	//  p5->Scale(0.0392*pars[0]);
+	//  p6->Scale(0.0196*pars[0]);
+	// 	p1->Add(background,pars[1]);
+	// 	p2->Add(background,pars[1]);
+	// 	p3->Add(background,pars[1]);
+	//  p5->Add(background,pars[1]);
+	//  p6->Add(background,pars[1]);
+	background->Scale(pars[1]);
+
+	TCanvas* c1   = new TCanvas("c1","multipads",800,900);  
+	TPad *pad1 = new TPad("pad1", "The pad 70% of the height",0.0,0.3,1.0,1.0);// Double_t xlow, Double_t ylow, Double_t xup, Double_t yup,
+	TPad *pad2 = new TPad("pad2", "The pad 30% of the height",0.0,0.0,1.0,0.3);
+
+	pad1->Draw();
+	pad2->Draw();
+	pad1->cd();
+	gStyle->SetOptTitle(0);
+
+	hSega->Draw();
+	hSega->GetXaxis()->SetTitle("Energy (keV)");
+	hSega->GetYaxis()->SetTitle("counts/0.1 keV");
+	//hSega->GetXaxis()->SetTitle("Energy (keV)");
+	//hSega->GetYaxis()->SetTitle("counts/0.1 keV");
+	//hSega->GetXaxis()->SetLabelSize(0);
+	hSega->GetXaxis()->CenterTitle();
+	hSega->GetYaxis()->CenterTitle();
+	//hSega->GetXaxis()->SetTitleOffset(0.8);
+	//hSega->GetYaxis()->SetTitleOffset(0.9);
+	//hSega->GetXaxis()->SetTitleSize(0.06);
+	//hSega->GetYaxis()->SetTitleSize(0.1);
+	//hSega->GetYaxis()->SetLabelSize(0.07);
+	//hSega->GetYaxis()->SetNdivisions(505);
+	//hSega->GetYaxis()->SetRangeUser(0,100);
+	hFit->Draw("samehist");
+	for(int ii=0;ii<nBranches;ii++)
+	{
+		proton[ii]->Draw("sameh");
+	}
+	// 	p1->Draw("sameh");
+	// 	p2->Draw("sameh");
+	// 	p3->Draw("sameh");
+	//  p5->Draw("sameh");
+	//  p6->Draw("sameh");
+	background->Draw("sameh");
+
+	pad2->cd();
+	int rebin=1;//1,2,3,5,6,9,10,15,18,25,30,45,50,75,90,150,225,450
+	const int Nbins=50*Nbpk/rebin;
+	//int minbin=2754-25;
+	//int maxbin=minbin+50;
+	TH1F *Resid=new TH1F("Resid","Residual",Nbins,minrange,maxrange);
+	double Resids[Nbins]={};
+	double ResidsUncert[Nbins]={};
+	double Xvals[Nbins]={};
+	double XvalsUncert[Nbins]={};
+	int count=0;
+	for(int i=0;i<Nbins;i++){
+		Xvals[i]=float(minrange)+1.0*binwidth*(i*rebin)+0.5*rebin*binwidth;
+		// Xvals[i]=Xvals[i]*(1.+(float(maxbin-minbin)/2.-1.0/Nbpk*(i*rebin))/(float(maxbin-minbin)/2.)/(1.95*float(minbin)));
+		//  cout<<Xvals[i]<<endl;
+		ResidsUncert[i]=0;
+		XvalsUncert[i]=0.0;
+		for(int j=0;j<rebin;j++){
+			Resid->AddBinContent(i+1,hFit->GetBinContent(i*rebin+j)-hSega->GetBinContent(i*rebin+j));//simu-data
+			Resids[i] += hFit->GetBinContent(i*rebin+j)-hSega->GetBinContent(i*rebin+j);
+			ResidsUncert[i]+=hSega->GetBinContent(i*rebin+j);
+		}
+		ResidsUncert[i]=pow(ResidsUncert[i],0.5);
+		if(abs(Resids[i])<ResidsUncert[i]) count++;
+		//cout<< abs(Resids[i])<<"         "<<ResidsUncert[i]<<endl;
+	}
+	cout<<endl<<count<<" of "<<Nbins<<" error bars go through the fit."<<endl;
+	//TGraphErrors *g;
+	//g=new TGraphErrors(Nbins,Xvals,Resids,XvalsUncert,ResidsUncert); 
+	TGraph *g;
+	g=new TGraph(Nbins,Xvals,Resids); 
+	g->GetXaxis()->SetTitle("Energy (keV)");
+	//Char_t axisName[256];
+	//sprintf(axisName,"#splitline{ Residual}{cts/%0.1f keV}",Nbins);
+	//g->GetYaxis()->SetTitle(axisName);
+	g->GetYaxis()->SetTitle("Residual counts/0.1 keV");
+	g->GetXaxis()->CenterTitle();
+	g->GetXaxis()->SetRangeUser(minrange,maxrange);
+	g->GetYaxis()->CenterTitle();
+	g->GetXaxis()->SetTitleOffset(0.9);
+	g->GetYaxis()->SetTitleOffset(0.5);
+	g->GetXaxis()->SetTitleSize(0.07);
+	//   g->GetXaxis()->SetLabelOffset(.015);
+	g->GetYaxis()->SetTitleSize(0.07);
+	//   g->GetYaxis()->SetNdivisions(506);
+	//   g->GetXaxis()->SetNdivisions(505);
+	g->GetYaxis()->SetLabelSize(0.06);
+	g->GetXaxis()->SetLabelSize(0.06);
+	g->Draw("AP*same");
+	TLine *T1=new TLine(minrange,0,maxrange,0);
+	T1->Draw("R");
+
+	outFile = new TFile("D:/X/out/Compare.root","RECREATE");
+
+
+
+	hSega->Write("hSega");
+	hFit->Write("hFit");
+	g->Write("Residual Plot");
+	for(int ii=0;ii<nBranches;ii++)
+	{
+		proton[ii]->Write();
+	}
+	// 	p1->Write("p_1804");
+	// 	p2->Write("p_1501");
+	// 	p3->Write("p_1039");
+	//  p4->Write("p_1056");
+	//  p5->Write("p_3194");
+	//  p6->Write("p_3714");
+	background->Write("background");
+	delete outFile;
+
+	return 0;
+}

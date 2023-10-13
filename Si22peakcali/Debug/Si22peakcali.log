@@ -1,0 +1,15 @@
+﻿生成启动时间为 2015/1/26 15:04:54。
+     1>项目“V:\Si23peakcali\Si22peakcali\Si22peakcali\Si22peakcali.vcxproj”在节点 2 上(build 个目标)。
+     1>InitializeBuildStatus:
+         正在对“Debug\Si22peakcali.unsuccessfulbuild”执行 Touch 任务。
+       ClCompile:
+         所有输出均为最新。
+       Link:
+         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"V:\Si23peakcali\Si22peakcali\Debug\Si22peakcali.exe" /INCREMENTAL /NOLOGO /LIBPATH:C:\rootlib /LIBPATH:C:\root\lib libCore.lib libCint.lib libHist.lib libGraf.lib libGraf3d.lib libGpad.lib libTree.lib libRint.lib libPostscript.lib libMatrix.lib libPhysics.lib libNet.lib libRIO.lib libMathCore.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\Si22peakcali.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"V:\Si23peakcali\Si22peakcali\Debug\Si22peakcali.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"V:\Si23peakcali\Si22peakcali\Debug\Si22peakcali.lib" /MACHINE:X86 Debug\Si22peakcali.obj
+     1>Si22peakcali.obj : error LNK2019: 无法解析的外部符号 "public: __thiscall TSpectrum::TSpectrum(void)" (??0TSpectrum@@QAE@XZ)，该符号在函数 _main 中被引用
+     1>V:\Si23peakcali\Si22peakcali\Debug\Si22peakcali.exe : fatal error LNK1120: 1 个无法解析的外部命令
+     1>已完成生成项目“V:\Si23peakcali\Si22peakcali\Si22peakcali\Si22peakcali.vcxproj”(build 个目标)的操作 - 失败。
+
+生成失败。
+
+已用时间 00:00:00.70
