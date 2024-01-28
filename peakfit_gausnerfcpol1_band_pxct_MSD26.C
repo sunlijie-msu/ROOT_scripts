@@ -43,7 +43,7 @@ void peakfit_gausnerfcpol1_band_pxct_MSD26() // get histogram and EMG fit one pe
 {
 	const int ID1 = 0;// i=ID1//which detector
 	const int ID2 = 0;// i<=ID2// which detector
-	double binwidth = 0.118;// modify
+	double binwidth = 0.115;// modify
 	double fitrange_min = 0, fitrange_max = 0;
 	double histomin = 0, histomax = 0, histoNbins = 0;
 	int minbin = 0, maxbin = 0;
@@ -113,7 +113,7 @@ void peakfit_gausnerfcpol1_band_pxct_MSD26() // get histogram and EMG fit one pe
 
 	sprintf(filename, "%s%s", pathname, "peakpara.dat");
 	ofstream outfile(filename, ios::out);
-	sprintf(filename, "%s%s", pathname, "run0041-00_LEGe_MSD26_241Am_2mmcollimator_480min_window1us_CFDdelay0.16us_cal.root"); // modify
+	sprintf(filename, "%s%s", pathname, "run0056-00_MSD26_241Am_3mmcollimator_60min_window1.5us_negativebias_cal.root"); // modify
 	TFile* fin = new TFile(filename);//after this statement, you can use any ROOT command1 for this rootfile
 	cout << filename << endl;
 
@@ -160,7 +160,7 @@ void peakfit_gausnerfcpol1_band_pxct_MSD26() // get histogram and EMG fit one pe
 
 			histo[i]->SetTitle("");//图名
 			histo[i]->GetXaxis()->SetTitle("Energy (keV)");//轴名
-			histo[i]->GetYaxis()->SetTitle("Counts per 116 eV");// modify
+			histo[i]->GetYaxis()->SetTitle("Counts per 115 eV");// modify
 			histo[i]->GetXaxis()->CenterTitle();//居中
 			histo[i]->GetYaxis()->CenterTitle();//居中
 			histo[i]->GetXaxis()->SetLabelFont(132);//坐标字体
@@ -192,7 +192,7 @@ void peakfit_gausnerfcpol1_band_pxct_MSD26() // get histogram and EMG fit one pe
 			if (ii == 9) { gaplow = 2.1; gaphigh = 2.1; Eg = 121.7817; }//152Eu 122 XtRa
 			if (ii == 10) { gaplow = 2.5; gaphigh = 2.5; Eg = 344.2785; }//152Eu 344 XtRa
 			if (ii == 11) { gaplow = 3.0; gaphigh = 2.9; Eg = 1299.1420; }//152Eu 1299 XtRa
-			if (ii == 12) { gaplow = 30; gaphigh = 25; Eg = 5486; }//241Am 5486 MSD26
+			if (ii == 12) { gaplow = 32; gaphigh = 27; Eg = 5486; }//241Am 5486 MSD26
 			if (ii == 13) { gaplow = 0.4; gaphigh = 0.4; Eg = 11.89; }//241Am 11.89 LEGe
 			if (ii == 14) { gaplow = 3.5; gaphigh = 3.5; Eg = 1408.013; }//152Eu 1408 XtRa
 
@@ -242,11 +242,11 @@ void peakfit_gausnerfcpol1_band_pxct_MSD26() // get histogram and EMG fit one pe
 			fEMG[ii]->SetParameters(aguess, bguess, peaky[ii], 0.3, sigmaguess, peakx[ii]);//initial value [0]-A, [1]-B, [2]-N, [3]-τ, [4]-σ, [5]-μ
 			// 			fEMG[ii]->SetParLimits(0,-500,500);//Bkg A
 			// 			fEMG[ii]->SetParLimits(1,-50000,300000);//Bkg B
-			fEMG[ii]->SetParLimits(2, 40000, 70000);//Constant,min,max
+			fEMG[ii]->SetParLimits(2, 5000, 11000);//Constant,min,max
 			fEMG[ii]->SetParLimits(3, 0.01, 10);//Tau
 			fEMG[ii]->SetParLimits(4, 0.01, 10);//Sigma
 			fEMG[ii]->SetParLimits(5, peakx[ii] - gaplow / 4, peakx[ii] + gaphigh / 2);//Mean
-			fEMG[ii]->SetParLimits(5, 5485, 5492);//Mean
+			fEMG[ii]->SetParLimits(5, 5484, 5492);//Mean
 			fEMG[ii]->SetParNames("BkgA", "BkgB", "Const*bin", "Tau", "Sigma", "Mean");
 
 			histo[i]->Fit("fEMG", "MLE", "", fitrange_min, fitrange_max);

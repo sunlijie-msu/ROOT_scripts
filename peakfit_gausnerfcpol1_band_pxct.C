@@ -43,7 +43,7 @@ void peakfit_gausnerfcpol1_band_pxct() // get histogram and EMG fit one peak
 {
 	const int ID1 = 0;// i=ID1//which detector
 	const int ID2 = 0;// i<=ID2// which detector
-	double binwidth = 1.000;// modify
+	double binwidth = 0.038;// modify
 	double fitrange_min = 0, fitrange_max = 0;
 	double histomin = 0, histomax = 0, histoNbins = 0;
 	int minbin = 0, maxbin = 0;
@@ -52,7 +52,7 @@ void peakfit_gausnerfcpol1_band_pxct() // get histogram and EMG fit one peak
 	char paraprint[100], histo_name[200], hfit_name[200];
 	TH1D* histo[ID2 + 1];//TH1D peak search+gauss fit, create histograms
 	int fit_Nbins;
-	const int peaknum = 30;//search peak numbers, modify
+	const int peaknum = 50;//search peak numbers
 	TGraph* graph_residual[ID2 + 1];//create graphs
 	TF1* fEMG[peaknum];//create function
 	TF1* p[peaknum], * g[peaknum], * b[peaknum], * p2[peaknum];
@@ -97,9 +97,26 @@ void peakfit_gausnerfcpol1_band_pxct() // get histogram and EMG fit one peak
 	lower_search_bound[0][9] = 119;	upper_search_bound[0][9] = 125; //152Eu 122 XtRa
 	lower_search_bound[0][10] = 335;	upper_search_bound[0][10] = 350; //152Eu 344 XtRa
 	lower_search_bound[0][11] = 1296;	upper_search_bound[0][11] = 1302; //152Eu 1299 XtRa
-	lower_search_bound[0][12] = 5450;	upper_search_bound[0][12] = 5500; //241Am 5486 MSD26
+	lower_search_bound[0][12] = 5440;	upper_search_bound[0][12] = 5500; //241Am 5486 MSD26
 	lower_search_bound[0][13] = 11.6;	upper_search_bound[0][13] = 12.2; //241Am 11.89 LEGe
 	lower_search_bound[0][14] = 1405;	upper_search_bound[0][14] = 1411; //152Eu 1408 XtRa
+	lower_search_bound[0][15] = 3100;	upper_search_bound[0][15] = 3200; //148Gd 3183 MSD26
+	lower_search_bound[0][16] = 241;	upper_search_bound[0][16] = 246; //152Eu 245 XtRa
+	lower_search_bound[0][17] = 409;	upper_search_bound[0][17] = 415; //152Eu 411 XtRa
+	lower_search_bound[0][18] = 441;	upper_search_bound[0][18] = 447; //152Eu 444 XtRa
+	lower_search_bound[0][19] = 776;	upper_search_bound[0][19] = 782; //152Eu 779 XtRa
+	lower_search_bound[0][20] = 863;	upper_search_bound[0][20] = 870; //152Eu 867 XtRa
+	lower_search_bound[0][21] = 960;	upper_search_bound[0][21] = 968; //152Eu 964 XtRa
+	lower_search_bound[0][22] = 1109;	upper_search_bound[0][22] = 1115; //152Eu 1112 XtRa
+	lower_search_bound[0][23] = -1000;	upper_search_bound[0][23] = 1000; //241Am Timing LEGe-MSD
+	lower_search_bound[0][24] = 483;	upper_search_bound[0][24] = 493; //152Eu 489 XtRa
+	lower_search_bound[0][25] = 560;	upper_search_bound[0][25] = 568; //152Eu 564 XtRa
+	lower_search_bound[0][26] = 585;	upper_search_bound[0][26] = 588; //152Eu 586 XtRa
+	lower_search_bound[0][27] = 683;	upper_search_bound[0][27] = 693; //152Eu 689 XtRa
+	lower_search_bound[0][28] = 1002;	upper_search_bound[0][28] = 1008; //152Eu 1005 XtRa
+	lower_search_bound[0][29] = 1209;	upper_search_bound[0][29] = 1216; //152Eu 1213 XtRa
+	lower_search_bound[0][30] = 1524;	upper_search_bound[0][30] = 1532; //152Eu 1528 XtRa
+
 
 	for (i = ID1; i <= ID2; i++)//which detector no need to change
 	{
@@ -113,13 +130,13 @@ void peakfit_gausnerfcpol1_band_pxct() // get histogram and EMG fit one peak
 
 	sprintf(filename, "%s%s", pathname, "peakpara.dat");
 	ofstream outfile(filename, ios::out);
-	sprintf(filename, "%s%s", pathname, "run0046-00_LEGe_MSD_XtRa_241Am_3mmcollimator_152Eu_121min_window1.5us_cal.root"); // modify
+	sprintf(filename, "%s%s", pathname, "run0097_98_LEGe_XtRa_152Eu_inChamber_window1.5us_CFDdelay_adjusted_930min_efficiency_cal.root"); // modify
 	TFile* fin = new TFile(filename);//after this statement, you can use any ROOT command1 for this rootfile
 	cout << filename << endl;
 
 	for (i = ID1; i <= ID2; i++)//which detector no need to change
 	{
-		sprintf(histo_name, "%s", "hmsdtotal_e"); // modify
+		sprintf(histo_name, "%s", "hsouth_e"); // modify
 		histo[i] = (TH1D*)fin->Get(histo_name); //Get spectrum
 		histo[i]->Rebin(1);
 		histo[i]->Sumw2(kFALSE);
@@ -128,15 +145,15 @@ void peakfit_gausnerfcpol1_band_pxct() // get histogram and EMG fit one peak
 
 	for (i = ID1; i <= ID2; i++) // no need to change
 	{
-		for (ii = 12; ii <= 12; ii++)// modify which peak in one detector =0<=13
+		for (ii = 14; ii <= 14; ii++)// modify which peak in one detector =0<=13
 		{
 			sprintf(hfit_name, "%s%d%s%d", histo_name, i, "_peak", ii);
 			canvaspeak[i][ii] = new TCanvas(hfit_name, hfit_name, 1400, 740);//建立画布
 			canvaspeak[i][ii]->cd();//进入画布
-// 			canvaspeak[i][ii]->SetTopMargin(0.02);
-// 			canvaspeak[i][ii]->SetRightMargin(0.03);
-// 			canvaspeak[i][ii]->SetLeftMargin(0.09);
-// 			canvaspeak[i][ii]->SetBottomMargin(0.13);
+			// 			canvaspeak[i][ii]->SetTopMargin(0.02);
+			// 			canvaspeak[i][ii]->SetRightMargin(0.03);
+			// 			canvaspeak[i][ii]->SetLeftMargin(0.09);
+			// 			canvaspeak[i][ii]->SetBottomMargin(0.13);
 			TPad* pad1 = new TPad("pad1", "The pad 70% of the height", 0.0, 0.3, 1.0, 1.0);
 			// xlow, ylow, xup, yup
 			TPad* pad2 = new TPad("pad2", "The pad 30% of the height", 0.0, 0.0, 1.0, 0.3);
@@ -160,7 +177,7 @@ void peakfit_gausnerfcpol1_band_pxct() // get histogram and EMG fit one peak
 
 			histo[i]->SetTitle("");//图名
 			histo[i]->GetXaxis()->SetTitle("Energy (keV)");//轴名
-			histo[i]->GetYaxis()->SetTitle("Counts per 1 keV");// modify
+			histo[i]->GetYaxis()->SetTitle("Counts per 38 eV");// modify
 			histo[i]->GetXaxis()->CenterTitle();//居中
 			histo[i]->GetYaxis()->CenterTitle();//居中
 			histo[i]->GetXaxis()->SetLabelFont(132);//坐标字体
@@ -183,18 +200,34 @@ void peakfit_gausnerfcpol1_band_pxct() // get histogram and EMG fit one peak
 			histo[i]->GetXaxis()->SetRangeUser(lower_search_bound[i][ii], upper_search_bound[i][ii]);
 			peaky[ii] = histo[i]->GetMaximum();
 			peakx[ii] = histo[i]->GetBinCenter(histo[i]->GetMaximumBin());
-			cout << "	MaxX = "<< peakx[ii] << "	MaxY = " << peaky[ii] << endl;
+			cout << "	MaxX = " << peakx[ii] << "	MaxY = " << peaky[ii] << endl;
 			if (ii == 0) { gaplow = 0.5; gaphigh = 0.4; Eg = 5895; Eg2nd = 6490; }//55Fe 5.9 and 6.5 LEGe
 			if (ii == 2) { gaplow = 1.4; gaphigh = 1.4; Eg = 121.7817; }//152Eu 122 LEGe
 			if (ii == 4) { gaplow = 1.0; gaphigh = 1.0; Eg = 59.541; }//241Am	59.5 LEGe
 			if (ii == 5) { gaplow = 0.8; gaphigh = 0.8; Eg = 26.345; }//241Am 26.3 LEGe
- 			if (ii == 7) { gaplow = 0.7; gaphigh = 0.7; Eg = 33.196; }//241Am 33.2 LEGe
+			if (ii == 7) { gaplow = 0.7; gaphigh = 0.7; Eg = 33.196; }//241Am 33.2 LEGe
 			if (ii == 9) { gaplow = 2.1; gaphigh = 2.1; Eg = 121.7817; }//152Eu 122 XtRa
 			if (ii == 10) { gaplow = 2.5; gaphigh = 2.5; Eg = 344.2785; }//152Eu 344 XtRa
 			if (ii == 11) { gaplow = 3.0; gaphigh = 2.9; Eg = 1299.1420; }//152Eu 1299 XtRa
 			if (ii == 12) { gaplow = 120; gaphigh = 90; Eg = 5486; }//241Am 5486 MSD26
 			if (ii == 13) { gaplow = 0.4; gaphigh = 0.4; Eg = 11.89; }//241Am 11.89 LEGe
 			if (ii == 14) { gaplow = 3.5; gaphigh = 3.5; Eg = 1408.013; }//152Eu 1408 XtRa
+			if (ii == 15) { gaplow = 100; gaphigh = 60; Eg = 3182.69; }//148Gd 3183 MSD26
+			if (ii == 16) { gaplow = 2.0; gaphigh = 2.1; Eg = 244.6974; }//152Eu 245 XtRa
+			if (ii == 17) { gaplow = 2.5; gaphigh = 2.5; Eg = 411.1165; }//152Eu 411 XtRa
+			if (ii == 18) { gaplow = 2.5; gaphigh = 2.5; Eg = 443.9606; }//152Eu 444 XtRa
+			if (ii == 19) { gaplow = 2.7; gaphigh = 2.7; Eg = 778.9045; }//152Eu 779 XtRa
+			if (ii == 20) { gaplow = 2.7; gaphigh = 2.7; Eg = 867.380; }//152Eu 867 XtRa
+			if (ii == 21) { gaplow = 2.9; gaphigh = 2.9; Eg = 964.057; }//152Eu 964 XtRa
+			if (ii == 22) { gaplow = 3.2; gaphigh = 3.2; Eg = 1112.076; }//152Eu 1112 XtRa
+			if (ii == 23) { gaplow = 300; gaphigh = 1000; Eg = 59.541; }//241Am Timing MSD-LEGe
+			if (ii == 24) { gaplow = 2.9; gaphigh = 2.9; Eg = 488.6792; }//152Eu 489 XtRa
+			if (ii == 25) { gaplow = 4.0; gaphigh = 6.0; Eg = 563.986; }//152Eu 564 XtRa double peak needed
+			if (ii == 26) { gaplow = 6.0; gaphigh = 2.5; Eg = 586.2648; }//152Eu 586 XtRa double peak needed
+			if (ii == 27) { gaplow = 2.7; gaphigh = 2.7; Eg = 688.670; }//152Eu 689 XtRa
+			if (ii == 28) { gaplow = 2.9; gaphigh = 3.0; Eg = 1005.27; }//152Eu 1005 XtRa
+			if (ii == 29) { gaplow = 3.2; gaphigh = 3.3; Eg = 1212.948; }//152Eu 1213 XtRa
+			if (ii == 30) { gaplow = 4.0; gaphigh = 5.3; Eg = 1528.10; }//152Eu 1528 XtRa
 
 			histomin = histo[i]->GetXaxis()->GetXmin();
 			histomax = histo[i]->GetXaxis()->GetXmax();
@@ -211,11 +244,7 @@ void peakfit_gausnerfcpol1_band_pxct() // get histogram and EMG fit one peak
 			// cout << "minbin = " << minbin << "	maxbin = " << maxbin << "	fit_Nbins = " << fit_Nbins << " fitrange_min = " << fitrange_min << "	fitrange_max = " << fitrange_max << endl;
 
 			ibin = minbin;
-			while (histo[i]->GetBinContent(ibin) < (peaky[ii] / 2))
-			{
-				ibin++;
-				if (ibin >= maxbin)break;
-			}
+			while (histo[i]->GetBinContent(ibin) < (peaky[ii] / 2)) { ibin++;				if (ibin >= maxbin)break; }
 			double sigmaguess = 2 * (peakx[ii] - histo[i]->GetBinCenter(ibin)) / 2.355;
 			float highcounts = 0, lowcounts = 0;
 			for (jj = 0; jj < 10; jj++)
@@ -226,10 +255,11 @@ void peakfit_gausnerfcpol1_band_pxct() // get histogram and EMG fit one peak
 			highcounts = highcounts / 10; lowcounts = lowcounts / 10;
 			double aguess = (highcounts - lowcounts) / (fitrange_max - fitrange_min);
 			double bguess = lowcounts - fitrange_min * aguess;
-			cout << "initial guesses= "<< aguess << ",	" << bguess << ",	" << sigmaguess << ",	" << peakx[ii] << ",	" << peaky[ii] << endl;
+			cout << "initial guesses= " << aguess << ",	" << bguess << ",	" << sigmaguess << ",	" << peakx[ii] << ",	" << peaky[ii] << endl;
 			fEMG[ii] = new TF1("fEMG", "[0]*x+[1]+[2]/2/[3]*exp(0.5*([4]*[4]/([3]*[3]))+(x-[5])/[3])*ROOT::Math::erfc(1/sqrt(2)*([4]/[3]+(x-[5])/[4]))", histomin, histomax);// Sun PRC2021 low-energy tail
+			//fEMG[ii] = new TF1("fEMG", "[0]*x+[1]+[2]/2/[3]*exp(0.5*([4]*[4]/([3]*[3]))-(x-[5])/[3])*ROOT::Math::erfc(1/sqrt(2)*([4]/[3]-(x-[5])/[4]))", histomin, histomax);// Sun PRC2021 high-energy tail
 			g[ii] = new TF1("g", "gausn", histomin, histomax);// The [2]-N parameter in total is equivalent to the Constant in gausn
-			p[ii]=new TF1("p","[0]*x+[1]-[0]*x-[1]+[2]/2/[3]*exp(0.5*([4]*[4]/([3]*[3]))+(x-[5])/[3])*ROOT::Math::erfc(1/sqrt(2)*([4]/[3]+(x-[5])/[4]))",histomin, histomax);//pure peak
+			p[ii] = new TF1("p", "[0]*x+[1]-[0]*x-[1]+[2]/2/[3]*exp(0.5*([4]*[4]/([3]*[3]))+(x-[5])/[3])*ROOT::Math::erfc(1/sqrt(2)*([4]/[3]+(x-[5])/[4]))", histomin, histomax);//pure peak low-energy tail
 			//p2[ii] = new TF1("p2", "[0]*exp(-0.5*((x-[1])/[2])^2) / (sqrt(2*3.141592654)*[2])", histomin, histomax);//pure peak2
 			b[ii] = new TF1("b", "[0]*x+[1]", histomin, histomax);//pure bkg
 
@@ -243,16 +273,15 @@ void peakfit_gausnerfcpol1_band_pxct() // get histogram and EMG fit one peak
 			// 			p2[ii]->SetNpx(histoNbins);
 			b[ii]->SetNpx(histoNbins * 10);
 			//fEMG[ii]->SetParameters(0.1,15,peaky[ii],10,10,peakx[ii]);//initial value [0]-A, [1]-B, [2]-N, [3]-τ, [4]-σ, [5]-μ
-			fEMG[ii]->SetParameters(aguess, bguess, peaky[ii], 20, sigmaguess, peakx[ii]);//initial value [0]-A, [1]-B, [2]-N, [3]-τ, [4]-σ, [5]-μ
+			fEMG[ii]->SetParameters(aguess, bguess, peaky[ii], 0.2, sigmaguess, peakx[ii]);//initial value [0]-A, [1]-B, [2]-N, [3]-τ, [4]-σ, [5]-μ
 			// 			fEMG[ii]->SetParLimits(0,-500,500);//Bkg A
 			// 			fEMG[ii]->SetParLimits(1,-50000,300000);//Bkg B
-			fEMG[ii]->SetParLimits(2, 100000, 600000);//Constant,min,max
-			fEMG[ii]->SetParLimits(3, 0.01, 30);//Tau
-			fEMG[ii]->SetParLimits(4, 0.01, 30);//Sigma
-			fEMG[ii]->SetParLimits(5, peakx[ii] - gaplow/4, peakx[ii] + gaphigh/2);//Mean
-			fEMG[ii]->SetParLimits(5, 5450, 5486);//Mean
+			fEMG[ii]->SetParLimits(2, 30000, 40000);//Constant,min,max
+			fEMG[ii]->SetParLimits(3, 0.1, 1.0);//Tau
+			fEMG[ii]->SetParLimits(4, 0.1, 1.0);//Sigma
+			fEMG[ii]->SetParLimits(5, peakx[ii] - gaplow / 3, peakx[ii] + gaphigh / 2);//Mean
+			//fEMG[ii]->SetParLimits(5, 1298.8, 1299.9);//Mean
 			fEMG[ii]->SetParNames("BkgA", "BkgB", "Const*bin", "Tau", "Sigma", "Mean");
-
 			histo[i]->Fit("fEMG", "MLE", "", fitrange_min, fitrange_max);
 			TFitResultPtr Fit_result_pointer = histo[i]->Fit("fEMG", "MLES", "", fitrange_min, fitrange_max);
 			//"S" means the result of the fit is returned in the TFitResultPtr
@@ -272,16 +301,16 @@ void peakfit_gausnerfcpol1_band_pxct() // get histogram and EMG fit one peak
 			parNDF[ii] = fEMG[ii]->GetNDF();
 			p_value[ii] = fEMG[ii]->GetProb();//This probability is not the “probability that your fit is good.” If you did many fake experiments (draw many random samples of data points from the assumed distribution (your fit function)), this is the percentage of experiments that would give χ2 values ≥ to the one you got in this experiment.
 			g[ii]->SetParameters(par[ii][2], par[ii][5], par[ii][4]);//set parameters for drawing gausn
-			g[ii]->SetLineColor(7);
-			p[ii]->SetParameters(par[ii][0],par[ii][1],par[ii][2],par[ii][3],par[ii][4],par[ii][5]);//set parameters for drawing peak
-			p[ii]->SetLineColor(kViolet);
+			g[ii]->SetLineColor(kGreen + 1);
+			p[ii]->SetParameters(par[ii][0], par[ii][1], par[ii][2], par[ii][3], par[ii][4], par[ii][5]);//set parameters for drawing peak
+			p[ii]->SetLineColor(kGreen + 1);
 			// 			p2[ii]->SetParameters(par[ii][6], par[ii][7], par[ii][8]);//set parameters for drawing peak
 			// 			p2[ii]->SetLineColor(4);
 			b[ii]->SetParameters(par[ii][0], par[ii][1]);//set parameters for drawing bkg
 			b[ii]->SetLineColor(8);
 			fEMG[ii]->SetLineWidth(2);
 			// The confidence band is not always properly displayed.
-			
+
 			// Uncertainty Band
 			sprintf(filename, "%s%s%d%s%d", "h_confidence_interval", "_", i, "_", ii);
 			h_confidence_interval[i][ii] = (TH1D*)histo[i]->Clone(filename);//Create a histogram to hold the confidence intervals
@@ -292,11 +321,13 @@ void peakfit_gausnerfcpol1_band_pxct() // get histogram and EMG fit one peak
 			//where h_confidence_interval will hold the errors and could superimpose it on the same canvas where you plot central values.
 			h_confidence_interval[i][ii]->SetStats(kFALSE);
 			h_confidence_interval[i][ii]->SetFillColor(kRed - 10);
+			//histo[i]->SetLineColor(kGreen+1);
+			//histo[i]->SetMarkerColor(kGreen+1);
 			h_confidence_interval[i][ii]->Draw("e3 same"); // plot the uncertainty band
 			fEMG[ii]->Draw("same");
 			//g[ii]->Draw("same");
- 			p[ii]->Draw("same");
- 			//p2[ii]->Draw("same");
+			//p[ii]->Draw("same");
+			//p2[ii]->Draw("same");
 			b[ii]->Draw("same");
 			histo[i]->Draw("e same");
 
@@ -317,10 +348,10 @@ void peakfit_gausnerfcpol1_band_pxct() // get histogram and EMG fit one peak
 
 			//FWHM[ii] = par[ii][4] / par[ii][5] * 2.355 * Eg;
 			//FWHM_err[ii] = 2.355 * Eg * sqrt(Usigma_Usigma / (par[ii][5] * par[ii][5]) + Umean_Umean * (-par[ii][4] / par[ii][5] / par[ii][5]) * (-par[ii][4] / par[ii][5] / par[ii][5]) + 2 * rou_Usigma_Umean / par[ii][5] * (-par[ii][4] / par[ii][5] / par[ii][5]));
-			
+
 // 			inflation_factor = sqrt(parChi[ii] / parNDF[ii]);
 // 			if (inflation_factor < 1)
-				inflation_factor = 1;
+			inflation_factor = 1;
 			constant[ii] = par[ii][2]; constant_err[ii] = par_err[ii][2] * inflation_factor;
 			tau[ii] = par[ii][3]; tau_err[ii] = par_err[ii][3] * inflation_factor;
 			sig[ii] = par[ii][4]; sig_err[ii] = par_err[ii][4] * inflation_factor;
@@ -330,9 +361,9 @@ void peakfit_gausnerfcpol1_band_pxct() // get histogram and EMG fit one peak
 			Double_t topy, topx, lower_half, higher_half;
 			topy = p[ii]->GetMaximum(fitrange_min, fitrange_max);
 			topx = p[ii]->GetMaximumX(fitrange_min, fitrange_max);
-			lower_half = p[ii]->GetX(topy/2.0, fitrange_min, topx, 1E-12);
+			lower_half = p[ii]->GetX(topy / 2.0, fitrange_min, topx, 1E-12);
 			higher_half = p[ii]->GetX(topy / 2.0, topx, fitrange_max, 1E-12);
-			FWHM[ii]= higher_half - lower_half;
+			FWHM[ii] = higher_half - lower_half;
 
 			outfile << histo_name << i << "	Constant*binsize" << ii << "=	" << constant[ii] << "	+/-	" << constant_err[ii] << "	Mean" << ii << "=	" << mean[ii] << "	+/-	" << mean_err[ii] << "	Maximum" << ii << "=	" << peakx[ii] << "	+/-	" << peakxerr[ii] << "	Sigma" << ii << "=	" << sig[ii] << "	+/-	" << sig_err[ii] << "	Tau" << ii << "=	" << tau[ii] << "	+/-	" << tau_err[ii] << "	A" << ii << "=	" << par[ii][0] << "	+/-	" << par_err[ii][0] << "	B" << ii << "=	" << par[ii][1] << "	+/-	" << par_err[ii][1] << "	Chi2" << ii << "=	" << parChi[ii] << "	NDF" << ii << "=	" << parNDF[ii] << "	Area" << ii << "=	" << par[ii][2] / binwidth << "	FWHM" << ii << "=	" << FWHM[ii] << "	+/-	" << FWHM_err[ii] << endl;
 
@@ -367,7 +398,7 @@ void peakfit_gausnerfcpol1_band_pxct() // get histogram and EMG fit one peak
 			textgaus->Draw();
 
 			// for residuals plot
-			double x_values[fit_Nbins], y_values[fit_Nbins], y_fit_values[fit_Nbins], y_residuals[fit_Nbins],  x_errors[fit_Nbins], y_errors[fit_Nbins];
+			double x_values[fit_Nbins], y_values[fit_Nbins], y_fit_values[fit_Nbins], y_residuals[fit_Nbins], x_errors[fit_Nbins], y_errors[fit_Nbins];
 
 			for (ibin = 1; ibin <= fit_Nbins; ibin++)
 			{ // data array starts from [0], bin starts from [1]
@@ -405,14 +436,14 @@ void peakfit_gausnerfcpol1_band_pxct() // get histogram and EMG fit one peak
 			graph_residual[i]->SetLineWidth(2);
 			graph_residual[i]->SetLineColor(kBlue + 2);
 			graph_residual[i]->SetMarkerStyle(6);
-			graph_residual[i]->SetMarkerColor(kBlue+2);
+			graph_residual[i]->SetMarkerColor(kBlue + 2);
 			canvaspeak[i][ii]->cd();//进入画布
 			pad2->Draw();
 			pad2->cd();
 			graph_residual[i]->Draw("APZ");//"A": Axis are drawn around the graph, "P": The current marker is plotted at each point, "Z": Do not draw small horizontal and vertical lines the end of the error bars. Without "Z", the default is to draw these.
 			TLine* T1 = new TLine(fitrange_min, 0, fitrange_max, 0);
 			T1->Draw("R");//"R" means the line is drawn with the current line attributes
-			
+
 			sprintf(filename, "%s%s%s", pathname, hfit_name, ".png");
 			canvaspeak[i][ii]->SaveAs(filename);
 
@@ -420,3 +451,5 @@ void peakfit_gausnerfcpol1_band_pxct() // get histogram and EMG fit one peak
 		outfile << "\n\n" << endl;
 	}//for (i=0;i<ID;i++)
 }//peakcali main
+
+

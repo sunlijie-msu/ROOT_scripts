@@ -1,6 +1,6 @@
 #include <iostream>
 #include <fstream>
-#include <iomanip.h>
+//#include <iomanip.h>
 #include <math.h>
 #include <time.h>
 #include <map>
@@ -42,7 +42,7 @@ using namespace std;
 void average()// graph-pol0 fit several points to get the weighted average
 {
 	TCanvas* canvas;
-	TGraph* graph, * graph_uncertainty_high, * graph_uncertainty_high;//TGraph
+	TGraph* graph, * graph_uncertainty_low, * graph_uncertainty_high;//TGraph
 	double x_value[100], x_error[100];
 	double y_value[100], y_error[100];
 	int num_values;
@@ -71,25 +71,34 @@ void average()// graph-pol0 fit several points to get the weighted average
 	}
 
 	sprintf(h_name, "%s", "weighted_average");
-	canvas = new TCanvas(h_name, h_name, 900, 700);//建立画布
+	canvas = new TCanvas(h_name, h_name, 1300, 800);//建立画布
 	canvas->cd();//进入画布
+	canvas->SetTopMargin(0.03);
+	canvas->SetRightMargin(0.02);
+	canvas->SetLeftMargin(0.13);
+	canvas->SetBottomMargin(0.13);
+	canvas->SetFrameLineWidth(2);
 	//canvascali[i]->SetGrid();//显示网格
 	//graph[i]=new TGraph(peaknum,Number[i],input_value[i]);//TGraph *gr1=new TGraph(n,x,y);
 	graph = new TGraphErrors(number, x_value, y_value, x_error, y_error);//画error bars TGraph(n,x,y,ex,ey);
 	graph->SetTitle(h_name);
 	graph->GetXaxis()->SetTitle("Measurements");//轴名
-	graph->GetYaxis()->SetTitle("Values");//轴名
+	graph->GetYaxis()->SetTitle("Half-life (ns)");//轴名
 	graph->GetXaxis()->CenterTitle();//居中
 	graph->GetYaxis()->CenterTitle();//居中
+	graph->SetTitle("");
 	graph->GetXaxis()->SetLabelFont(132);//坐标字体
 	graph->GetYaxis()->SetLabelFont(132);//坐标字体
+	graph->GetXaxis()->SetLabelSize(0.06);
+	graph->GetYaxis()->SetLabelSize(0.06);
 	graph->GetXaxis()->SetTitleFont(132);//轴名字体
 	graph->GetYaxis()->SetTitleFont(132);//轴名字体
-	//graph[i]->GetYaxis()->SetLabelSize(0.05);//坐标字号
-	//graph[i]->GetYaxis()->SetTitleSize(0.05);//轴名字号
-	graph->GetXaxis()->SetTitleOffset(1.2);//轴名偏移
-	graph->GetYaxis()->SetTitleOffset(1.3);//轴名偏移
+	graph->GetXaxis()->SetTitleOffset(0.8);//轴名偏移
+	graph->GetYaxis()->SetTitleOffset(0.9);//轴名偏移
+	graph->GetXaxis()->SetTitleSize(0.07);
+	graph->GetYaxis()->SetTitleSize(0.07);
 	//		graph[i]->GetYaxis()->SetRangeUser(1,8);
+	graph->GetYaxis()->SetNdivisions(505);
 	graph->GetXaxis()->SetNdivisions(100);//n = n1 + 100*n2 + 10000*n3
 	graph->SetMarkerStyle(21);
 	graph->SetMarkerColor(1);
@@ -108,16 +117,16 @@ void average()// graph-pol0 fit several points to get the weighted average
 	//The fit parameters, error and chi2 (but not covariance matrix) can be retrieved also from the fitted function.
 
 	// Uncertainty Band
-	TH1D* hint_confidence_interval = new TH1D("hint_confidence_interval", "hint_confidence_interval", 10000, 0, 100);//Create a histogram to hold the confidence intervals
-	(TVirtualFitter::GetFitter())->GetConfidenceIntervals(hint_confidence_interval, 0.683);//By default the intervals are inflated using the chi2/ndf value of the fit if a chi2 fit is performed
+	TH1D* h_confidence_interval = new TH1D("h_confidence_interval", "h_confidence_interval", 10000, 0, 100);//Create a histogram to hold the confidence intervals
+	TVirtualFitter* fitter = TVirtualFitter::GetFitter();//The method TVirtualFitter::GetFitter())->Get the parameters of your fitting function after having it fitted to an histogram.
+	fitter->GetConfidenceIntervals(h_confidence_interval, 0.683);//By default the intervals are inflated using the chi2/ndf value of the fit if a chi2 fit is performed
 	//confidence interval for the colored band: 1σ confidence interval: P=0.683, 1σ confidence interval: P=0.95, 3σ confidence interval: P=0.997
-	//hint will contain the CL result that you can draw on top of your fitted graph.
-	//where hint will hold the errors and could superimpose it on the same canvas where you plot central values.
-	//The method TVirtualFitter::GetFitter())->GetConfidenceIntervals(hint_sig, 0.683 or 0.95 or 0.997) computes the confidence level of your model (fitting) function after having it fitted to an histogram.
-	hint_confidence_interval->SetStats(kFALSE);
-	hint_confidence_interval->SetFillColor(kRed - 9);
+	//h_confidence_interval will contain the CL result that you can draw on top of your fitted graph.
+	//where h_confidence_interval will hold the errors and could superimpose it on the same canvas where you plot central values.
+	h_confidence_interval->SetStats(kFALSE);
+	h_confidence_interval->SetFillColor(kRed - 10);
 	graph->Draw("AP");//"A": Axis are drawn around the graph, "P": The current marker is plotted at each point
-	hint_confidence_interval->Draw("e3 same"); // plot the uncertainty band
+	h_confidence_interval->Draw("e3 same"); // plot the uncertainty band
 
 	// Uncertainty Lines
 	Fit_result_pointer->GetConfidenceIntervals(1000, 1, 1, x_point, y_point_error, 0.683, false);//get the error of y at x points of interest, this command is independent of the colored band
@@ -130,11 +139,11 @@ void average()// graph-pol0 fit several points to get the weighted average
 	graph_uncertainty_low = new TGraph(1000, x_point, y_point_lower_bound);//error bars TGraph(n,x,y,ex,ey);
 	graph_uncertainty_low->SetLineColor(4);
 	graph_uncertainty_low->SetLineWidth(1);
-	graph_uncertainty_low->Draw("C");//"C" A smooth line is drawn
+	//graph_uncertainty_low->Draw("C");//"C" A smooth line is drawn
 	graph_uncertainty_high = new TGraph(1000, x_point, y_point_higher_bound);//error bars TGraph(n,x,y,ex,ey);
 	graph_uncertainty_high->SetLineColor(4);
 	graph_uncertainty_high->SetLineWidth(1);
-	graph_uncertainty_high->Draw("C");//"C" A smooth line is drawn
+	//graph_uncertainty_high->Draw("C");//"C" A smooth line is drawn
 
 	graph->Draw("P same");//draw the points again above error band for better visibility
 

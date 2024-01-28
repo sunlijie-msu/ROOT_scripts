@@ -43,7 +43,7 @@ void peakfit_gausnerfcpol1_band_doublepeak_pxct() // get histogram and EMG fit t
 {
 	const int ID1 = 0;// i=ID1//which detector
 	const int ID2 = 0;// i<=ID2// modify which detector
-	double binwidth = 1.000;
+	double binwidth = 0.038;
 	double fitrange_min = 0, fitrange_max = 0;
 	double histomin = 0, histomax = 0, histoNbins = 0;
 	int minbin = 0, maxbin = 0;
@@ -52,7 +52,7 @@ void peakfit_gausnerfcpol1_band_doublepeak_pxct() // get histogram and EMG fit t
 	char paraprint[100], histo_name[200], hfit_name[200];
 	TH1D* histo[ID2 + 1];//TH1D peak search+gauss fit, create histograms
 	int fit_Nbins;
-	const int peaknum = 30;//search peak numbers, modify
+	const int peaknum = 50;//search peak numbers, modify
 	TGraph* graph_residual[ID2 + 1];//create graphs
 	TF1* fEMG[peaknum];//create function
 	TF1* p[peaknum], * p2[peaknum], * g[peaknum], * b[peaknum], * g2[peaknum];
@@ -103,9 +103,26 @@ void peakfit_gausnerfcpol1_band_doublepeak_pxct() // get histogram and EMG fit t
 	lower_search_bound[0][9] = 119;	upper_search_bound[0][9] = 125; //152Eu 122 XtRa
 	lower_search_bound[0][10] = 335;	upper_search_bound[0][10] = 350; //152Eu 344 XtRa
 	lower_search_bound[0][11] = 1296;	upper_search_bound[0][11] = 1302; //152Eu 1299 XtRa
-	lower_search_bound[0][12] = 5450;	upper_search_bound[0][12] = 5500; //241Am 5486 MSD26
+	lower_search_bound[0][12] = 5440;	upper_search_bound[0][12] = 5500; //241Am 5486 MSD26
 	lower_search_bound[0][13] = 11.6;	upper_search_bound[0][13] = 12.2; //241Am 11.89 LEGe
 	lower_search_bound[0][14] = 1405;	upper_search_bound[0][14] = 1411; //152Eu 1408 XtRa
+	lower_search_bound[0][15] = 3100;	upper_search_bound[0][15] = 3200; //148Gd 3183 MSD26
+	lower_search_bound[0][16] = 241;	upper_search_bound[0][16] = 246; //152Eu 245 XtRa
+	lower_search_bound[0][17] = 409;	upper_search_bound[0][17] = 415; //152Eu 411 XtRa
+	lower_search_bound[0][18] = 441;	upper_search_bound[0][18] = 447; //152Eu 444 XtRa
+	lower_search_bound[0][19] = 776;	upper_search_bound[0][19] = 782; //152Eu 779 XtRa
+	lower_search_bound[0][20] = 863;	upper_search_bound[0][20] = 870; //152Eu 867 XtRa
+	lower_search_bound[0][21] = 960;	upper_search_bound[0][21] = 968; //152Eu 964 XtRa
+	lower_search_bound[0][22] = 1109;	upper_search_bound[0][22] = 1115; //152Eu 1112 XtRa
+	lower_search_bound[0][23] = -1000;	upper_search_bound[0][23] = 1000; //241Am Timing LEGe-MSD
+	lower_search_bound[0][24] = 483;	upper_search_bound[0][24] = 493; //152Eu 489 XtRa
+	lower_search_bound[0][25] = 560;	upper_search_bound[0][25] = 568; //152Eu 564 XtRa
+	lower_search_bound[0][26] = 585;	upper_search_bound[0][26] = 588; //152Eu 586 XtRa
+	lower_search_bound[0][27] = 683;	upper_search_bound[0][27] = 693; //152Eu 689 XtRa
+	lower_search_bound[0][28] = 1002;	upper_search_bound[0][28] = 1008; //152Eu 1005 XtRa
+	lower_search_bound[0][29] = 1209;	upper_search_bound[0][29] = 1216; //152Eu 1213 XtRa
+	lower_search_bound[0][30] = 1524;	upper_search_bound[0][30] = 1532; //152Eu 1528 XtRa
+
 
 	for (i = ID1; i <= ID2; i++)//which detector no need to change
 	{
@@ -119,13 +136,13 @@ void peakfit_gausnerfcpol1_band_doublepeak_pxct() // get histogram and EMG fit t
 
 	sprintf(filename, "%s%s", pathname, "peakpara.dat");
 	ofstream outfile(filename, ios::out);
-	sprintf(filename, "%s%s", pathname, "run0046-00_LEGe_MSD_XtRa_241Am_3mmcollimator_152Eu_121min_window1.5us_cal.root"); // modify
+	sprintf(filename, "%s%s", pathname, "run0097_98_LEGe_XtRa_152Eu_inChamber_window1.5us_CFDdelay_adjusted_930min_efficiency_cal.root"); // modify
 	TFile* fin = new TFile(filename);//after this statement, you can use any ROOT command1 for this rootfile
 	cout << filename << endl;
 
 	for (i = ID1; i <= ID2; i++)//which detector no need to change
 	{
-		sprintf(histo_name, "%s", "hmsdtotal_e"); // modify
+		sprintf(histo_name, "%s", "hnorth_e"); // modify
 		histo[i] = (TH1D*)fin->Get(histo_name); //Get spectrum
 		histo[i]->Rebin(1);
 		histo[i]->Sumw2(kFALSE);
@@ -134,9 +151,9 @@ void peakfit_gausnerfcpol1_band_doublepeak_pxct() // get histogram and EMG fit t
 
 	for (i = ID1; i <= ID2; i++) // no need to change
 	{
-		for (ii = 12; ii <= 12; ii++)// modify which peak in one detector =0<=13
+		for (ii = 30; ii <= 30; ii++)// modify which peak in one detector =0<=13
 		{
-			sprintf(hfit_name, "%s%d%s%d", "LEGe", i, "_peak", ii);
+			sprintf(hfit_name, "%s%d%s%d", histo_name, i, "_peak", ii);
 			canvaspeak[i][ii] = new TCanvas(hfit_name, hfit_name, 1400, 740);//建立画布
 			canvaspeak[i][ii]->cd();//进入画布
 			// 			canvaspeak[i][ii]->SetTopMargin(0.02);
@@ -166,7 +183,7 @@ void peakfit_gausnerfcpol1_band_doublepeak_pxct() // get histogram and EMG fit t
 
 			histo[i]->SetTitle("");//图名
 			histo[i]->GetXaxis()->SetTitle("Energy (keV)");//轴名
-			histo[i]->GetYaxis()->SetTitle("Counts per 1 keV");// modify
+			histo[i]->GetYaxis()->SetTitle("Counts per 38 eV");// modify
 			histo[i]->GetXaxis()->CenterTitle();//居中
 			histo[i]->GetYaxis()->CenterTitle();//居中
 			histo[i]->GetXaxis()->SetLabelFont(132);//坐标字体
@@ -190,12 +207,34 @@ void peakfit_gausnerfcpol1_band_doublepeak_pxct() // get histogram and EMG fit t
 			peaky[ii] = histo[i]->GetMaximum();
 			peakx[ii] = histo[i]->GetBinCenter(histo[i]->GetMaximumBin());
 			cout << "	MaxX = " << peakx[ii] << "	MaxY = " << peaky[ii] << endl;
-			if (ii == 0) { gaplow = 0.65; gaphigh = 1.1; Eg = 5895; Eg2nd = 6490;}//55Fe 5.9 and 6.5
-			if (ii == 3) {
-				gaplow = 1.05; gaphigh = 0.75; Eg = 45294; Eg2nd = 45413; }//152Eu 45.3 and 45.4
-			if (ii == 6) { gaplow = 1.5; gaphigh = 0.9; Eg = 40118; Eg2nd = 39522; }//152Eu 40.1 and 39.5
-			if (ii == 8) { gaplow = 0.6; gaphigh = 0.7; Eg = 13946; Eg2nd = 13761; }//241Am 13.9 and 13.8
-			if (ii == 12) { gaplow = 120; gaphigh = 90; Eg = 5460; Eg2nd = 5410; }//241Am 5486 and 5543 MSDtotal
+			if (ii == 0) { gaplow = 0.5; gaphigh = 0.4; Eg = 5895; Eg2nd = 6490; }//55Fe 5.9 and 6.5 LEGe
+			if (ii == 2) { gaplow = 1.4; gaphigh = 1.4; Eg = 121.7817; }//152Eu 122 LEGe
+			if (ii == 4) { gaplow = 1.0; gaphigh = 1.0; Eg = 59.541; }//241Am	59.5 LEGe
+			if (ii == 5) { gaplow = 0.8; gaphigh = 0.8; Eg = 26.345; }//241Am 26.3 LEGe
+			if (ii == 7) { gaplow = 0.7; gaphigh = 0.7; Eg = 33.196; }//241Am 33.2 LEGe
+			if (ii == 9) { gaplow = 2.1; gaphigh = 2.1; Eg = 121.7817; }//152Eu 122 XtRa
+			if (ii == 10) { gaplow = 2.5; gaphigh = 2.5; Eg = 344.2785; }//152Eu 344 XtRa
+			if (ii == 11) { gaplow = 3.0; gaphigh = 2.9; Eg = 1299.1420; }//152Eu 1299 XtRa
+			if (ii == 12) { gaplow = 120; gaphigh = 90; Eg = 5486; }//241Am 5486 MSD26
+			if (ii == 13) { gaplow = 0.4; gaphigh = 0.4; Eg = 11.89; }//241Am 11.89 LEGe
+			if (ii == 14) { gaplow = 3.5; gaphigh = 3.5; Eg = 1408.013; }//152Eu 1408 XtRa
+			if (ii == 15) { gaplow = 100; gaphigh = 60; Eg = 3182.69; }//148Gd 3183 MSD26
+			if (ii == 16) { gaplow = 2.0; gaphigh = 2.1; Eg = 244.6974; }//152Eu 245 XtRa
+			if (ii == 17) { gaplow = 2.5; gaphigh = 2.5; Eg = 411.1165; }//152Eu 411 XtRa
+			if (ii == 18) { gaplow = 2.5; gaphigh = 2.5; Eg = 443.9606; }//152Eu 444 XtRa
+			if (ii == 19) { gaplow = 2.7; gaphigh = 2.7; Eg = 778.9045; }//152Eu 779 XtRa
+			if (ii == 20) { gaplow = 2.7; gaphigh = 2.7; Eg = 867.380; }//152Eu 867 XtRa
+			if (ii == 21) { gaplow = 2.9; gaphigh = 2.9; Eg = 964.057; }//152Eu 964 XtRa
+			if (ii == 22) { gaplow = 3.2; gaphigh = 3.2; Eg = 1112.076; }//152Eu 1112 XtRa
+			if (ii == 23) { gaplow = 300; gaphigh = 1000; Eg = 59.541; }//241Am Timing MSD-LEGe
+			if (ii == 24) { gaplow = 2.9; gaphigh = 2.9; Eg = 488.6792; }//152Eu 489 XtRa
+			if (ii == 25) { gaplow = 4.0; gaphigh = 6.0; Eg = 563.986; }//152Eu 564 XtRa
+			if (ii == 26) { gaplow = 6.0; gaphigh = 2.8; Eg = 586.2648; }//152Eu 586 XtRa
+			if (ii == 27) { gaplow = 2.7; gaphigh = 2.7; Eg = 688.670; }//152Eu 689 XtRa
+			if (ii == 28) { gaplow = 2.9; gaphigh = 3.0; Eg = 1005.27; }//152Eu 1005 XtRa
+			if (ii == 29) { gaplow = 3.2; gaphigh = 3.3; Eg = 1212.948; }//152Eu 1213 XtRa
+			if (ii == 30) { gaplow = 3.8; gaphigh = 5.3; Eg = 1528.10; }//152Eu 1528 XtRa
+
 
 			histomin = histo[i]->GetXaxis()->GetXmin();
 			histomax = histo[i]->GetXaxis()->GetXmax();
@@ -246,19 +285,19 @@ void peakfit_gausnerfcpol1_band_doublepeak_pxct() // get histogram and EMG fit t
 			// 			p2[ii]->SetNpx(histoNbins);
 			b[ii]->SetNpx(histoNbins * 10);
 			//fEMG[ii]->SetParameters(0.1,15,peaky[ii],10,10,peakx[ii]);//initial value [0]-A, [1]-B, [2]-N, [3]-τ, [4]-σ, [5]-μ
-			fEMG[ii]->SetParameters(aguess, bguess, peaky[ii], 7, sigmaguess, peakx[ii], peaky[ii], 0.04, sigmaguess, peakx[ii] + gaplow/2);//initial value [0]-A, [1]-B, [2]-N, [3]-τ, [4]-σ, [5]-μ, [6]-N2, [7]-τ2, [8]-σ2, [9]-μ2
+			fEMG[ii]->SetParameters(aguess, bguess, peaky[ii], 0.2, sigmaguess, peakx[ii], peaky[ii], 0.04, sigmaguess, peakx[ii] + gaplow / 2);//initial value [0]-A, [1]-B, [2]-N, [3]-τ, [4]-σ, [5]-μ, [6]-N2, [7]-τ2, [8]-σ2, [9]-μ2
 			//fEMG[ii]->SetParLimits(0,0,700);//Bkg A
 			// 	fEMG[ii]->SetParLimits(1,-50000,300000);//Bkg B
-			fEMG[ii]->SetParLimits(2, 375000, 390000);//Constant,min,max
-			fEMG[ii]->SetParLimits(3, 9, 15);//Tau
-			fEMG[ii]->SetParLimits(4, 17, 23);//Sigma
-			fEMG[ii]->SetParLimits(5, peakx[ii] - gaplow, peakx[ii] + gaphigh);//Mean
-			fEMG[ii]->SetParLimits(5, 5460, 5480);//Mean
-			fEMG[ii]->SetParLimits(6, 51000, 57000);//Constant_2nd,min,max
-			fEMG[ii]->SetParLimits(7, 9, 15);//Tau_2nd
-			fEMG[ii]->SetParLimits(8, 17, 23);//Sigma_2nd
-			fEMG[ii]->SetParLimits(9, peakx[ii] + gaplow, peakx[ii] + gaplow);//Mean_2nd
-			fEMG[ii]->SetParLimits(9, 5350, 5430);//Mean_2nd
+			fEMG[ii]->SetParLimits(2, 350, 1000);//Constant,min,max
+			fEMG[ii]->SetParLimits(3, 0.03, 0.5);//Tau
+			fEMG[ii]->SetParLimits(4, 0.7, 0.9);//Sigma
+			fEMG[ii]->SetParLimits(5, peakx[ii] - gaplow / 3, peakx[ii] + gaphigh / 2);//Mean
+			fEMG[ii]->SetParLimits(5, 1528, 1528.7);//Mean
+			fEMG[ii]->SetParLimits(6, 100, 140);//Constant_2nd,min,max
+			fEMG[ii]->SetParLimits(7, 0.03, 0.5);//Tau_2nd
+			fEMG[ii]->SetParLimits(8, 0.7, 0.9);//Sigma_2nd
+			//fEMG[ii]->SetParLimits(9, peakx[ii], peakx[ii] + gaphigh);//Mean_2nd
+			fEMG[ii]->SetParLimits(9, 1529, 1530);//Mean_2nd
 
 			fEMG[ii]->SetParNames("BkgA", "BkgB", "Const*bin", "Tau", "Sigma", "Mean", "Const_2nd*bin", "Tau_2nd", "Sigma_2nd", "Mean_2nd");
 			histo[i]->Fit("fEMG", "MLE", "", fitrange_min, fitrange_max);
@@ -284,10 +323,10 @@ void peakfit_gausnerfcpol1_band_doublepeak_pxct() // get histogram and EMG fit t
 			parNDF[ii] = fEMG[ii]->GetNDF();
 			p_value[ii] = fEMG[ii]->GetProb();//This probability is not the “probability that your fit is good.” If you did many fake experiments (draw many random samples of data points from the assumed distribution (your fit function)), this is the percentage of experiments that would give χ2 values ≥ to the one you got in this experiment.
 			g[ii]->SetParameters(par[ii][2], par[ii][5], par[ii][4]);//set parameters for drawing gausn
-			g[ii]->SetLineColor(7); 
+			g[ii]->SetLineColor(7);
 			g2[ii]->SetParameters(par[ii][6], par[ii][9], par[ii][8]);//set parameters for drawing gausn
 			g2[ii]->SetLineColor(7);
-			p[ii]->SetParameters(par[ii][0],par[ii][1],par[ii][2],par[ii][3],par[ii][4],par[ii][5]);//set parameters for drawing peak
+			p[ii]->SetParameters(par[ii][0], par[ii][1], par[ii][2], par[ii][3], par[ii][4], par[ii][5]);//set parameters for drawing peak
 			p[ii]->SetLineColor(4);
 			p2[ii]->SetParameters(par[ii][0], par[ii][1], par[ii][6], par[ii][7], par[ii][8], par[ii][9]);//set parameters for drawing peak
 			p2[ii]->SetLineColor(4);
@@ -295,7 +334,7 @@ void peakfit_gausnerfcpol1_band_doublepeak_pxct() // get histogram and EMG fit t
 			b[ii]->SetLineColor(8);
 			fEMG[ii]->SetLineWidth(2);
 			// The confidence band is not always properly displayed.
-			
+
 			// Uncertainty Band
 			sprintf(filename, "%s%s%d%s%d", "h_confidence_interval", "_", i, "_", ii);
 			h_confidence_interval[i][ii] = (TH1D*)histo[i]->Clone(filename);//Create a histogram to hold the confidence intervals
@@ -308,10 +347,10 @@ void peakfit_gausnerfcpol1_band_doublepeak_pxct() // get histogram and EMG fit t
 			h_confidence_interval[i][ii]->SetFillColor(kRed - 10);
 			h_confidence_interval[i][ii]->Draw("e3 same"); // plot the uncertainty band
 			fEMG[ii]->Draw("same");
-// 			g[ii]->Draw("same"); // plot the gaussian
-// 			g2[ii]->Draw("same"); // plot the gaussian_2nd
+			// 			g[ii]->Draw("same"); // plot the gaussian
+			// 			g2[ii]->Draw("same"); // plot the gaussian_2nd
 			p[ii]->Draw("same");
- 			p2[ii]->Draw("same");
+			p2[ii]->Draw("same");
 			b[ii]->Draw("same");
 			histo[i]->Draw("e same");
 
@@ -326,7 +365,7 @@ void peakfit_gausnerfcpol1_band_doublepeak_pxct() // get histogram and EMG fit t
 			double Umean2nd_Umean2nd = fitter->GetCovarianceMatrixElement(9, 9);//(Umean2nd)^2
 			double rou_Utau_Umean = fitter->GetCovarianceMatrixElement(3, 5);//(ρ*Utau*Umean), (3,5) (5,3) doesn't matter.
 			double rou_Usigma_Umean = fitter->GetCovarianceMatrixElement(4, 5);//
-			cout << rou_Usigma_Umean << endl; 
+			cout << rou_Usigma_Umean << endl;
 			double rou_Usigma2nd_Umean2nd = fitter->GetCovarianceMatrixElement(8, 9);//
 			cout << rou_Usigma2nd_Umean2nd << endl;
 
@@ -334,9 +373,9 @@ void peakfit_gausnerfcpol1_band_doublepeak_pxct() // get histogram and EMG fit t
 			peakx[ii] = fEMG[ii]->GetMaximumX(fitrange_min, fitrange_max);
 			peakxerr[ii] = sqrt(Utau_Utau + Umean_Umean + 2 * rou_Utau_Umean);
 
-// 			inflation_factor = sqrt(parChi[ii] / parNDF[ii]);
-// 			if (inflation_factor < 1)
-				inflation_factor = 1;
+			// 			inflation_factor = sqrt(parChi[ii] / parNDF[ii]);
+			// 			if (inflation_factor < 1)
+			inflation_factor = 1;
 			constant[ii] = par[ii][2]; constant_err[ii] = par_err[ii][2] * inflation_factor;
 			tau[ii] = par[ii][3]; tau_err[ii] = par_err[ii][3] * inflation_factor;
 			sig[ii] = par[ii][4]; sig_err[ii] = par_err[ii][4] * inflation_factor;
@@ -349,7 +388,7 @@ void peakfit_gausnerfcpol1_band_doublepeak_pxct() // get histogram and EMG fit t
 			FWHM2nd[ii] = par[ii][8] * 2.355; FWHM2nd_err[ii] = par_err[ii][8] * 2.355 * inflation_factor;
 
 			Double_t topy, topx, lower_half, higher_half;
-			
+
 			topy = p[ii]->GetMaximum(fitrange_min, fitrange_max);
 			topx = p[ii]->GetMaximumX(fitrange_min, fitrange_max);
 			lower_half = p[ii]->GetX(topy / 2.0, fitrange_min, topx, 1E-12);
@@ -362,7 +401,7 @@ void peakfit_gausnerfcpol1_band_doublepeak_pxct() // get histogram and EMG fit t
 			higher_half = p2[ii]->GetX(topy / 2.0, topx, fitrange_max, 1E-12);
 			FWHM2nd[ii] = higher_half - lower_half;
 
-			outfile << "LEGe" << i << "	Constant*binsize" << ii << "=	" << constant[ii] << "	+/-	" << constant_err[ii] << "	Mean" << ii << "=	" << mean[ii] << "	+/-	" << mean_err[ii] << "	Maximum" << ii << "=	" << peakx[ii] << "	+/-	" << peakxerr[ii] << "	Sigma" << ii << "=	" << sig[ii] << "	+/-	" << sig_err[ii] << "	Tau" << ii << "=	" << tau[ii] << "	+/-	" << tau_err[ii] << "	A" << ii << "=	" << par[ii][0] << "	+/-	" << par_err[ii][0] << "	B" << ii << "=	" << par[ii][1] << "	+/-	" << par_err[ii][1] << "	Chi2" << ii << "=	" << parChi[ii] << "	NDF" << ii << "=	" << parNDF[ii] << "	Area" << ii << "=	" << par[ii][2] / binwidth << "	FWHM" << ii << "=	" << FWHM[ii] << "	+/-	" << FWHM_err[ii] << "	Constant2*binsize" << ii << "=	" << constant2nd[ii] << "	+/-	" << constant2nd_err[ii] << "	Mean2" << ii << "=	" << mean2nd[ii] << "	+/-	" << mean2nd_err[ii] << "	Sigma2" << ii << "=	" << sig2nd[ii] << "	+/-	" << sig2nd_err[ii] << "	Tau2" << ii << "=	" << tau2nd[ii] << "	+/-	" << tau2nd_err[ii] << "	Area2" << ii << "=	" << par[ii][6] / binwidth << "	FWHM2" << ii << "=	" << FWHM2nd[ii] << "	+/-	" << FWHM2nd_err[ii] << endl;
+			outfile << histo_name << i << "	Constant*binsize" << ii << "=	" << constant[ii] << "	+/-	" << constant_err[ii] << "	Mean" << ii << "=	" << mean[ii] << "	+/-	" << mean_err[ii] << "	Maximum" << ii << "=	" << peakx[ii] << "	+/-	" << peakxerr[ii] << "	Sigma" << ii << "=	" << sig[ii] << "	+/-	" << sig_err[ii] << "	Tau" << ii << "=	" << tau[ii] << "	+/-	" << tau_err[ii] << "	A" << ii << "=	" << par[ii][0] << "	+/-	" << par_err[ii][0] << "	B" << ii << "=	" << par[ii][1] << "	+/-	" << par_err[ii][1] << "	Chi2" << ii << "=	" << parChi[ii] << "	NDF" << ii << "=	" << parNDF[ii] << "	Area" << ii << "=	" << par[ii][2] / binwidth << "	FWHM" << ii << "=	" << FWHM[ii] << "	+/-	" << FWHM_err[ii] << "	Constant2*binsize" << ii << "=	" << constant2nd[ii] << "	+/-	" << constant2nd_err[ii] << "	Mean2" << ii << "=	" << mean2nd[ii] << "	+/-	" << mean2nd_err[ii] << "	Sigma2" << ii << "=	" << sig2nd[ii] << "	+/-	" << sig2nd_err[ii] << "	Tau2" << ii << "=	" << tau2nd[ii] << "	+/-	" << tau2nd_err[ii] << "	Area2" << ii << "=	" << par[ii][6] / binwidth << "	FWHM2" << ii << "=	" << FWHM2nd[ii] << "	+/-	" << FWHM2nd_err[ii] << endl;
 
 
 			TPaveText* textgaus = new TPaveText(0.7, 0.4, 0.975, 0.98, "brNDC");//加标注left, down, right, up

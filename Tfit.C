@@ -4,6 +4,8 @@ Ctrl + R can search history commands in ROOT
 //ÔÚVSÀïÓÃCtrl+F5Ö´ÐÐcppÎÄ¼þ
 g++ -o ExampleMacro ExampleMacro.C `root-config --cflags --libs`
 
+pad1->RedrawAxis();//Redraw the axis on this pad.
+
 #chi^{2} = %.2f / %d = %.5f   E_{#gamma} = 1 keV
 
 TString rootfilename("Si25ET16m.root");
@@ -260,13 +262,18 @@ sprintf(paraprint,"Mean1=%4.2f",Mean1);//gtÄâºÏ²ÎÊý£¬ËÆºõÑ°·å²»Ì«×¼£¬ÄâºÏµÄMean×
 //Draw
 gStyle->SetOptFit(1);//ÏÔÊ¾Fit parameters
 gStyle->SetOptStat("nemr")//½ö¶ÔTH2F¹ÜÓÃ£¬¶ÔTree->Draw()²»¹ÜÓÃ£¬Tree->Draw()¿ÉÒÔ²»¼Ó·ÖºÅ£¬·µ»ØÖµ¼´ÎªEntries
-gStyle->SetOptStat("");//remove statistics£¬
+gStyle->SetOptStat("");//remove statistics.
 hFit->Sumw2();
 double n26 = hmsd26_e->Integral(47128, 47483);
 double n31 = hmsd26_e->Integral(47128, 47483);
 cout << n26 / n31;
 hmsd26_e->Scale(n26 / n31);
 hmsd26_e->Draw("same");
+
+
+TH2(name, title, nbinsx, xlow, xup, nbinsy, ylow, yup);
+TTree::Draw(varexp, selection, option = "", nentries = kMaxEntries, firstentry = 0); // y:x
+T999->Draw("DE1:TOF", "TOF<199", "COLZ", 1e4, 283);//Ö»»­10000¸öÊÂ¼þ,´ÓµÚ283¸öÊÂ¼þ¿ªÊ¼»­
 
 hFit->Scale(par[0]);//³Ëpar[0]
 h1->Scale(factor)// to normalize a histogram.
@@ -494,6 +501,7 @@ canvascali[i]->SetLogy();
 canvascali[i]->SaveAs(name);//´æpngÍ¼
 c1->Print(pdffilename);//´æpdf
 TH1D *histo=(TH1D*)fin->Get("h1");//Ö±·½Í¼
+canvaspeak->SaveAs("F:/e21010/pxct/alphagamma_241Am_PID_run70_71.png");
 
 float Channel[72]={};
 float Energy[72]={};
@@ -502,8 +510,8 @@ TGraph *g=new TGraph(72,Channel,Energy);//TGraph(n,x,y);
 E=g->Eval(Channel);//Computes the Energy value of the given Channel value.
 
 h1->Integral(200,300)
-gPad->SetLogz(1) setlogy
-gPad->SetLogz(0) setliny
+gPad->SetLogz(1) setlogz
+gPad->SetLogz(0) setlinz
 gPad->SetFrameLineWidth(2)
 pad1->SetTopMargin(0.02);
 TPad *pad1 = new TPad("pad1", "The pad 70% of the height",0.0,0.3,1.0,1.0);// Double_t xlow, Double_t ylow, Double_t xup, Double_t yup,
@@ -532,6 +540,12 @@ TH1F *hT=(TH1F*)Td60->Clone("hT");//clone any histogram
 TH1F*hT=new TH1F(*Td60);//copy any histogram
 hT->Add(hT,Td300);//note that the bins should be same
 hT->Draw();
+// Create a new histogram based on the binning of an existing histogram
+const Int_t numBins = hnorth_e->GetNbinsX();
+const Double_t xMin = hnorth_e->GetXaxis()->GetXmin();
+const Double_t xMax = hnorth_e->GetXaxis()->GetXmax();
+TH1D* hnorth_e_tbkg = new TH1D("hnorth_e_tbkg", "hnorth_e_tbkg", numBins, xMin, xMax);
+
 TSpectrum *s123 = new TSpectrum();
 TH1F *G304bgb = s123->Background(G304bg, 20, "same");
 TH1F *G304n = new TH1F(*G304bg);
@@ -585,6 +599,7 @@ Posterior->Divide(5,5);
 gStyle->SetOptStat(0);
 gStyle->SetOptTitle(0);
 gStyle->SetPalette(51);
+gStyle->SetLineWidth(2); // set the width of the axis lines, not frame lines
 TColor::InvertPalette();
 Posterior->Update();
 
@@ -595,6 +610,8 @@ canvaspeak->SetTopMargin(0.025);
 canvaspeak->SetRightMargin(0.02);
 canvaspeak->SetLeftMargin(0.08);
 canvaspeak->SetBottomMargin(0.13);
+hTauOmegaGamma->GetXaxis()->SetTitle("#it{#tau} (fs)");//Ð±Ìå Italic
+hTauOmegaGamma->SetContour(100);
 hlege_e->GetXaxis()->SetTitle("Energy (keV)");//ÖáÃû
 hlege_e->GetYaxis()->SetTitle("Counts per 7 eV");//ÖáÃû
 hlege_e->GetXaxis()->CenterTitle();//¾ÓÖÐ
@@ -611,10 +628,14 @@ hlege_e->GetXaxis()->SetTitleSize(0.06);
 hlege_e->GetYaxis()->SetTitleSize(0.06);
 hlege_e->GetXaxis()->SetNdivisions(505);//n = n1 + 100*n2 + 10000*n3
 hlege_e->GetYaxis()->SetNdivisions(505);//n = n1 + 100*n2 + 10000*n3
-hlege_e->GetYaxis()->SetTickLength(0.015);
+hlege_e->GetYaxis()->SetTickLength(0.02);
 hlege_e->GetXaxis()->SetRangeUser(1, 435.7);
 hlege_e->SetLineWidth(1);
 hlege_e->Draw("hist");
+
+tree->SetLineColor(kOrange + 7);
+tree->SetLineColor(kGreen + 1);
+tree->SetLineColor(kViolet);
 
 
 axis->SetTitle("TOF");
