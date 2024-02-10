@@ -46,7 +46,8 @@
 #include "TLegend.h"
 #include "TPaletteAxis.h"
 using namespace std;
-//ROOT 5 only. ROOT 6 doesn't give result.
+//ROOT 5 only! ROOT 6 doesn't fit more than 1 spectrum.
+// ROOTSYS put in C:\root5 or C:\root6. simple.
 //main_readhists; fcn(); comparehists(); main_draw_save;//search m o d i f y to change something
 // one peak + linear fline two-part bkg. Recommended for final results!
 // could subtract 2234's low-energy Compton bkg. // It could output some final figures.
@@ -195,7 +196,7 @@ void Comparison_DSL2()
 						//read in lots of simulation root files. Input root file names don't contain Bkg_values[iBkg], but output fig/dat/root file names contain Bkg_values[iBkg].
 						fin_simu = new TFile(simurootname); //Rootfile with Simulation histograms
 						cout << simurootname << endl;
-						fin_data = new TFile("F:/out/G4_rootfiles_with_tree_Eg4156/Fakedata_S31_Gamma4156_Eg4155.84_Tau0.0_SP1.00_AC0.0_manipulated.root"); //Rootfile with Experimental Data Histogram modify
+						fin_data = new TFile("F:/out/G4_rootfiles_with_tree_Eg4156/Fakedata_S31_Gamma4156_Eg4155.84_Tau3.0_SP1.00_AC0.0_scaled_0.5k.root"); //Rootfile with Experimental Data Histogram modify
 
 						//Get Histograms from Simulation
 						sprintf(hname, "Eg");

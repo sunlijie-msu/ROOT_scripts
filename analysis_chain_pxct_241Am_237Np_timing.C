@@ -33,14 +33,14 @@
 #include "TPaletteAxis.h"
 using namespace std;
 //在包含C++头文件时一般不用后缀。如果用户自己编写头文件，可以用.h为后缀。
-void analysis_chain_pxct_241Am_237Np_timing()// chain pxct 237Np 59-keV lifetime measurement runs, old tree is tree and new tree is tree2
+void analysis_chain_pxct_241Am_237Np_timing()// chain pxct 237Np 59-keV lifetime measurement runs, old tree is split_tree and new tree is tree2. tree2 is empty. Generates many timing_msdtotal_e_5361_5481_msdtotal_t.root files, each with 4 htiming_lege_msd26_bin ns histograms corresponding to a different α gate 5361_5481. Afterwards, use peakfit_expdecay_band_lifetime_pxct.C to do fit these htiming spec.
 {
 	time_t start, tim;
 	struct tm* at;
 	char now[80];
 	float speed;
 
-	TChain* chain = new TChain("tree");//root文件中的tree名
+	TChain* chain = new TChain("split_tree");//root文件中的tree名
 	// 	T888Chain->Add("Ca407.root");//路径+root文件名（+tree名）
 	//  cout<<"Entries="<<T888Chain->GetEntries()<<endl;//总事件数
 	//在定义字符串变量时不需指定长度，长度随其中的字符串长度而改变。
@@ -48,29 +48,30 @@ void analysis_chain_pxct_241Am_237Np_timing()// chain pxct 237Np 59-keV lifetime
 	long totalentries;
 	memset(nentries, 0, sizeof(nentries));
 	int icalroot, ilarge;
-	char calrootname[150];
-	char anarootname[150];
-	char pathname[150];
-	char txtfilename[150];
+	char calrootname[300];
+	char anarootname[300];
+	char pathname[300];
+	char filename[300];
+	char txtfilename[300];
 	int runstart, runstop;
 	//	Tstring rootname;
-	cout << "input runstart: may be 79 or 92?  ";
+	cout << "input runstart: may be 0?  ";
 	cin >> runstart;
-	cout << "input runstop: may be 91 or 100?  ";
+	cout << "input runstop: Type 191 for run0092-0095, 0100-0105; Type 0 for run0079-0091. ";
 	cin >> runstop;
+	sprintf(filename, "%s", "run0079_0091_LEGe_MSD_241Am_inChamber_window1.5us_CFDdelay_adjusted"); // input root
+	//sprintf(filename, "%s", "run0092_0095_0100_0105_LEGe_MSD26_241Am_inChamber_2mmCollimator_window1.5us_CFDdelay_adjusted"); // input root
+	
 	for (icalroot = runstart; icalroot <= runstop; icalroot++)
 	{
-		if ((icalroot >= 96 && icalroot <= 99) || (icalroot == 1215))
+		if ((icalroot >= 10000 && icalroot <= 10000) || (icalroot == 10000))
 		{
 			nentries[icalroot] = chain->GetEntries();//if wrong RN was input, nentries[wrong RN]=last nentries
 			continue;
 		}
+		
 		sprintf(pathname, "%s", "F:/e21010/pxct/");
-		//sprintf(pathname, "%s", "/mnt/analysis/e21010/sun/");
-		if (icalroot <= 91)
-			sprintf(calrootname, "%s%s%04d%s", pathname, "run", icalroot, "_LEGe_MSD_241Am_inChamber_window1.5us_CFDdelay_adjusted_cal.root"); // MSD12 and MSD26 both
-		if (icalroot >= 92)
-			sprintf(calrootname, "%s%s%04d%s", pathname, "run", icalroot, "_LEGe_MSD26_241Am_inChamber_2mmCollimator_window1.5us_CFDdelay_adjusted_cal.root"); // MSD26 only
+		sprintf(calrootname, "%s%s%s%04d%s", pathname, filename, "_", icalroot, "_cal.root"); // input root files. Because of gain matching by 4 hours for MSD26 runs, there are hundreds of small files. MSDtotal run is just 1 file with icalroot=0000.
 		chain->Add(calrootname);
 		cout << calrootname;
 		nentries[icalroot] = chain->GetEntries();//unsigned long是最大范围的整数，相当于ULong64_t
@@ -109,8 +110,8 @@ void analysis_chain_pxct_241Am_237Np_timing()// chain pxct 237Np 59-keV lifetime
 	// Set branch addresses and branch pointers
 	chain->SetBranchAddress("lege_e", &lege_e, &b_lege_e);
 	chain->SetBranchAddress("lege_t", &lege_t, &b_lege_t);
-	if (icalroot <= 91) chain->SetBranchAddress("msd12_e", &msd12_e, &b_msd12_e);
-	if (icalroot <= 91) chain->SetBranchAddress("msd12_t", &msd12_t, &b_msd12_t);
+	chain->SetBranchAddress("msd12_e", &msd12_e, &b_msd12_e);
+	chain->SetBranchAddress("msd12_t", &msd12_t, &b_msd12_t);
 	chain->SetBranchAddress("msd26_e", &msd26_e, &b_msd26_e);
 	chain->SetBranchAddress("msd26_t", &msd26_t, &b_msd26_t);
 
@@ -118,30 +119,57 @@ void analysis_chain_pxct_241Am_237Np_timing()// chain pxct 237Np 59-keV lifetime
 	//The first parameter is the branch name, and the second is the address of the variable where the branch data is to be placed.
 
 	int Ea_central = 0, msd_e_cut_low = 0, msd_e_cut_high = 0, Ea_gate_start = 0, Ea_gate_end = 0;
-	if (icalroot <= 91)
-	{
-		Ea_central = 5469;
-		Ea_gate_start = 3;
-		Ea_gate_end = 60; // 58 Ea gate choices
-	}
-	if (icalroot >= 92)
-	{
-		Ea_central = 5486;
-		Ea_gate_start = 3;
-		Ea_gate_end = 30; // 28 Ea gate choices
-	}
+	
+	Ea_central = 5421;
+	Ea_gate_start = 3;
+	Ea_gate_end = 60; // 58 Ea gate choices for MSD12+MSD26 runs
+
+	//Ea_central = 5479;
+	//Ea_gate_start = 3;
+	//Ea_gate_end = 30; // 28 Ea gate choices for MSD26 only runs
 	
 	for (int ianaroot = Ea_gate_start; ianaroot <= Ea_gate_end; ianaroot++)
 	{
 		msd_e_cut_low = Ea_central - ianaroot;
 		msd_e_cut_high = Ea_central + ianaroot;
 		cout << "msd_e_cut_low = " << msd_e_cut_low << "	msd_e_cut_high = " << msd_e_cut_high << endl;
-		sprintf(anarootname, "%s%s%04d%s%04d%s%d%s%d%s", pathname, "sum_", runstart, "_", runstop, "_msd_e_", msd_e_cut_low, "_", msd_e_cut_high, ".root");//modify
+		sprintf(anarootname, "%s%s%d%s%d%s", pathname, "timing_msdtotal_e_", msd_e_cut_low, "_", msd_e_cut_high, "_msdtotal_t.root");//output root modify
+
+		sprintf(txtfilename, "%s%s%d%s%d%s", pathname, "timing_msdtotal_e_", msd_e_cut_low, "_", msd_e_cut_high, "_msd12_t_bin01ns.csv");//output csv
+		ofstream outfile1(txtfilename, ios::out);
+		sprintf(txtfilename, "%s%s%d%s%d%s", pathname, "timing_msdtotal_e_", msd_e_cut_low, "_", msd_e_cut_high, "_msd12_t_bin1ns.csv");//output csv
+		ofstream outfile2(txtfilename, ios::out);
+		sprintf(txtfilename, "%s%s%d%s%d%s", pathname, "timing_msdtotal_e_", msd_e_cut_low, "_", msd_e_cut_high, "_msd12_t_bin2ns.csv");//output csv
+		ofstream outfile3(txtfilename, ios::out);
+		sprintf(txtfilename, "%s%s%d%s%d%s", pathname, "timing_msdtotal_e_", msd_e_cut_low, "_", msd_e_cut_high, "_msd12_t_bin5ns.csv");//output csv
+		ofstream outfile4(txtfilename, ios::out);
+
+		sprintf(txtfilename, "%s%s%d%s%d%s", pathname, "timing_msdtotal_e_", msd_e_cut_low, "_", msd_e_cut_high, "_msd26_t_bin01ns.csv");//output csv
+		ofstream outfile5(txtfilename, ios::out);
+		sprintf(txtfilename, "%s%s%d%s%d%s", pathname, "timing_msdtotal_e_", msd_e_cut_low, "_", msd_e_cut_high, "_msd26_t_bin1ns.csv");//output csv
+		ofstream outfile6(txtfilename, ios::out);
+		sprintf(txtfilename, "%s%s%d%s%d%s", pathname, "timing_msdtotal_e_", msd_e_cut_low, "_", msd_e_cut_high, "_msd26_t_bin2ns.csv");//output csv
+		ofstream outfile7(txtfilename, ios::out);
+		sprintf(txtfilename, "%s%s%d%s%d%s", pathname, "timing_msdtotal_e_", msd_e_cut_low, "_", msd_e_cut_high, "_msd26_t_bin5ns.csv");//output csv
+		ofstream outfile8(txtfilename, ios::out);
+
 		TFile* fout = new TFile(anarootname, "RECREATE");//输出文件。It's better to define histograms and then define fout, in case of draw bugs.
 		TTree* tree2 = new TTree("tree2", "tree2");//or TTree *T888 = new TTree("T888","Treetitle");
 		//e.g. TTree(const char* name, const char* title, Int_t splitlevel = 99);//输出tree
-		TH1D* htiming_lege_msd12 = new TH1D("htiming_lege_msd12", "htiming_lege_msd12", 3000, -1500, 1500); // 3000 channels, 1 ns per channel
-		TH1D* htiming_lege_msd26 = new TH1D("htiming_lege_msd26", "htiming_lege_msd26", 3000, -1500, 1500); // 3000 channels, 1 ns per channel
+		TH1D* hlege_e = new TH1D("hlege_e", "hlege_e", 60000, -0.0540888491631, 435.8137733893930); // 60000 channels, 7.3 eV per channel
+		TH1D* hmsd12_e = new TH1D("hmsd12_e", "hmsd12_e", 14000, 0, 7000); // 7000 channels, 0.5 keV per channel
+		TH1D* hmsd26_e = new TH1D("hmsd26_e", "hmsd26_e", 14000, 0, 7000); // 7000 channels, 0.5 keV per channel
+		TH1D* hmsdtotal_e = new TH1D("hmsdtotal_e", "hmsdtotal_e", 14000, 0, 7000); // 7000 channels, 0.5 keV per channel
+
+		TH1D* htiming_lege_msd12_bin01ns = new TH1D("htiming_lege_msd12_bin01ns", "htiming_lege_msd12_bin01ns", 30000, -1500, 1500); // 6000 channels, 0.5 ns per channel
+		TH1D* htiming_lege_msd12_bin1ns = new TH1D("htiming_lege_msd12_bin1ns", "htiming_lege_msd12_bin1ns", 3000, -1500, 1500); // 3000 channels, 1 ns per channel
+		TH1D* htiming_lege_msd12_bin2ns = new TH1D("htiming_lege_msd12_bin2ns", "htiming_lege_msd12_bin2ns", 1500, -1500, 1500); // 1500 channels, 2 ns per channel
+		TH1D* htiming_lege_msd12_bin5ns = new TH1D("htiming_lege_msd12_bin5ns", "htiming_lege_msd12_bin5ns", 600, -1500, 1500); // 600 channels, 5 ns per channel
+
+		TH1D* htiming_lege_msd26_bin01ns = new TH1D("htiming_lege_msd26_bin01ns", "htiming_lege_msd26_bin01ns", 30000, -1500, 1500); // 6000 channels, 0.5 ns per channel
+		TH1D* htiming_lege_msd26_bin1ns = new TH1D("htiming_lege_msd26_bin1ns", "htiming_lege_msd26_bin1ns", 3000, -1500, 1500); // 3000 channels, 1 ns per channel
+		TH1D* htiming_lege_msd26_bin2ns = new TH1D("htiming_lege_msd26_bin2ns", "htiming_lege_msd26_bin2ns", 1500, -1500, 1500); // 1500 channels, 2 ns per channel
+		TH1D* htiming_lege_msd26_bin5ns = new TH1D("htiming_lege_msd26_bin5ns", "htiming_lege_msd26_bin5ns", 600, -1500, 1500); // 600 channels, 5 ns per channel
 
 		//e.g. TH2F *hist_name = new TH2F("hist_name","hist_title",num_bins_x,x_low,x_high,num_bins_y,y_low,y_high);
 		//e.g. TH1F *hist_name = new TH1F("hist_name","hist_title",num_bins,x_low,x_high);
@@ -149,29 +177,41 @@ void analysis_chain_pxct_241Am_237Np_timing()// chain pxct 237Np 59-keV lifetime
 
 		//e.g. Branch(const char* name, void* address, const char* leaflist(i.e. variable list));
 		long i;
-		sprintf(txtfilename, "%s%s", pathname, "lege_t-msd12_t-msd26_t.dat");
-		ofstream outfile(txtfilename, ios::out);
+		//sprintf(txtfilename, "%s%s%s", pathname, filename, "_lege_t-msd12_t-msd26_t.dat"); // 
+		//ofstream outfile(txtfilename, ios::out);
 		for (i = 0; i < totalentries; i++)
 		{
 			chain->GetEntry(i);//获得输入root文件的第i个entry相应的Branch变量数据，then the redefined variables could be used.
-			if (icalroot <= 91)
+
+			if (lege_e > 0)	hlege_e->Fill(lege_e);
+			if (msd12_e > 0)	hmsd12_e->Fill(msd12_e + gRandom->Uniform(-0.2, 0.2));
+			if (msd26_e > 0)	hmsd26_e->Fill(msd26_e + gRandom->Uniform(-0.2, 0.2));
+			if (msd12_e > 0 && msd26_e > 0)	hmsdtotal_e->Fill(msd12_e + msd26_e);
+
+			if (lege_e > 59 && lege_e < 60.1 && msd12_e > 1600 && msd12_e < 2050 && msd26_e > 3300 && msd26_e < 3800 && msd12_e + msd26_e > msd_e_cut_low && msd12_e + msd26_e < msd_e_cut_high)
 			{
-				if (lege_e > 59 && lege_e < 60.1 && msd12_e > 1700 && msd12_e < 2200 && msd26_e > 3300 && msd26_e < 3800 && msd12_e + msd26_e > msd_e_cut_low && msd12_e + msd26_e < msd_e_cut_high)
-				{
-					htiming_lege_msd12->Fill(lege_t - msd12_t);
-					htiming_lege_msd26->Fill(lege_t - msd26_t);
-					//outfile << msd12_e << "	" << lege_t - msd12_t << "	" << msd26_e << "	" << lege_t - msd26_t << endl;
-				}
+				htiming_lege_msd12_bin01ns->Fill(lege_t - msd12_t);
+				htiming_lege_msd12_bin1ns->Fill(lege_t - msd12_t);
+				htiming_lege_msd12_bin2ns->Fill(lege_t - msd12_t);
+				htiming_lege_msd12_bin5ns->Fill(lege_t - msd12_t);
+
+				htiming_lege_msd26_bin01ns->Fill(lege_t - msd26_t);
+				htiming_lege_msd26_bin1ns->Fill(lege_t - msd26_t);
+				htiming_lege_msd26_bin2ns->Fill(lege_t - msd26_t);
+				htiming_lege_msd26_bin5ns->Fill(lege_t - msd26_t);
+
+				//outfile << msd12_e << "	" << lege_t - msd12_t << "	" << msd26_e << "	" << lege_t - msd26_t << endl;
 			}
-			
-			if (icalroot >= 92)
-			{
-				if (lege_e > 59 && lege_e < 60.1 && msd26_e > msd_e_cut_low && msd26_e < msd_e_cut_high) // for MSD26 only runs
-				{
-					htiming_lege_msd26->Fill(lege_t - msd26_t);
-					//outfile << msd12_e << "	" << lege_t - msd12_t << "	" << msd26_e << "	" << lege_t - msd26_t << endl;
-				}
-			}
+
+			//if (lege_e > 59 && lege_e < 60.1 && msd26_e > msd_e_cut_low && msd26_e < msd_e_cut_high) // for MSD26 only runs
+			//{
+			//	htiming_lege_msd26_bin01ns->Fill(lege_t - msd26_t);
+			//	htiming_lege_msd26_bin1ns->Fill(lege_t - msd26_t);
+			//	htiming_lege_msd26_bin2ns->Fill(lege_t - msd26_t);
+			//	htiming_lege_msd26_bin5ns->Fill(lege_t - msd26_t);
+
+			//	//outfile << msd12_e << "	" << lege_t - msd12_t << "	" << msd26_e << "	" << lege_t - msd26_t << endl;
+			//}
 			
 			if (i == 0)
 			{
@@ -192,6 +232,80 @@ void analysis_chain_pxct_241Am_237Np_timing()// chain pxct 237Np 59-keV lifetime
 			if (i >= nentriesmax) break; // can be i>= 300 or i>=nentriesmax
 		}//for(i=0;i<nentries;i++)
 
+		htiming_lege_msd12_bin01ns->SetBinErrorOption(TH1::kPoisson);
+		htiming_lege_msd12_bin1ns->SetBinErrorOption(TH1::kPoisson);
+		htiming_lege_msd12_bin2ns->SetBinErrorOption(TH1::kPoisson);
+		htiming_lege_msd12_bin5ns->SetBinErrorOption(TH1::kPoisson);
+		htiming_lege_msd26_bin01ns->SetBinErrorOption(TH1::kPoisson);
+		htiming_lege_msd26_bin1ns->SetBinErrorOption(TH1::kPoisson);
+		htiming_lege_msd26_bin2ns->SetBinErrorOption(TH1::kPoisson);
+		htiming_lege_msd26_bin5ns->SetBinErrorOption(TH1::kPoisson);
+
+		for (int i = 1; i <= htiming_lege_msd12_bin01ns->GetNbinsX(); i++)
+		{
+			outfile1 << htiming_lege_msd12_bin01ns->GetBinCenter(i) << ",";
+			outfile1 << htiming_lege_msd12_bin01ns->GetBinContent(i) << ",";
+			outfile1 << htiming_lege_msd12_bin01ns->GetBinErrorLow(i) << ",";
+			outfile1 << htiming_lege_msd12_bin01ns->GetBinErrorUp(i) << endl;
+		}
+		for (int i = 1; i <= htiming_lege_msd12_bin1ns->GetNbinsX(); i++)
+		{
+			outfile2 << htiming_lege_msd12_bin1ns->GetBinCenter(i) << ",";
+			outfile2 << htiming_lege_msd12_bin1ns->GetBinContent(i) << ",";
+			outfile2 << htiming_lege_msd12_bin1ns->GetBinErrorLow(i) << ",";
+			outfile2 << htiming_lege_msd12_bin1ns->GetBinErrorUp(i) << endl;
+		}
+		for (int i = 1; i <= htiming_lege_msd12_bin2ns->GetNbinsX(); i++)
+		{
+			outfile3 << htiming_lege_msd12_bin2ns->GetBinCenter(i) << ",";
+			outfile3 << htiming_lege_msd12_bin2ns->GetBinContent(i) << ",";
+			outfile3 << htiming_lege_msd12_bin2ns->GetBinErrorLow(i) << ",";
+			outfile3 << htiming_lege_msd12_bin2ns->GetBinErrorUp(i) << endl;
+		}
+		for (int i = 1; i <= htiming_lege_msd12_bin5ns->GetNbinsX(); i++)
+		{
+			outfile4 << htiming_lege_msd12_bin5ns->GetBinCenter(i) << ",";
+			outfile4 << htiming_lege_msd12_bin5ns->GetBinContent(i) << ",";
+			outfile4 << htiming_lege_msd12_bin5ns->GetBinErrorLow(i) << ",";
+			outfile4 << htiming_lege_msd12_bin5ns->GetBinErrorUp(i) << endl;
+		}
+
+		for (int i = 1; i <= htiming_lege_msd26_bin01ns->GetNbinsX(); i++)
+		{
+			outfile5 << htiming_lege_msd26_bin01ns->GetBinCenter(i) << ",";
+			outfile5 << htiming_lege_msd26_bin01ns->GetBinContent(i) << ",";
+			outfile5 << htiming_lege_msd26_bin01ns->GetBinErrorLow(i) << ",";
+			outfile5 << htiming_lege_msd26_bin01ns->GetBinErrorUp(i) << endl;
+		}
+		for (int i = 1; i <= htiming_lege_msd26_bin1ns->GetNbinsX(); i++)
+		{
+			outfile6 << htiming_lege_msd26_bin1ns->GetBinCenter(i) << ",";
+			outfile6 << htiming_lege_msd26_bin1ns->GetBinContent(i) << ",";
+			outfile6 << htiming_lege_msd26_bin1ns->GetBinErrorLow(i) << ",";
+			outfile6 << htiming_lege_msd26_bin1ns->GetBinErrorUp(i) << endl;
+		}
+		for (int i = 1; i <= htiming_lege_msd26_bin2ns->GetNbinsX(); i++)
+		{
+			outfile7 << htiming_lege_msd26_bin2ns->GetBinCenter(i) << ",";
+			outfile7 << htiming_lege_msd26_bin2ns->GetBinContent(i) << ",";
+			outfile7 << htiming_lege_msd26_bin2ns->GetBinErrorLow(i) << ",";
+			outfile7 << htiming_lege_msd26_bin2ns->GetBinErrorUp(i) << endl;
+		}
+		for (int i = 1; i <= htiming_lege_msd26_bin5ns->GetNbinsX(); i++)
+		{
+			outfile8 << htiming_lege_msd26_bin5ns->GetBinCenter(i) << ",";
+			outfile8 << htiming_lege_msd26_bin5ns->GetBinContent(i) << ",";
+			outfile8 << htiming_lege_msd26_bin5ns->GetBinErrorLow(i) << ",";
+			outfile8 << htiming_lege_msd26_bin5ns->GetBinErrorUp(i) << endl;
+		}
+		outfile1.close();
+		outfile2.close();
+		outfile3.close();
+		outfile4.close();
+		outfile5.close();
+		outfile6.close();
+		outfile7.close();
+		outfile8.close();
 		fout->Write();//等效于把所有的tree和新一维谱（非copy旧文件的一维谱）都写入文件。file Write，tree Write保留一个就行，因为file里只有一个tree，两个都写生成的root文件会大一点，而且里面有两个b101，画图并无区别。
 		fout->Close();//关文件指针最好不要省，不然首次打开root文件时会有warning
 	} // ianaroot

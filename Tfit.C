@@ -500,6 +500,8 @@ sprintf(name,"cali_%s%d.png","h",i+1);
 canvascali[i]->SetLogy();
 canvascali[i]->SaveAs(name);//存png图
 c1->Print(pdffilename);//存pdf
+pad1->SetLogy(1);//setlogx, setlinx, setliny
+pad1->SetLogy(0);//setlogx, setlinx, setliny
 TH1D *histo=(TH1D*)fin->Get("h1");//直方图
 canvaspeak->SaveAs("F:/e21010/pxct/alphagamma_241Am_PID_run70_71.png");
 
@@ -708,3 +710,8 @@ cout<<"RMS= "<<setiosflags(ios::fixed)<<setprecision(9)<<h1->GetRMS();//小数点后
 	}
 	g->Draw();
 }
+
+
+//To merge/combine files from run0079 up to run0102, including every file in that range, you would use the command:
+hadd sum.root run00{79..99}*.root run0{100..102}*.root
+//This command correctly accounts for the change from two leading zeros to one leading zero as the run numbers move from two to three digits.

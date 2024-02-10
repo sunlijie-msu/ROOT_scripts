@@ -42,7 +42,7 @@ using namespace std;
 void peakfit_expdecay_band_lifetime_pxct() // get histogram and exponential fit a time histogram
 {
 	int bin_start_low = 150; // i=bin_start_low//which detector
-	int bin_start_high = 1100; // i<=bin_start_high// which detector
+	int bin_start_high = 1420; // i<=bin_start_high// which detector
 	double binwidth = 1;// modify
 	double fitrange_min = 0, fitrange_max = 0;
 	double histomin = 0, histomax = 0, histoNbins = 0;
@@ -69,40 +69,40 @@ void peakfit_expdecay_band_lifetime_pxct() // get histogram and exponential fit 
 	char pathname[150];
 	char filename[150];
 	sprintf(pathname, "%s", "F:/e21010/pxct/");
-	sprintf(filename, "%s%s", pathname, "lower_bounds.dat");
-	ifstream infilelowerbounds(filename, ios::in);
-	sprintf(filename, "%s%s", pathname, "upper_bounds.dat");
-	ifstream infileupperbounds(filename, ios::in);
+// 	sprintf(filename, "%s%s", pathname, "lower_bounds.dat");
+// 	ifstream infilelowerbounds(filename, ios::in);
+// 	sprintf(filename, "%s%s", pathname, "upper_bounds.dat");
+// 	ifstream infileupperbounds(filename, ios::in);
 	double par[peaknum][10], par_err[peaknum][10];
 	double parChi[peaknum], parNDF[peaknum], p_value[peaknum];
 	TFile* fin;
 
 	sprintf(filename, "%s%s", pathname, "peakpara.dat");
 	ofstream outfile(filename, ios::app);
-	int Ea_central = 0, msd_e_cut_low = 0, msd_e_cut_high = 0, Ea_gate_start = 0, Ea_gate_end = 0, runstart = 0, runstop = 0;
+	int Ea_central = 0, msd_e_cut_low = 0, msd_e_cut_high = 0, Ea_gate_start = 0, Ea_gate_end = 0;
 
-	Ea_central = 5469; // 5469 for MSD12+26 or 5486 for MSD26
-	Ea_gate_start = 60; // 3 or 3
-	Ea_gate_end = 60; // 60 or 30
-	runstart = 79; // 79 or 92
-	runstop = 91; // 91 or 100
+	Ea_central = 5479; // 5479 for MSD26; 5421 for MSDtotal
+	Ea_gate_start = 20; // 3; 3 means +/-3 keV = 6 keV; 20 means +/-20 keV = 40 keV
+	Ea_gate_end = 20; // 30; Keep end - start <= 4, due to Windows OS limitation
 
 	for (i = Ea_gate_start; i <= Ea_gate_end; i++) // read in many root files with different Ea gates
 	{
-		if (i >= 96 && i <= 99) continue;
+		//if (i >= 96 && i <= 99) continue;
 		msd_e_cut_low = Ea_central - i;
 		msd_e_cut_high = Ea_central + i;
-		sprintf(filename, "%s%s%04d%s%04d%s%d%s%d%s", pathname, "sum_", runstart, "_", runstop, "_msd_e_", msd_e_cut_low, "_", msd_e_cut_high, ".root");//modify
+		sprintf(filename, "%s%s%04d%s%04d%s", pathname, "timing_msd26_e_", msd_e_cut_low, "_", msd_e_cut_high, "_msd26_t.root");//modify
+		//sprintf(filename, "%s%s", pathname, "Fake_decay_2e5.root"); // Fake test
 		fin = new TFile(filename);//after this statement, you can use any ROOT command1 for this rootfile
 		cout << filename << endl;
-		sprintf(histo_name, "%s", "htiming_lege_msd26"); // modify
+		sprintf(histo_name, "%s", "htiming_lege_msd26_bin1ns"); // modify
+		//sprintf(histo_name, "%s", "h_decay_exponential_GetRandom"); // modify Fake test
 		histo[i] = (TH1D*)fin->Get(histo_name); //Get spectrum
 		histo[i]->Rebin(1);
 		histo[i]->Sumw2(kFALSE);
 		histo[i]->SetBinErrorOption(TH1::kPoisson);
-		for (ii = 0; ii < 40; ii++) // fit one histogram with many different fit ranges
+		for (ii = 0; ii <= 0; ii++) // ii <=39, fit one histogram with many different fit ranges
 		{
-			sprintf(hfit_name, "%s%s%d%s%d", histo_name, "_", i, "_peak_", ii);
+			sprintf(hfit_name, "%s%s%d%s%d", histo_name, "_Ea", i, "_Fitrange", ii);
 			canvaspeak[i][ii] = new TCanvas(hfit_name, hfit_name, 1300, 600);//建立画布
 			canvaspeak[i][ii]->cd();//进入画布
 			// 			canvaspeak[i][ii]->SetTopMargin(0.02);
@@ -146,7 +146,8 @@ void peakfit_expdecay_band_lifetime_pxct() // get histogram and exponential fit 
 			histo[i]->GetXaxis()->SetTitleSize(0.07);
 			histo[i]->GetYaxis()->SetTitleSize(0.07);
 			histo[i]->GetYaxis()->SetNdivisions(505);
-			histo[i]->GetYaxis()->SetTickLength(0.02);
+			histo[i]->GetYaxis()->SetTickLength(0.015);
+			histo[i]->GetYaxis()->SetRangeUser(0.5, 4000);
 			histo[i]->SetLineWidth(1);
 			histo[i]->SetStats(0);
 			histo[i]->Draw("e");
@@ -161,6 +162,7 @@ void peakfit_expdecay_band_lifetime_pxct() // get histogram and exponential fit 
 			histomax = histo[i]->GetXaxis()->GetXmax();
 			histoNbins = histo[i]->GetNbinsX();
 			fitrange_min = 150 + ii * 10 ; fitrange_max = 1420; // modify
+			//fitrange_min = 0 + ii * 20; fitrange_max = 1420; // Fake test
 
 			// cout << histomin << "	" << histomax << "	" << histoNbins << endl;
 			histo[i]->GetXaxis()->SetRangeUser(fitrange_min, fitrange_max);//zoom the axis
@@ -204,21 +206,21 @@ void peakfit_expdecay_band_lifetime_pxct() // get histogram and exponential fit 
 			// 			p2[ii]->SetNpx(histoNbins);
 			//b[ii]->SetNpx(histoNbins * 10);
 			//fEMG[ii]->SetParameters(0.1,15,peaky[ii],10,10,peakx[ii]);//initial value [0]-A, [1]-B, [2]-N, [3]-τ, [4]-σ, [5]-μ
-			int Total_decays_guess = 100000 * i;
-			fEMG[ii]->SetParameters(Total_decays_guess, 68, 2);//initial value [0]-A, [1]-B, [2]-N, [3]-τ, [4]-σ, [5]-μ
-			//fEMG[ii]->SetParameters(aguess, bguess, peaky[ii], 100, sigmaguess, peakx[ii]);//initial value [0]-A, [1]-B, [2]-N, [3]-τ, [4]-σ, [5]-μ
-			fEMG[ii]->SetParLimits(0,200000,10000000);//A
-			//fEMG[ii]->SetParLimits(1,-50000,300000);//T
- 			fEMG[ii]->SetParLimits(2, 0, 13);//B
+			int Total_decays_guess = 30000 * i;
+			fEMG[ii]->SetParameters(8e5, 68, 1);//initial value
+			//fEMG[ii]->SetParameters(2e6, 68, 2);//initial value Fake test
+			fEMG[ii]->SetParLimits(0,2e5,16e5);//N
+			fEMG[ii]->SetParLimits(1,40,140);//T
+ 			fEMG[ii]->SetParLimits(2, 0, 10);//B
 // 			fEMG[ii]->SetParLimits(3, 80, 120);//Tau
 // 			fEMG[ii]->SetParLimits(4, 10, 120);//Sigma
 // 			fEMG[ii]->SetParLimits(5, peakx[ii] - gaplow / 4, peakx[ii] + gaphigh / 2);//Mean
 // 			fEMG[ii]->SetParLimits(5, -100, 200);//Mean
 			fEMG[ii]->SetParNames("Total_decays", "Half_life", "Background");
 			//fEMG[ii]->SetParNames("BkgA", "BkgB", "Const*bin", "Tau", "Sigma", "Mean");
-			histo[i]->Fit("fEMG", "MLE", "", fitrange_min, fitrange_max);
+			histo[i]->Fit("fEMG", "ME", "", fitrange_min, fitrange_max);
 			//histo[i]->Fit("fEMG", "MLEN", "", fitrange_min, fitrange_max);
-			TFitResultPtr Fit_result_pointer = histo[i]->Fit("fEMG", "MLES", "0", fitrange_min, fitrange_max);
+			TFitResultPtr Fit_result_pointer = histo[i]->Fit("fEMG", "MES", "0", fitrange_min, fitrange_max);
 			//"S" means the result of the fit is returned in the TFitResultPtr
 			//“E” Perform better errors estimation using the Minos technique.
 			//“M” Improve fit results, by using the IMPROVE algorithm of TMinuit.
@@ -257,6 +259,7 @@ void peakfit_expdecay_band_lifetime_pxct() // get histogram and exponential fit 
 			histo[i]->SetMarkerColor(kBlack);
 			h_confidence_interval[i][ii]->Draw("e3 same"); // plot the uncertainty band
 			fEMG[ii]->Draw("same");
+			pad1->RedrawAxis();
 			//g[ii]->Draw("same");
 			//p[ii]->Draw("same");
 			//p2[ii]->Draw("same");
@@ -299,7 +302,7 @@ void peakfit_expdecay_band_lifetime_pxct() // get histogram and exponential fit 
 // 
 // 			outfile << histo_name << i << "	Constant*binsize" << ii << "=	" << constant[ii] << "	+/-	" << constant_err[ii] << "	Mean" << ii << "=	" << mean[ii] << "	+/-	" << mean_err[ii] << "	Maximum" << ii << "=	" << peakx[ii] << "	+/-	" << peakxerr[ii] << "	Sigma" << ii << "=	" << sig[ii] << "	+/-	" << sig_err[ii] << "	Tau" << ii << "=	" << tau[ii] << "	+/-	" << tau_err[ii] << "	A" << ii << "=	" << par[ii][0] << "	+/-	" << par_err[ii][0] << "	B" << ii << "=	" << par[ii][1] << "	+/-	" << par_err[ii][1] << "	Chi2" << ii << "=	" << parChi[ii] << "	NDF" << ii << "=	" << parNDF[ii] << "	Area" << ii << "=	" << par[ii][2] / binwidth << "	FWHM" << ii << "=	" << FWHM[ii] << "	+/-	" << FWHM_err[ii] << endl;
 			
-			outfile << std::scientific << std::setprecision(10) << "msd_e_cut_low	" << msd_e_cut_low << "	msd_e_cut_high	" << msd_e_cut_high << "	fitrange_min	" << fitrange_min << "	fitrange_max	" << fitrange_max << "	" << hfit_name << "	Total decays_" << ii << "=	" << par[ii][0] << "	+/-	" << par_err[ii][0] << "	Half-life_" << ii << "=	" << par[ii][1] << "	+/-	" << par_err[ii][1] << "	Background_" << ii << "=	" << par[ii][2] << "	+/-	" << par_err[ii][2] << "	Chi2_" << ii << "=	" << parChi[ii] << "	NDF_" << ii << "=	" << parNDF[ii] << "	p-val_" << ii << "=	" << p_value[ii] << endl;
+			outfile << std::scientific << std::setprecision(10) << "msd_e_cut_low	" << msd_e_cut_low << "	msd_e_cut_high	" << msd_e_cut_high << "	fitrange_min	" << fitrange_min << "	fitrange_max	" << fitrange_max << "	" << hfit_name << "	Total_decays_" << ii << "=	" << par[ii][0] << "	+/-	" << par_err[ii][0] << "	Half-life_" << ii << "=	" << par[ii][1] << "	+/-	" << par_err[ii][1] << "	Background_" << ii << "=	" << par[ii][2] << "	+/-	" << par_err[ii][2] << "	Chi2_" << ii << "=	" << parChi[ii] << "	NDF_" << ii << "=	" << parNDF[ii] << "	p-val_" << ii << "=	" << p_value[ii] << endl;
 
 			TPaveText* textgaus = new TPaveText(0.55, 0.35, 0.974, 0.97, "brNDC");//加标注left, down, right, up
 			textgaus->SetBorderSize(1);//边框宽度
@@ -353,10 +356,10 @@ void peakfit_expdecay_band_lifetime_pxct() // get histogram and exponential fit 
 			graph_residual[i]->GetXaxis()->SetTitleSize(0.16);
 			graph_residual[i]->GetYaxis()->SetTitleSize(0.16);
 			graph_residual[i]->GetYaxis()->SetNdivisions(204);
-			graph_residual[i]->GetYaxis()->SetTickLength(0.02);
+			graph_residual[i]->GetYaxis()->SetTickLength(0.015);
 			graph_residual[i]->SetStats(0);
 			graph_residual[i]->GetXaxis()->SetRangeUser(fitrange_min, fitrange_max);
-			graph_residual[i]->GetYaxis()->SetRangeUser(-110, 110); 
+			//graph_residual[i]->GetYaxis()->SetRangeUser(-110, 110); 
 			graph_residual[i]->SetLineWidth(1);
 			graph_residual[i]->SetLineColor(kBlack);
 			graph_residual[i]->SetMarkerStyle(6);
@@ -364,11 +367,13 @@ void peakfit_expdecay_band_lifetime_pxct() // get histogram and exponential fit 
 			canvaspeak[i][ii]->cd();//进入画布
 			pad2->SetFrameLineWidth(2);
 			pad2->Draw();
+			pad2->RedrawAxis();
 			pad2->cd();
 			graph_residual[i]->Draw("APZ");//"A": Axis are drawn around the graph, "P": The current marker is plotted at each point, "Z": Do not draw small horizontal and vertical lines the end of the error bars. Without "Z", the default is to draw these.
 			TLine* T1 = new TLine(fitrange_min, 0, fitrange_max, 0);
 			T1->Draw("R");//"R" means the line is drawn with the current line attributes
 
+			pad1->SetLogy(1); // residuals are wrong if logy is turn on earlier
 			sprintf(filename, "%s%s%s%s", pathname, "png/", hfit_name, ".png");
 			canvaspeak[i][ii]->SaveAs(filename);
 

@@ -47,28 +47,30 @@
 #include "TLegend.h"
 #include "TPaletteAxis.h"
 using namespace std;
-void histogram_get_bin_content_error()//get BinContent and BinError from histograms for Surmise data.csv
+void histogram_get_bin_content_error_PXCT_237Np_timing()//get BinContent and BinError from PXCT 237Np LEGe-MSD timing histograms for emcee
 {
 	char rootname[300];
 	char histoname[300];
 	char txtname[300];
+	char pathname[300];
+	char filename[300];
 	//sprintf(rootname, "%s", "F:/e21010/pxct/run0092_93_94_95_LEGe_MSD26_241Am_inChamber_2mmCollimator_window1.5us_CFDdelay_adjusted_cal.root");
-	sprintf(rootname, "%s", "F:/out/G4_rootfiles_with_tree_Eg4156/Fakedata_S31_Gamma4156_Eg4155.84_Tau3.0_SP1.00_AC0.0_scaled_0.5k.root");
+	sprintf(pathname, "%s", "F:/e21010/pxct/");
+	sprintf(filename, "%s%s", pathname, "sum_0000_0191_msd_e_5474_5484");
+	sprintf(rootname, "%s%s", filename, ".root");
+	sprintf(txtname, "%s%s", filename, ".csv");
+	cout << rootname << endl;
 	TFile* fin_data = new TFile(rootname);//after this statement, you can use any ROOT command for this rootfile
 	TH1F* h1;
-
-	//sprintf(txtname, "%s", "F:/e21010/pxct/htiming_lege_msd26.dat");
-	sprintf(txtname, "%s", "F:/out/G4_rootfiles_with_tree_Eg4156/Fakedata_S31_Gamma4156_Eg4155.84_Tau3.0_SP1.00_AC0.0_scaled_0.5k.dat");
 	ofstream outfile(txtname, ios::out);
-	//sprintf(histoname, "%s", "htiming_lege_msd26");
-	sprintf(histoname, "%s", "hfakedata");
+	sprintf(histoname, "%s", "htiming_lege_msd26");
 	h1 = (TH1F*)fin_data->Get(histoname); //Get spectrum
 	h1->SetBinErrorOption(TH1::kPoisson);
 	for (int i = 1; i <= h1->GetNbinsX(); i++)
 	{
-		outfile << h1->GetBinCenter(i) << "	";
-		outfile << h1->GetBinContent(i) << "	";
-		outfile << h1->GetBinErrorLow(i) << "	";
+		outfile << h1->GetBinCenter(i) << ",";
+		outfile << h1->GetBinContent(i) << ",";
+		outfile << h1->GetBinErrorLow(i) << ",";
 		outfile << h1->GetBinErrorUp(i) << endl;
 	}
 	outfile.close();
