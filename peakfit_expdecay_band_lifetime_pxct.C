@@ -41,9 +41,7 @@
 using namespace std;
 void peakfit_expdecay_band_lifetime_pxct() // get histogram and exponential fit a time histogram
 {
-	int bin_start_low = 150; // i=bin_start_low//which detector
-	int bin_start_high = 1420; // i<=bin_start_high// which detector
-	double binwidth = 1;// modify
+	double binwidth = 1;
 	double fitrange_min = 0, fitrange_max = 0;
 	double histomin = 0, histomax = 0, histoNbins = 0;
 	int minbin = 0, maxbin = 0;
@@ -69,10 +67,10 @@ void peakfit_expdecay_band_lifetime_pxct() // get histogram and exponential fit 
 	char pathname[150];
 	char filename[150];
 	sprintf(pathname, "%s", "F:/e21010/pxct/");
-// 	sprintf(filename, "%s%s", pathname, "lower_bounds.dat");
-// 	ifstream infilelowerbounds(filename, ios::in);
-// 	sprintf(filename, "%s%s", pathname, "upper_bounds.dat");
-// 	ifstream infileupperbounds(filename, ios::in);
+	// 	sprintf(filename, "%s%s", pathname, "lower_bounds.dat");
+	// 	ifstream infilelowerbounds(filename, ios::in);
+	// 	sprintf(filename, "%s%s", pathname, "upper_bounds.dat");
+	// 	ifstream infileupperbounds(filename, ios::in);
 	double par[peaknum][10], par_err[peaknum][10];
 	double parChi[peaknum], parNDF[peaknum], p_value[peaknum];
 	TFile* fin;
@@ -80,27 +78,44 @@ void peakfit_expdecay_band_lifetime_pxct() // get histogram and exponential fit 
 	sprintf(filename, "%s%s", pathname, "peakpara.dat");
 	ofstream outfile(filename, ios::app);
 	int Ea_central = 0, msd_e_cut_low = 0, msd_e_cut_high = 0, Ea_gate_start = 0, Ea_gate_end = 0;
+	int bin_start_low = 0;
+	int bin_start_high = 1420;
+	int Which_dataset = 1; // Modify: 1 for MSDtotal; 2 for MSD26;
+	int Which_MSD;
+	if (Which_dataset == 1)
+	{
+		Which_MSD = 12; // Modify: 12 for MSD12; 26 for MSD26;
+		Ea_central = 5421; // 5421 for MSDtotal
+		if (Which_MSD == 12)	bin_start_low = 240; // Don't change
+		if (Which_MSD == 26)	bin_start_low = 160; // Don't change
+		Ea_gate_start = 10; // 3; 3 means +/-3 keV = 6 keV; 20 means +/-20 keV = 40 keV, which is good for MSD26
+		Ea_gate_end = 60; // 30; Keep end - start <= 4, due to Windows OS limitation
+	}
+	if (Which_dataset == 2)
+	{
+		Which_MSD = 26; // 26 for MSD26;
+		Ea_central = 5479; // 5479 for MSD26; 5421 for MSDtotal
+		Ea_gate_start = 20; // 3; 3 means +/-3 keV = 6 keV; 20 means +/-20 keV = 40 keV, which is good for MSD26
+		Ea_gate_end = 20; // 30; Keep end - start <= 4, due to Windows OS limitation
+	}
 
-	Ea_central = 5479; // 5479 for MSD26; 5421 for MSDtotal
-	Ea_gate_start = 20; // 3; 3 means +/-3 keV = 6 keV; 20 means +/-20 keV = 40 keV
-	Ea_gate_end = 20; // 30; Keep end - start <= 4, due to Windows OS limitation
-
-	for (i = Ea_gate_start; i <= Ea_gate_end; i++) // read in many root files with different Ea gates
+	for (i = Ea_gate_start; i <= Ea_gate_end; i+=10) // read in many root files with different Ea gates
 	{
 		//if (i >= 96 && i <= 99) continue;
 		msd_e_cut_low = Ea_central - i;
 		msd_e_cut_high = Ea_central + i;
-		sprintf(filename, "%s%s%04d%s%04d%s", pathname, "timing_msd26_e_", msd_e_cut_low, "_", msd_e_cut_high, "_msd26_t.root");//modify
+		if (Which_dataset == 1) sprintf(filename, "%s%s%04d%s%04d%s", pathname, "timing_msdtotal_e_", msd_e_cut_low, "_", msd_e_cut_high, "_msdtotal_t.root");
+		if (Which_dataset == 2) sprintf(filename, "%s%s%04d%s%04d%s", pathname, "timing_msd26_e_", msd_e_cut_low, "_", msd_e_cut_high, "_msd26_t.root");
 		//sprintf(filename, "%s%s", pathname, "Fake_decay_2e5.root"); // Fake test
 		fin = new TFile(filename);//after this statement, you can use any ROOT command1 for this rootfile
 		cout << filename << endl;
-		sprintf(histo_name, "%s", "htiming_lege_msd26_bin1ns"); // modify
-		//sprintf(histo_name, "%s", "h_decay_exponential_GetRandom"); // modify Fake test
+		sprintf(histo_name, "%s%d%s", "htiming_lege_msd", Which_MSD, "_bin1ns");
+		//sprintf(histo_name, "%s", "h_decay_exponential_GetRandom"); // Fake test
 		histo[i] = (TH1D*)fin->Get(histo_name); //Get spectrum
 		histo[i]->Rebin(1);
 		histo[i]->Sumw2(kFALSE);
 		histo[i]->SetBinErrorOption(TH1::kPoisson);
-		for (ii = 0; ii <= 0; ii++) // ii <=39, fit one histogram with many different fit ranges
+		for (ii = 0; ii <= 19; ii++) // modify: ii <=39, fit one histogram with many different fit start points = ii * 20 + bin_start_low
 		{
 			sprintf(hfit_name, "%s%s%d%s%d", histo_name, "_Ea", i, "_Fitrange", ii);
 			canvaspeak[i][ii] = new TCanvas(hfit_name, hfit_name, 1300, 600);//建立画布
@@ -147,7 +162,7 @@ void peakfit_expdecay_band_lifetime_pxct() // get histogram and exponential fit 
 			histo[i]->GetYaxis()->SetTitleSize(0.07);
 			histo[i]->GetYaxis()->SetNdivisions(505);
 			histo[i]->GetYaxis()->SetTickLength(0.015);
-			histo[i]->GetYaxis()->SetRangeUser(0.5, 4000);
+			histo[i]->GetYaxis()->SetRangeUser(0.5, 1e4);
 			histo[i]->SetLineWidth(1);
 			histo[i]->SetStats(0);
 			histo[i]->Draw("e");
@@ -161,7 +176,7 @@ void peakfit_expdecay_band_lifetime_pxct() // get histogram and exponential fit 
 			histomin = histo[i]->GetXaxis()->GetXmin();
 			histomax = histo[i]->GetXaxis()->GetXmax();
 			histoNbins = histo[i]->GetNbinsX();
-			fitrange_min = 150 + ii * 10 ; fitrange_max = 1420; // modify
+			fitrange_min = bin_start_low + ii * 20; fitrange_max = bin_start_high; // modify
 			//fitrange_min = 0 + ii * 20; fitrange_max = 1420; // Fake test
 
 			// cout << histomin << "	" << histomax << "	" << histoNbins << endl;
@@ -207,20 +222,20 @@ void peakfit_expdecay_band_lifetime_pxct() // get histogram and exponential fit 
 			//b[ii]->SetNpx(histoNbins * 10);
 			//fEMG[ii]->SetParameters(0.1,15,peaky[ii],10,10,peakx[ii]);//initial value [0]-A, [1]-B, [2]-N, [3]-τ, [4]-σ, [5]-μ
 			int Total_decays_guess = 30000 * i;
-			fEMG[ii]->SetParameters(8e5, 68, 1);//initial value
+			fEMG[ii]->SetParameters(6e6, 68, 1);//initial value
 			//fEMG[ii]->SetParameters(2e6, 68, 2);//initial value Fake test
-			fEMG[ii]->SetParLimits(0,2e5,16e5);//N
-			fEMG[ii]->SetParLimits(1,40,140);//T
- 			fEMG[ii]->SetParLimits(2, 0, 10);//B
-// 			fEMG[ii]->SetParLimits(3, 80, 120);//Tau
-// 			fEMG[ii]->SetParLimits(4, 10, 120);//Sigma
-// 			fEMG[ii]->SetParLimits(5, peakx[ii] - gaplow / 4, peakx[ii] + gaphigh / 2);//Mean
-// 			fEMG[ii]->SetParLimits(5, -100, 200);//Mean
+			fEMG[ii]->SetParLimits(0, 1e5, 30e7);//N
+			fEMG[ii]->SetParLimits(1, 40, 140);//T
+			fEMG[ii]->SetParLimits(2, 0, 19);//B
+			// 			fEMG[ii]->SetParLimits(3, 80, 120);//Tau
+			// 			fEMG[ii]->SetParLimits(4, 10, 120);//Sigma
+			// 			fEMG[ii]->SetParLimits(5, peakx[ii] - gaplow / 4, peakx[ii] + gaphigh / 2);//Mean
+			// 			fEMG[ii]->SetParLimits(5, -100, 200);//Mean
 			fEMG[ii]->SetParNames("Total_decays", "Half_life", "Background");
 			//fEMG[ii]->SetParNames("BkgA", "BkgB", "Const*bin", "Tau", "Sigma", "Mean");
-			histo[i]->Fit("fEMG", "ME", "", fitrange_min, fitrange_max);
+			histo[i]->Fit("fEMG", "MLE", "", fitrange_min, fitrange_max);
 			//histo[i]->Fit("fEMG", "MLEN", "", fitrange_min, fitrange_max);
-			TFitResultPtr Fit_result_pointer = histo[i]->Fit("fEMG", "MES", "0", fitrange_min, fitrange_max);
+			TFitResultPtr Fit_result_pointer = histo[i]->Fit("fEMG", "MLES", "0", fitrange_min, fitrange_max);
 			//"S" means the result of the fit is returned in the TFitResultPtr
 			//“E” Perform better errors estimation using the Minos technique.
 			//“M” Improve fit results, by using the IMPROVE algorithm of TMinuit.
@@ -301,10 +316,10 @@ void peakfit_expdecay_band_lifetime_pxct() // get histogram and exponential fit 
 // 			FWHM[ii] = higher_half - lower_half;
 // 
 // 			outfile << histo_name << i << "	Constant*binsize" << ii << "=	" << constant[ii] << "	+/-	" << constant_err[ii] << "	Mean" << ii << "=	" << mean[ii] << "	+/-	" << mean_err[ii] << "	Maximum" << ii << "=	" << peakx[ii] << "	+/-	" << peakxerr[ii] << "	Sigma" << ii << "=	" << sig[ii] << "	+/-	" << sig_err[ii] << "	Tau" << ii << "=	" << tau[ii] << "	+/-	" << tau_err[ii] << "	A" << ii << "=	" << par[ii][0] << "	+/-	" << par_err[ii][0] << "	B" << ii << "=	" << par[ii][1] << "	+/-	" << par_err[ii][1] << "	Chi2" << ii << "=	" << parChi[ii] << "	NDF" << ii << "=	" << parNDF[ii] << "	Area" << ii << "=	" << par[ii][2] / binwidth << "	FWHM" << ii << "=	" << FWHM[ii] << "	+/-	" << FWHM_err[ii] << endl;
-			
+
 			outfile << std::scientific << std::setprecision(10) << "msd_e_cut_low	" << msd_e_cut_low << "	msd_e_cut_high	" << msd_e_cut_high << "	fitrange_min	" << fitrange_min << "	fitrange_max	" << fitrange_max << "	" << hfit_name << "	Total_decays_" << ii << "=	" << par[ii][0] << "	+/-	" << par_err[ii][0] << "	Half-life_" << ii << "=	" << par[ii][1] << "	+/-	" << par_err[ii][1] << "	Background_" << ii << "=	" << par[ii][2] << "	+/-	" << par_err[ii][2] << "	Chi2_" << ii << "=	" << parChi[ii] << "	NDF_" << ii << "=	" << parNDF[ii] << "	p-val_" << ii << "=	" << p_value[ii] << endl;
 
-			TPaveText* textgaus = new TPaveText(0.55, 0.35, 0.974, 0.97, "brNDC");//加标注left, down, right, up
+			TPaveText* textgaus = new TPaveText(0.60, 0.50, 0.974, 0.97, "brNDC");//加标注left, down, right, up
 			textgaus->SetBorderSize(1);//边框宽度
 			textgaus->SetFillColor(0);//填充颜色
 			textgaus->SetTextAlign(12);//align = 10*HorizontalAlign + VerticalAlign, 12 means水平左对齐、垂直居中对齐
@@ -341,8 +356,9 @@ void peakfit_expdecay_band_lifetime_pxct() // get histogram and exponential fit 
 
 			graph_residual[i] = new TGraphErrors(fit_Nbins, x_values, y_residuals, x_errors, y_errors); //TGraph(n,x,y,ex,ey);
 			graph_residual[i]->SetTitle("");//图名
-			graph_residual[i]->GetXaxis()->SetTitle("Time difference LEGe - MSD26 (ns)");//轴名
-			graph_residual[i]->GetYaxis()->SetTitle("Fit - Data");//轴名
+			sprintf(paraprint, "Time difference LEGe - MSD%d (ns)", Which_MSD);
+			graph_residual[i]->GetXaxis()->SetTitle(paraprint);
+			graph_residual[i]->GetYaxis()->SetTitle("Fit - Data");
 			graph_residual[i]->GetXaxis()->CenterTitle();//居中
 			graph_residual[i]->GetYaxis()->CenterTitle();//居中
 			graph_residual[i]->GetXaxis()->SetLabelFont(132);//坐标字体
