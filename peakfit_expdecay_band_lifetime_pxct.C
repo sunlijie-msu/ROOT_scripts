@@ -80,21 +80,21 @@ void peakfit_expdecay_band_lifetime_pxct() // get histogram and exponential fit 
 	int Ea_central = 0, msd_e_cut_low = 0, msd_e_cut_high = 0, Ea_gate_start = 0, Ea_gate_end = 0;
 	int bin_start_low = 0;
 	int bin_start_high = 1420;
-	int Which_dataset = 1; // Modify: 1 for MSDtotal; 2 for MSD26;
+	int Which_Dataset = 1; // Modify: 1 for MSDtotal; 2 for MSD26;
 	int Which_MSD;
-	if (Which_dataset == 1)
+	if (Which_Dataset == 1)
 	{
 		Which_MSD = 12; // Modify: 12 for MSD12; 26 for MSD26;
-		Ea_central = 5421; // 5421 for MSDtotal
+		Ea_central = 5421; // 5421 for MSDtotal, based on LISE++ calculation
 		if (Which_MSD == 12)	bin_start_low = 240; // Don't change
 		if (Which_MSD == 26)	bin_start_low = 160; // Don't change
 		Ea_gate_start = 10; // 3; 3 means +/-3 keV = 6 keV; 20 means +/-20 keV = 40 keV, which is good for MSD26
 		Ea_gate_end = 60; // 30; Keep end - start <= 4, due to Windows OS limitation
 	}
-	if (Which_dataset == 2)
+	if (Which_Dataset == 2)
 	{
 		Which_MSD = 26; // 26 for MSD26;
-		Ea_central = 5479; // 5479 for MSD26; 5421 for MSDtotal
+		Ea_central = 5479; // 5479 for MSD26; 5421 for MSDtotal, based on LISE++ calculation
 		Ea_gate_start = 20; // 3; 3 means +/-3 keV = 6 keV; 20 means +/-20 keV = 40 keV, which is good for MSD26
 		Ea_gate_end = 20; // 30; Keep end - start <= 4, due to Windows OS limitation
 	}
@@ -104,8 +104,8 @@ void peakfit_expdecay_band_lifetime_pxct() // get histogram and exponential fit 
 		//if (i >= 96 && i <= 99) continue;
 		msd_e_cut_low = Ea_central - i;
 		msd_e_cut_high = Ea_central + i;
-		if (Which_dataset == 1) sprintf(filename, "%s%s%04d%s%04d%s", pathname, "timing_msdtotal_e_", msd_e_cut_low, "_", msd_e_cut_high, "_msdtotal_t.root");
-		if (Which_dataset == 2) sprintf(filename, "%s%s%04d%s%04d%s", pathname, "timing_msd26_e_", msd_e_cut_low, "_", msd_e_cut_high, "_msd26_t.root");
+		if (Which_Dataset == 1) sprintf(filename, "%s%s%04d%s%04d%s", pathname, "timing_msdtotal_e_", msd_e_cut_low, "_", msd_e_cut_high, "_msdtotal_t.root");
+		if (Which_Dataset == 2) sprintf(filename, "%s%s%04d%s%04d%s", pathname, "timing_msd26_e_", msd_e_cut_low, "_", msd_e_cut_high, "_msd26_t.root");
 		//sprintf(filename, "%s%s", pathname, "Fake_decay_2e5.root"); // Fake test
 		fin = new TFile(filename);//after this statement, you can use any ROOT command1 for this rootfile
 		cout << filename << endl;

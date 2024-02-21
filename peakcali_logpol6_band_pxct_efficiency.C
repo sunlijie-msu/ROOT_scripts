@@ -1,6 +1,6 @@
 #include <iostream>
 #include <fstream>
-//#include <iomanip.h>
+#include <iomanip>
 #include <math.h>
 #include <time.h>
 #include <map>
@@ -179,7 +179,7 @@ void peakcali_logpol6_band_pxct_efficiency()//for efficiency curve fit with a cr
 		sprintf(filename, "%s%s%d", "h_confidence_interval", "_", i);
 		h_confidence_interval[i] = new TH1D(filename, filename, 16000, 0, 1600);//Create a histogram to hold the confidence intervals
 		TVirtualFitter* fitter = TVirtualFitter::GetFitter();//The method TVirtualFitter::GetFitter())->Get the parameters of your fitting function after having it fitted to an histogram.
-		fitter->GetConfidenceIntervals(h_confidence_interval[i], 0.683);//By default the intervals are inflated using the chi2/ndf value of the fit if a chi2 fit is performed
+		fitter->GetConfidenceIntervals(h_confidence_interval[i], 0.95);//By default the intervals are inflated using the chi2/ndf value of the fit if a chi2 fit is performed
 		//confidence interval for the colored band: 1¦Ò confidence interval: P=0.683, 1¦Ò confidence interval: P=0.95, 3¦Ò confidence interval: P=0.997
 		//h_confidence_interval[i] will contain the CL result that you can draw on top of your fitted graph.
 		//where h_confidence_interval[i] will hold the errors and could superimpose it on the same canvas where you plot central values.

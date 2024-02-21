@@ -85,12 +85,14 @@ void ddas2root()
 	char calrootname[300];
 	char inpathname[300], outpathname[300];
 	char filename[300];
-	int runnumber = 103; // modify
+	int runnumber = 202; // modify
 	double timestampshift = 0;
 
 	//sprintf(inpathname, "%s", "/mnt/daqtesting/pxct/stagearea/");
-	sprintf(outpathname, "%s", "/user/pxct/readout/rootfile/");
 	sprintf(inpathname, "%s", "/user/pxct/readout/rootfile/");
+
+	//sprintf(outpathname, "%s", "/mnt/daqtesting/pxct/stagearea/");
+	sprintf(outpathname, "%s", "/user/pxct/readout/rootfile/");
 
 	if (runnumber == 7)
 	{
@@ -370,6 +372,18 @@ void ddas2root()
 	{
 		sprintf(filename, "%s", "run0103_LEGe_MSD26_241Am_inChamber_2mmCollimator_window1.5us_CFDdelay_adjusted_9000min");
 	}
+	if (runnumber == 200)
+	{
+		sprintf(filename, "%s", "run0200_LEGe_MSD26_137Cs_M4038_inChamber_vacuum_North_16mm_South_12mm_away_window1.5us_CFDdelay_adjusted");
+	}
+	if (runnumber == 201)
+	{
+		sprintf(filename, "%s", "run0201_LEGe_MSD26_137Cs_M4038_inChamber_vacuum_North_16mm_South_12mm_away_window1.5us_CFDdelay_adjusted");
+	}
+	if (runnumber == 202)
+	{
+		sprintf(filename, "%s", "run0202_LEGe_MSD26_137Cs_M4038_inChamber_vacuum_North_16mm_South_12mm_away_window1.5us_CFDdelay_adjusted");
+	}
 	// name both input and output root files accordingly
 	sprintf(rawrootname, "%s%s%s", inpathname, filename, ".root");
 	sprintf(calrootname, "%s%s%s", outpathname, filename, "_cal.root");
@@ -411,14 +425,14 @@ void ddas2root()
 	// If you have closed the channels in CSRA, please comment out the corresponding branch lines. No other changes are needed.
 	tree->Branch("lege_e", &lege_e, "lege_e/D");
 	tree->Branch("lege_t", &lege_t, "lege_t/D");
-	//tree->Branch("north_e", &north_e, "north_e/D");
-	//tree->Branch("north_t", &north_t, "north_t/D");
-	//tree->Branch("south_e", &south_e, "south_e/D");
-	//tree->Branch("south_t", &south_t, "south_t/D");
+	tree->Branch("north_e", &north_e, "north_e/D");
+	tree->Branch("north_t", &north_t, "north_t/D");
+	tree->Branch("south_e", &south_e, "south_e/D");
+	tree->Branch("south_t", &south_t, "south_t/D");
  	//tree->Branch("msd12_e", &msd12_e, "msd12_e/D");
  	//tree->Branch("msd12_t", &msd12_t, "msd12_t/D");
- 	tree->Branch("msd26_e", &msd26_e, "msd26_e/D");
- 	tree->Branch("msd26_t", &msd26_t, "msd26_t/D");
+ 	//tree->Branch("msd26_e", &msd26_e, "msd26_e/D");
+ 	//tree->Branch("msd26_t", &msd26_t, "msd26_t/D");
  	//tree->Branch("msdtotal_e", &msdtotal_e, "msdtotal_e/D");
 
 // 	tree->Branch("lege_e_low", &lege_e_low, "lege_e_low/D");
@@ -455,15 +469,15 @@ void ddas2root()
 	hsouth_e = new TH1D("hsouth_e", "hsouth_e", 60000, -0.1195774566938, 2274.16156253889); // 60000 channels, 38 eV per channel from Excel calibration 1/11/2024 run 97-98
 	hmsd12_e = new TH1D("hmsd12_e", "hmsd12_e", 60000, 0, 7941.93363844394); // 60000 channels, 512 eV per channel
 	hmsd26_e = new TH1D("hmsd26_e", "hmsd26_e", 60000, -0.0016133749182, 6931.63915798418); // 60000 channels, 115 eV per channel from Excel calibration 1/18/2024 run 100
-	hmsdtotal_e = new TH1D("hmsdtotal_e", "hmsdtotal_e", 6900, 0, 6900); // 6900 channels, 1000 eV per channel
-	hmsd12_e1keVbin = new TH1D("hmsd12_e1keVbin", "hmsd12_e1keVbin", 7942, 0, 7942); // 7942 channels, 1 keV per channel
-	hmsd26_e1keVbin = new TH1D("hmsd26_e1keVbin", "hmsd26_e1keVbin", 6935, 0, 6935); // 6935 channels, 1 keV per channel
+	//hmsdtotal_e = new TH1D("hmsdtotal_e", "hmsdtotal_e", 6900, 0, 6900); // 6900 channels, 1000 eV per channel
+	//hmsd12_e1keVbin = new TH1D("hmsd12_e1keVbin", "hmsd12_e1keVbin", 7942, 0, 7942); // 7942 channels, 1 keV per channel
+	//hmsd26_e1keVbin = new TH1D("hmsd26_e1keVbin", "hmsd26_e1keVbin", 6935, 0, 6935); // 6935 channels, 1 keV per channel
 
-	hlege_e_low = new TH1D("hlege_e_low", "hlege_e_low", 60000, 0, 60000); // 60000 channels
-	hnorth_e_low = new TH1D("hnorth_e_low", "hnorth_e_low", 60000, 0, 60000); // 60000 channels
-	hsouth_e_low = new TH1D("hsouth_e_low", "hsouth_e_low", 60000, 0, 60000); // 60000 channels
-	htiming_lege_msd12 = new TH1D("htiming_lege_msd12", "htiming_lege_msd12", 3000, -1500, 1500); // 3000 channels, 1 ns per channel
-	htiming_lege_msd26 = new TH1D("htiming_lege_msd26", "htiming_lege_msd26", 3000, -1500, 1500); // 3000 channels, 1 ns per channel
+	//hlege_e_low = new TH1D("hlege_e_low", "hlege_e_low", 60000, 0, 60000); // 60000 channels
+	//hnorth_e_low = new TH1D("hnorth_e_low", "hnorth_e_low", 60000, 0, 60000); // 60000 channels
+	//hsouth_e_low = new TH1D("hsouth_e_low", "hsouth_e_low", 60000, 0, 60000); // 60000 channels
+	//htiming_lege_msd12 = new TH1D("htiming_lege_msd12", "htiming_lege_msd12", 3000, -1500, 1500); // 3000 channels, 1 ns per channel
+	//htiming_lege_msd26 = new TH1D("htiming_lege_msd26", "htiming_lege_msd26", 3000, -1500, 1500); // 3000 channels, 1 ns per channel
 
 	for (i = 0; i < totalentries; i++)
 	{
@@ -475,12 +489,12 @@ void ddas2root()
 		// cout<<"  number of active channels = "<<Nchannels<<endl;
 		for (int j = 0; j < Nchannels; j++)
 		{
-			if (pChan[j]->GetChannelID() == 0)
-			{
-				lege_e_low = pChan[j]->GetEnergy();
-				hlege_e_low->Fill(lege_e_low);
-				lege_t_low = pChan[j]->GetTime() + timestampshift;
-			}
+			//if (pChan[j]->GetChannelID() == 0)
+			//{
+			//	lege_e_low = pChan[j]->GetEnergy();
+			//	hlege_e_low->Fill(lege_e_low);
+			//	lege_t_low = pChan[j]->GetTime() + timestampshift;
+			//}
 			if (pChan[j]->GetChannelID() == 1)
 			{
 				//lege_e = pChan[j]->GetEnergy();
@@ -489,12 +503,12 @@ void ddas2root()
 				hlege_e->Fill(lege_e);
 				lege_t = pChan[j]->GetTime() + timestampshift;
 			}
-			if (pChan[j]->GetChannelID() == 2)
-			{
-				north_e_low = pChan[j]->GetEnergy();
-				hnorth_e_low->Fill(north_e_low);
-				north_t_low = pChan[j]->GetTime() + timestampshift;
-			}
+			//if (pChan[j]->GetChannelID() == 2)
+			//{
+			//	north_e_low = pChan[j]->GetEnergy();
+			//	hnorth_e_low->Fill(north_e_low);
+			//	north_t_low = pChan[j]->GetTime() + timestampshift;
+			//}
 			if (pChan[j]->GetChannelID() == 3)
 			{
 				//north_e = pChan[j]->GetEnergy();
@@ -503,12 +517,12 @@ void ddas2root()
 				hnorth_e->Fill(north_e);
 				north_t = pChan[j]->GetTime() + timestampshift;
 			}
-			if (pChan[j]->GetChannelID() == 4)
-			{
-				south_e_low = pChan[j]->GetEnergy();
-				hsouth_e_low->Fill(south_e_low);
-				south_t_low = pChan[j]->GetTime() + timestampshift;
-			}
+			//if (pChan[j]->GetChannelID() == 4)
+			//{
+			//	south_e_low = pChan[j]->GetEnergy();
+			//	hsouth_e_low->Fill(south_e_low);
+			//	south_t_low = pChan[j]->GetTime() + timestampshift;
+			//}
 			if (pChan[j]->GetChannelID() == 5)
 			{
 				//south_e = pChan[j]->GetEnergy();
@@ -517,34 +531,34 @@ void ddas2root()
 				hsouth_e->Fill(south_e);
 				south_t = pChan[j]->GetTime() + timestampshift;
 			}
-			if (pChan[j]->GetChannelID() == 6)
-			{
-				//msd12_e = pChan[j]->GetEnergy();
-				msd12_e = pChan[j]->GetEnergy() * 0.1323655606407 + 0;
-				hmsd12_e->Fill(msd12_e);
-				hmsd12_e1keVbin->Fill(msd12_e + gRandom->Uniform(-0.5, 0.5));
-				msd12_t = pChan[j]->GetTime() + timestampshift;
-			}
-			if (pChan[j]->GetChannelID() == 8)
-			{
-				//msd26_e = pChan[j]->GetEnergy();
-				//msd26_e = pChan[j]->GetEnergy() * 0.1152143446474 + 22.352486402900; // based on 148Gd and 241Am two peaks
-				msd26_e = pChan[j]->GetEnergy() * 0.1155273461893 - 0.001613374918; // based on 241Am two peaks Run 100
-				hmsd26_e->Fill(msd26_e);
-				hmsd26_e1keVbin->Fill(msd26_e + gRandom->Uniform(-0.5, 0.5));
-				msd26_t = pChan[j]->GetTime() + timestampshift;
-			}
+			//if (pChan[j]->GetChannelID() == 6)
+			//{
+			//	//msd12_e = pChan[j]->GetEnergy();
+			//	msd12_e = pChan[j]->GetEnergy() * 0.1323655606407 + 0;
+			//	hmsd12_e->Fill(msd12_e);
+			//	hmsd12_e1keVbin->Fill(msd12_e + gRandom->Uniform(-0.5, 0.5));
+			//	msd12_t = pChan[j]->GetTime() + timestampshift;
+			//}
+			//if (pChan[j]->GetChannelID() == 8)
+			//{
+			//	//msd26_e = pChan[j]->GetEnergy();
+			//	//msd26_e = pChan[j]->GetEnergy() * 0.1152143446474 + 22.352486402900; // based on 148Gd and 241Am two peaks
+			//	msd26_e = pChan[j]->GetEnergy() * 0.1155273461893 - 0.001613374918; // based on 241Am two peaks Run 100
+			//	hmsd26_e->Fill(msd26_e);
+			//	hmsd26_e1keVbin->Fill(msd26_e + gRandom->Uniform(-0.5, 0.5));
+			//	msd26_t = pChan[j]->GetTime() + timestampshift;
+			//}
 
-			if (msd12_e > 200 && msd26_e > 200)
-			{
-				msdtotal_e = msd12_e + msd26_e;
-				hmsdtotal_e->Fill(msdtotal_e);
-			}
+			//if (msd12_e > 200 && msd26_e > 200)
+			//{
+			//	msdtotal_e = msd12_e + msd26_e;
+			//	hmsdtotal_e->Fill(msdtotal_e);
+			//}
 
-			if (runnumber >= 92 && lege_e > 59 && lege_e < 60.1 && msd26_e > 5470 && msd26_e < 5510)
-			{
-				htiming_lege_msd26->Fill(lege_t - msd26_t);
-			}
+			//if (runnumber >= 92 && lege_e > 59 && lege_e < 60.1 && msd26_e > 5470 && msd26_e < 5510)
+			//{
+			//	htiming_lege_msd26->Fill(lege_t - msd26_t);
+			//}
 
 			//if (runnumber < 92 && lege_e > 58.5 && lege_e < 60.5 && msd12_e>1700 && msd12_e < 2200 && msd26_e>3300 && msd26_e < 3800 && msd12_e + msd26_e > 5400 && msd12_e + msd26_e < 5560)
 			//{
@@ -555,6 +569,7 @@ void ddas2root()
 
 		} // (int j = 0; j < Nchannels; j++)
 		tree->Fill();
+		if (i % 1000000 == 0 && i != 0) cout << "entry: " << i << endl;
 	} // for (int i = 0; i < totalentries; i++)
 	cout << "  Last entry: " << i << endl;
 	fout->Write();

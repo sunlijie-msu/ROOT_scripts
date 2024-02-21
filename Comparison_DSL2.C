@@ -111,15 +111,15 @@ double CompareHists(TH1F* his_fit, TH1F* his_data, int first_bin, int last_bin)
 
 		if (ydata != 0) { chisquareNeyman += residual * residual / ydata; }//Neyman Chi2 method
 		if (yfit != 0) { chisquarePearson += residual * residual / yfit; }//Pearson Chi2 method
-		if (yfit != 0 && ydata != 0) { likelihood += yfit - ydata + ydata * log(ydata / yfit); } //ML method
-		if (yfit != 0 && ydata == 0) { likelihood += yfit - ydata; } //ML method for bins with ydata = 0, the log term is zero.
+		if (yfit != 0 && ydata != 0) { likelihood += yfit - ydata + ydata * log(ydata / yfit); } //ML method, highly recommended!
+		if (yfit != 0 && ydata == 0) { likelihood += yfit - ydata; } //ML method for bins with ydata = 0, the log term is -infinity
 		//if(y[0]>0)	dy[0] = (his_data->GetBinErrorLow(i)+his_data->GetBinErrorUp(i))/2;
 		//if(y[0]==0)	dy[0] = his_data->GetBinErrorUp(i);//empty bin ErrorUp=1.8, ErrorLow=0, Error=0;
 
 		ydata_factorial = 1;
 		for (long ii = 1; ii <= ydata; ii++) ydata_factorial = ydata_factorial * ii; //Bayesian
-		//cout<<"yfit= "<<yfit<<" ydata= "<<ydata<<" ydata_factorial= "<<ydata_factorial<<" pow(yfit,ydata)= "<<pow(yfit,ydata)<<" LB= "<<(pow(yfit,ydata)/ydata_factorial)*exp(-yfit)<<endl; //Bayesian
-		if (yfit != 0 && ydata_factorial != 0) LBayesian *= (pow(yfit, ydata) / ydata_factorial) * exp(-yfit); //Bayesian
+		//cout<<"yfit= "<<yfit<<" ydata= "<<ydata<<" ydata_factorial= "<<ydata_factorial<<" pow(yfit,ydata)= "<<pow(yfit,ydata)<<" LB= "<<(pow(yfit,ydata)/ydata_factorial)*exp(-yfit)<<endl;
+		if (yfit != 0 && ydata_factorial != 0) LBayesian *= (pow(yfit, ydata) / ydata_factorial) * exp(-yfit); //Bayesian Naomi Galinski, equivalent to the ML method above.
 	}
 
 	likelihood = likelihood * 2; //ML method

@@ -85,7 +85,7 @@ void analysis_chain_pxct_241Am_237Np_timing()// chain pxct 237Np 59-keV lifetime
 	icalroot = icalroot - 1;
 	totalentries = nentries[icalroot];
 	long nentriesmax;
-	cout << "input the max number of entries (not longer than 2147483647): " << endl;
+	cout << "input the max number of entries (not longer than 2147483647, 32-bit integer): " << endl;
 	//cin>>nentriesmax;
 	nentriesmax = 2100000000;
 
