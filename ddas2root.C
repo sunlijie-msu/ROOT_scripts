@@ -85,11 +85,11 @@ void ddas2root()
 	char calrootname[300];
 	char inpathname[300], outpathname[300];
 	char filename[300];
-	int runnumber = 211; // modify
+	int runnumber = 213; // modify
 	double timestampshift = 0;
 
-	//sprintf(inpathname, "%s", "/mnt/daqtesting/pxct/stagearea/");
-	sprintf(inpathname, "%s", "/user/pxct/readout/rootfile/");
+	sprintf(inpathname, "%s", "/mnt/daqtesting/pxct/stagearea/");
+	//sprintf(inpathname, "%s", "/user/pxct/readout/rootfile/");
 
 	//sprintf(outpathname, "%s", "/mnt/daqtesting/pxct/stagearea/");
 	sprintf(outpathname, "%s", "/user/pxct/readout/rootfile/");
@@ -309,6 +309,8 @@ void ddas2root()
 	if (runnumber == 209)	sprintf(filename, "%s", "run0209_LEGe_152Eu_Z2707_inChamber_vacuum_window1.5us_CFDdelay_adjusted");
 	if (runnumber == 210)	sprintf(filename, "%s", "run0210_LEGe_152Eu_Z2707_inChamber_vacuum_window0.02us_CFDdelay_adjusted");
 	if (runnumber == 211)	sprintf(filename, "%s", "run0211_LEGe_152Eu_Z2707_inChamber_vacuum_window10us_CFDdelay_adjusted");
+	if (runnumber == 212)	sprintf(filename, "%s", "run0212_XtRa_152Eu_Z2707_inChamber_vacuum_XtRa_12mm_away_window0.3us_CFDdelay_adjusted");
+	if (runnumber == 213)	sprintf(filename, "%s", "run0213_North_152Eu_Z2707_On_Cap_window0.02us_CFDdelay_adjusted_Extreme_Summing_for_fun");
 
 	// name both input and output root files accordingly
 	sprintf(rawrootname, "%s%s%s", inpathname, filename, ".root");
@@ -349,12 +351,12 @@ void ddas2root()
 	TTree* tree = new TTree("tree", "tree");
 
 	// If you have closed the channels in CSRA, please comment out the corresponding branch lines. No other changes are needed.
-	tree->Branch("lege_e", &lege_e, "lege_e/D");
-	tree->Branch("lege_t", &lege_t, "lege_t/D");
+	//tree->Branch("lege_e", &lege_e, "lege_e/D");
+	//tree->Branch("lege_t", &lege_t, "lege_t/D");
 	tree->Branch("north_e", &north_e, "north_e/D");
 	tree->Branch("north_t", &north_t, "north_t/D");
-	tree->Branch("south_e", &south_e, "south_e/D");
-	tree->Branch("south_t", &south_t, "south_t/D");
+	//tree->Branch("south_e", &south_e, "south_e/D");
+	//tree->Branch("south_t", &south_t, "south_t/D");
  	//tree->Branch("msd12_e", &msd12_e, "msd12_e/D");
  	//tree->Branch("msd12_t", &msd12_t, "msd12_t/D");
  	//tree->Branch("msd26_e", &msd26_e, "msd26_e/D");
