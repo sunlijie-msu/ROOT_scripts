@@ -79,17 +79,23 @@ void ddas2root()
 	// https://docs.nscl.msu.edu/daq/newsite/ddas-1.1/The.html
 	// https://docs.nscl.msu.edu/daq/newsite/ddas-1.1/ddaschannel_8h_source.html
 
+	time_t start, tim;
+	struct tm* at;
+	char now[80];
+	float speed;
+
+
 	long totalentries, i;
 	int Nchannels;
 	char rawrootname[300];
 	char calrootname[300];
 	char inpathname[300], outpathname[300];
 	char filename[300];
-	int runnumber = 213; // modify
+	int runnumber = 202; // modify
 	double timestampshift = 0;
 
-	sprintf(inpathname, "%s", "/mnt/daqtesting/pxct/stagearea/");
-	//sprintf(inpathname, "%s", "/user/pxct/readout/rootfile/");
+	//sprintf(inpathname, "%s", "/mnt/daqtesting/pxct/stagearea/");
+	sprintf(inpathname, "%s", "/user/pxct/readout/rootfile/");
 
 	//sprintf(outpathname, "%s", "/mnt/daqtesting/pxct/stagearea/");
 	sprintf(outpathname, "%s", "/user/pxct/readout/rootfile/");
@@ -311,17 +317,19 @@ void ddas2root()
 	if (runnumber == 211)	sprintf(filename, "%s", "run0211_LEGe_152Eu_Z2707_inChamber_vacuum_window10us_CFDdelay_adjusted");
 	if (runnumber == 212)	sprintf(filename, "%s", "run0212_XtRa_152Eu_Z2707_inChamber_vacuum_XtRa_12mm_away_window0.3us_CFDdelay_adjusted");
 	if (runnumber == 213)	sprintf(filename, "%s", "run0213_North_152Eu_Z2707_On_Cap_window0.02us_CFDdelay_adjusted_Extreme_Summing_for_fun");
+	if (runnumber == 214)	sprintf(filename, "%s", "run0214_LEGe_XtRa_MSD26_60Co_I7281_inChamber_vacuum_XtRa_12mm_away_window0.02us_CFDdelay_adjusted");
+	if (runnumber == 215)	sprintf(filename, "%s", "run0215_LEGe_XtRa_MSD26_60Co_I7281_inChamber_vacuum_XtRa_12mm_away_window1us_CFDdelay_adjusted");
 
 	// name both input and output root files accordingly
 	sprintf(rawrootname, "%s%s%s", inpathname, filename, ".root");
 	sprintf(calrootname, "%s%s%s", outpathname, filename, "_cal.root");
 
 	TFile* pFile = new TFile(rawrootname);
-	cout << "  input file: " << rawrootname << endl;
+	cout << "input file: " << rawrootname << endl;
 	TTree* pTree;
 	pFile->GetObject("dchan", pTree);
 	totalentries = pTree->GetEntries();
-	cout << "  Entries=" << totalentries << endl;
+	cout << "Total Entries=" << totalentries << endl;
 
 	DDASEvent* pEvent = new DDASEvent;
 	std::vector <ddaschannel*> pChan;
@@ -347,20 +355,20 @@ void ddas2root()
 	Double_t south_t_low;
 
 	TFile* fout = new TFile(calrootname, "RECREATE");
-	cout << "  output file: " << calrootname << endl;
+	cout << "output file: " << calrootname << endl;
 	TTree* tree = new TTree("tree", "tree");
 
 	// If you have closed the channels in CSRA, please comment out the corresponding branch lines. No other changes are needed.
-	//tree->Branch("lege_e", &lege_e, "lege_e/D");
-	//tree->Branch("lege_t", &lege_t, "lege_t/D");
+	tree->Branch("lege_e", &lege_e, "lege_e/D");
+	tree->Branch("lege_t", &lege_t, "lege_t/D");
 	tree->Branch("north_e", &north_e, "north_e/D");
 	tree->Branch("north_t", &north_t, "north_t/D");
-	//tree->Branch("south_e", &south_e, "south_e/D");
-	//tree->Branch("south_t", &south_t, "south_t/D");
+	tree->Branch("south_e", &south_e, "south_e/D");
+	tree->Branch("south_t", &south_t, "south_t/D");
  	//tree->Branch("msd12_e", &msd12_e, "msd12_e/D");
  	//tree->Branch("msd12_t", &msd12_t, "msd12_t/D");
- 	//tree->Branch("msd26_e", &msd26_e, "msd26_e/D");
- 	//tree->Branch("msd26_t", &msd26_t, "msd26_t/D");
+ 	tree->Branch("msd26_e", &msd26_e, "msd26_e/D");
+ 	tree->Branch("msd26_t", &msd26_t, "msd26_t/D");
  	//tree->Branch("msdtotal_e", &msdtotal_e, "msdtotal_e/D");
 
 // 	tree->Branch("lege_e_low", &lege_e_low, "lege_e_low/D");
@@ -467,15 +475,15 @@ void ddas2root()
 			//	hmsd12_e1keVbin->Fill(msd12_e + gRandom->Uniform(-0.5, 0.5));
 			//	msd12_t = pChan[j]->GetTime() + timestampshift;
 			//}
-			//if (pChan[j]->GetChannelID() == 8)
-			//{
-			//	//msd26_e = pChan[j]->GetEnergy();
-			//	//msd26_e = pChan[j]->GetEnergy() * 0.1152143446474 + 22.352486402900; // based on 148Gd and 241Am two peaks
-			//	msd26_e = pChan[j]->GetEnergy() * 0.1155273461893 - 0.001613374918; // based on 241Am two peaks Run 100
-			//	hmsd26_e->Fill(msd26_e);
-			//	hmsd26_e1keVbin->Fill(msd26_e + gRandom->Uniform(-0.5, 0.5));
-			//	msd26_t = pChan[j]->GetTime() + timestampshift;
-			//}
+			if (pChan[j]->GetChannelID() == 8)
+			{
+				//msd26_e = pChan[j]->GetEnergy();
+				//msd26_e = pChan[j]->GetEnergy() * 0.1152143446474 + 22.352486402900; // based on 148Gd and 241Am two peaks
+				msd26_e = pChan[j]->GetEnergy() * 0.1155273461893 - 0.001613374918; // based on 241Am two peaks Run 100
+				hmsd26_e->Fill(msd26_e);
+				//hmsd26_e1keVbin->Fill(msd26_e + gRandom->Uniform(-0.5, 0.5));
+				msd26_t = pChan[j]->GetTime() + timestampshift;
+			}
 
 			//if (msd12_e > 200 && msd26_e > 200)
 			//{
@@ -497,9 +505,25 @@ void ddas2root()
 
 		} // (int j = 0; j < Nchannels; j++)
 		tree->Fill();
-		if (i % 1000000 == 0 && i != 0) cout << "entry: " << i << endl;
+
+		if (i == 0)
+		{
+			time(&start);
+			at = localtime(&start);
+			strftime(now, 79, "%Y-%m-%d %H:%M:%S", at);
+			cout << now << " started." << endl;
+		}
+		if (i % 1000000 == 0 && i != 0)
+		{
+			time(&tim);
+			at = localtime(&tim);
+			strftime(now, 79, "%Y-%m-%d %H:%M:%S", at);
+			cout << now;
+			speed = (float)i / (float)difftime(tim, start);
+			printf(" %s%ld%s%.1f%s%.0f%s%.0f%s\n", "entry: ", i, " ",100 * (float)i / (float)totalentries, "% done. Speed is ", speed, " e/s. Still need ", float(totalentries - i) / speed, " s.");
+		}
 	} // for (int i = 0; i < totalentries; i++)
-	cout << "  Last entry: " << i << endl;
+	cout << "Last entry: " << i << endl;
 	fout->Write();
 	fout->Close();
 	pFile->Close();
