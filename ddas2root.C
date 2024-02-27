@@ -87,35 +87,23 @@ void ddas2root()
 
 	long totalentries, i;
 	int Nchannels;
-	char rawrootname[300];
-	char calrootname[300];
+	char rawrootname[400];
+	char calrootname[400];
 	char inpathname[300], outpathname[300];
-	char filename[300];
-	int runnumber = 202; // modify
+	char filename[400];
+	int runnumber = 220; // modify
 	double timestampshift = 0;
 
-	//sprintf(inpathname, "%s", "/mnt/daqtesting/pxct/stagearea/");
-	sprintf(inpathname, "%s", "/user/pxct/readout/rootfile/");
+	sprintf(inpathname, "%s", "/mnt/daqtesting/pxct/stagearea/");
+	//sprintf(inpathname, "%s", "/user/pxct/readout/rootfile/");
 
 	//sprintf(outpathname, "%s", "/mnt/daqtesting/pxct/stagearea/");
 	sprintf(outpathname, "%s", "/user/pxct/readout/rootfile/");
 
-	if (runnumber == 7)
-	{
-		sprintf(filename, "%s", "run0007_LEGe_152Eu_inChamber_vacuum_window1.5us_CFDdelay_adjusted_for_LEGe_efficiency_345min");
-	}
-	if (runnumber == 9)
-	{
-		sprintf(filename, "%s", "run0009_LEGe_152Eu_inChamber_vacuum_window1.5us_CFDdelay_adjusted_for_LEGe_efficiency_720min");
-	}
-	if (runnumber == 10)
-	{
-		sprintf(filename, "%s", "run0010_LEGe_152Eu_inChamber_vacuum_window0.5us_CFDdelay_adjusted_for_LEGe_efficiency_440min");
-	}
-	if (runnumber == 16)
-	{
-		sprintf(filename, "%s", "run0016_LEGe_152Eu_inChamber_vacuum_window0.5us_CFDdelay_adjusted_for_LEGe_efficiency_1000min");
-	}
+	if (runnumber == 7)	sprintf(filename, "%s", "run0007_LEGe_152Eu_inChamber_vacuum_window1.5us_CFDdelay_adjusted_for_LEGe_efficiency_345min");
+	if (runnumber == 9)	sprintf(filename, "%s", "run0009_LEGe_152Eu_inChamber_vacuum_window1.5us_CFDdelay_adjusted_for_LEGe_efficiency_720min");
+	if (runnumber == 10)	sprintf(filename, "%s", "run0010_LEGe_152Eu_inChamber_vacuum_window0.5us_CFDdelay_adjusted_for_LEGe_efficiency_440min");
+	if (runnumber == 16)	sprintf(filename, "%s", "run0016_LEGe_152Eu_inChamber_vacuum_window0.5us_CFDdelay_adjusted_for_LEGe_efficiency_1000min");
 	if (runnumber == 11)	sprintf(rawrootname, "%s%s", inpathname, "run0011-00_LEGe_room_background_24h_sources_in_rm1035.root");
 	if (runnumber == 13)	sprintf(rawrootname, "%s%s", inpathname, "run0013-00_LEGe_room_background_24h_no_sources_in_rm1035.root");
 	if (runnumber == 14)	sprintf(rawrootname, "%s%s", inpathname, "run0014-00_LEGe_55Fe_62min.root");
@@ -124,7 +112,6 @@ void ddas2root()
 	if (runnumber == 26)	sprintf(rawrootname, "%s%s", inpathname, "run0026-00_LEGe_MSD26_241Am_nocollimator_90min_window1us.root");
 	if (runnumber == 37)	sprintf(rawrootname, "%s%s", inpathname, "run0037-00_LEGe_MSD26_241Am_2mmcollimator_180min_window1us.root");
 	if (runnumber == 38)	sprintf(rawrootname, "%s%s", inpathname, "run0038-00_LEGe_MSD26_241Am_2mmcollimator_40min_window1us_CFDdelay0.5us.root");
-
 	if (runnumber == 11)	sprintf(calrootname, "%s%s", inpathname, "run0011-00_LEGe_room_background_24h_sources_in_rm1035_cal.root");
 	if (runnumber == 13)	sprintf(calrootname, "%s%s", inpathname, "run0013-00_LEGe_room_background_24h_no_sources_in_rm1035_cal.root");
 	if (runnumber == 14)	sprintf(calrootname, "%s%s", inpathname, "run0014-00_LEGe_55Fe_62min_cal.root");
@@ -133,151 +120,31 @@ void ddas2root()
 	if (runnumber == 26)	sprintf(calrootname, "%s%s", inpathname, "run0026-00_LEGe_MSD26_241Am_nocollimator_90min_window1us_cal.root");
 	if (runnumber == 37)	sprintf(calrootname, "%s%s", inpathname, "run0037-00_LEGe_MSD26_241Am_2mmcollimator_180min_window1us_cal.root");
 	if (runnumber == 38)	sprintf(calrootname, "%s%s", inpathname, "run0038-00_LEGe_MSD26_241Am_2mmcollimator_40min_window1us_CFDdelay0.5us_cal.root");
-	if (runnumber == 39)
-	{
-		sprintf(filename, "%s", "run0039-00_LEGe_MSD26_241Am_2mmcollimator_60min_window1us_CFDdelay0.3us");
-		sprintf(rawrootname, "%s%s%s", inpathname, filename, ".root");
-		sprintf(calrootname, "%s%s%s", inpathname, filename, "_cal.root");
-	}
-	if (runnumber == 40)
-	{
-		sprintf(filename, "%s", "run0040-00_LEGe_MSD26_241Am_2mmcollimator_20min_window1us_CFDdelay0.05us");
-		sprintf(rawrootname, "%s%s%s", inpathname, filename, ".root");
-		sprintf(calrootname, "%s%s%s", inpathname, filename, "_cal.root");
-	}
-	if (runnumber == 41)
-	{
-		sprintf(filename, "%s", "run0041-00_LEGe_MSD26_241Am_2mmcollimator_480min_window1us_CFDdelay0.16us");
-		sprintf(rawrootname, "%s%s%s", inpathname, filename, ".root");
-		sprintf(calrootname, "%s%s%s", inpathname, filename, "_cal.root");
-	}
-	if (runnumber == 42)
-	{
-		sprintf(filename, "%s", "run0042-00_LEGe_MSD26_XtRa_241Am_2mmcollimator_152Eu_11min_window1.5us_CFDdelay0.16us");
-		sprintf(rawrootname, "%s%s%s", inpathname, filename, ".root");
-		sprintf(calrootname, "%s%s%s", inpathname, filename, "_cal.root");
-	}
-	if (runnumber == 43)
-	{
-		sprintf(filename, "%s", "run0043-00_LEGe_MSD26_XtRa_241Am_2mmcollimator_152Eu_160min_window1.5us_CFDdelay0.16us");
-		sprintf(rawrootname, "%s%s%s", inpathname, filename, ".root");
-		sprintf(calrootname, "%s%s%s", inpathname, filename, "_cal.root");
-	}
-	if (runnumber == 45)
-	{
-		sprintf(filename, "%s", "run0045-00_LEGe_MSD_XtRa_241Am_3mmcollimator_152Eu_120min_window1.5us");
-		sprintf(rawrootname, "%s%s%s", inpathname, filename, ".root");
-		sprintf(calrootname, "%s%s%s", inpathname, filename, "_cal.root");
-	}
-	if (runnumber == 46)
-	{
-		sprintf(filename, "%s", "run0046-00_LEGe_MSD_XtRa_241Am_3mmcollimator_152Eu_121min_window1.5us");
-		sprintf(rawrootname, "%s%s%s", inpathname, filename, ".root");
-		sprintf(calrootname, "%s%s%s", inpathname, filename, "_cal.root");
-	}
-	if (runnumber == 47)
-	{
-		sprintf(filename, "%s", "run0047-00_LEGe_MSD_XtRa_Pulser_20min_window1.5us");
-		sprintf(rawrootname, "%s%s%s", inpathname, filename, ".root");
-		sprintf(calrootname, "%s%s%s", inpathname, filename, "_cal.root");
-	}
-	if (runnumber == 54)
-	{
-		sprintf(filename, "%s", "run0054-00_MSD26_241Am_2mmcollimator_60min_window1.5us_positivebias");
-		sprintf(rawrootname, "%s%s%s", inpathname, filename, ".root");
-		sprintf(calrootname, "%s%s%s", inpathname, filename, "_cal.root");
-	}
-	if (runnumber == 55)
-	{
-		sprintf(filename, "%s", "run0055-00_MSD26_148Gd_2mmcollimator_80min_window1.5us");
-		sprintf(rawrootname, "%s%s%s", inpathname, filename, ".root");
-		sprintf(calrootname, "%s%s%s", inpathname, filename, "_cal.root");
-	}
-	if (runnumber == 56)
-	{
-		sprintf(filename, "%s", "run0056-00_MSD26_241Am_2mmcollimator_60min_window1.5us_negativebias");
-		sprintf(rawrootname, "%s%s%s", inpathname, filename, ".root");
-		sprintf(calrootname, "%s%s%s", inpathname, filename, "_cal.root");
-	}
-	if (runnumber == 57)
-	{
-		sprintf(filename, "%s", "run0057-00_MSD_148Gd_2mmcollimator_120min_window1.5us");
-		sprintf(rawrootname, "%s%s%s", inpathname, filename, ".root");
-		sprintf(calrootname, "%s%s%s", inpathname, filename, "_cal.root");
-	}
-	if (runnumber == 60)
-	{
-		sprintf(filename, "%s", "run0060_LEGe_XtRa_152Eu_inChamber_400min_efficiency");
-		sprintf(rawrootname, "%s%s%s", inpathname, filename, ".root");
-		sprintf(calrootname, "%s%s%s", inpathname, filename, "_cal.root");
-	}
-	if (runnumber == 63)
-	{
-		sprintf(filename, "%s", "run0063_MSD_LEGe_XtRa_241Am_inChamber_2mmcollimator_600min");
-		sprintf(rawrootname, "%s%s%s", inpathname, filename, ".root");
-		sprintf(calrootname, "%s%s%s", inpathname, filename, "_cal.root");
-	}
-	if (runnumber == 64)
-	{
-		sprintf(filename, "%s", "run0064_LEGe_MSD_XtRa_241Am_inChamber_2mmcollimator_152Eu_outChamber_357min");
-		sprintf(rawrootname, "%s%s%s", inpathname, filename, ".root");
-		sprintf(calrootname, "%s%s%s", inpathname, filename, "_cal.root");
-	}
-	if (runnumber == 65)
-	{
-		sprintf(filename, "%s", "run0065_LEGe_MSD_XtRa_241Am_inChamber_2mmcollimator_152Eu_outChamber_663min");
-		sprintf(rawrootname, "%s%s%s", inpathname, filename, ".root");
-		sprintf(calrootname, "%s%s%s", inpathname, filename, "_cal.root");
-	}
-	if (runnumber == 66)
-	{
-		sprintf(filename, "%s", "run0066_LEGe_MSD_XtRa_241Am_inChamber_2mmcollimator_152Eu_outChamber_440min");
-		sprintf(rawrootname, "%s%s%s", inpathname, filename, ".root");
-		sprintf(calrootname, "%s%s%s", inpathname, filename, "_cal.root");
-	}
-	if (runnumber == 74) // 67, 68, 69, 72, 73, 74
-	{
-		sprintf(filename, "%s", "run0074_LEGe_MSD_XtRa_241Am_inChamber_152Eu_outChamber_triggerfilter_adjusting_55min");
-		sprintf(rawrootname, "%s%s%s", inpathname, filename, ".root");
-		sprintf(calrootname, "%s%s%s", inpathname, filename, "_cal.root");
-	}
-	if (runnumber == 70)
-	{
-		sprintf(filename, "%s", "run0070_LEGe_MSD_XtRa_241Am_inChamber_2mmcollimator_152Eu_outChamber_CFDdelay_adjusted_1035min");
-		sprintf(rawrootname, "%s%s%s", inpathname, filename, ".root");
-		sprintf(calrootname, "%s%s%s", inpathname, filename, "_cal.root");
-	}
-	if (runnumber == 75)
-	{
-		sprintf(filename, "%s", "run0075_LEGe_MSD_XtRa_241Am_inChamber_nocollimator_152Eu_outChamber_CFDdelay_adjusted_1511min");
-		sprintf(rawrootname, "%s%s%s", inpathname, filename, ".root");
-		sprintf(calrootname, "%s%s%s", inpathname, filename, "_cal.root");
-	}
-	if (runnumber == 71)
-	{
-		sprintf(filename, "%s", "run0071_LEGe_MSD_XtRa_241Am_inChamber_2mmcollimator_152Eu_outChamber_CFDdelay_adjusted_1068min");
-		sprintf(rawrootname, "%s%s%s", inpathname, filename, ".root");
-		sprintf(calrootname, "%s%s%s", inpathname, filename, "_cal.root");
-		// timestampshift = 6.21e13;
-	}
-	if (runnumber == 76)
-	{
-		sprintf(filename, "%s", "run0076_LEGe_MSD_241Am_inChamber_window1us_742min");
-		sprintf(rawrootname, "%s%s%s", inpathname, filename, ".root");
-		sprintf(calrootname, "%s%s%s", inpathname, filename, "_cal.root");
-	}
-	if (runnumber == 77)
-	{
-		sprintf(filename, "%s", "run0077_LEGe_MSD_241Am_inChamber_window1us_CFDdelay_adjusting_45min"); // name both input and output root files accordingly
-		sprintf(rawrootname, "%s%s%s", inpathname, filename, ".root");
-		sprintf(calrootname, "%s%s%s", inpathname, filename, "_cal.root");
-	}
-	if (runnumber == 78)
-	{
-		sprintf(filename, "%s", "run0078_LEGe_MSD_241Am_inChamber_window1us_CFDdelay_adjusting_66min"); // name both input and output root files accordingly
-		sprintf(rawrootname, "%s%s%s", inpathname, filename, ".root");
-		sprintf(calrootname, "%s%s%s", inpathname, filename, "_cal.root");
-	}
+
+	if (runnumber == 39)	sprintf(filename, "%s", "run0039-00_LEGe_MSD26_241Am_2mmcollimator_60min_window1us_CFDdelay0.3us");
+	if (runnumber == 40)	sprintf(filename, "%s", "run0040-00_LEGe_MSD26_241Am_2mmcollimator_20min_window1us_CFDdelay0.05us");
+	if (runnumber == 41)	sprintf(filename, "%s", "run0041-00_LEGe_MSD26_241Am_2mmcollimator_480min_window1us_CFDdelay0.16us");
+	if (runnumber == 42)	sprintf(filename, "%s", "run0042-00_LEGe_MSD26_XtRa_241Am_2mmcollimator_152Eu_11min_window1.5us_CFDdelay0.16us");
+	if (runnumber == 43)	sprintf(filename, "%s", "run0043-00_LEGe_MSD26_XtRa_241Am_2mmcollimator_152Eu_160min_window1.5us_CFDdelay0.16us");
+	if (runnumber == 45)	sprintf(filename, "%s", "run0045-00_LEGe_MSD_XtRa_241Am_3mmcollimator_152Eu_120min_window1.5us");
+	if (runnumber == 46)	sprintf(filename, "%s", "run0046-00_LEGe_MSD_XtRa_241Am_3mmcollimator_152Eu_121min_window1.5us");
+	if (runnumber == 47)	sprintf(filename, "%s", "run0047-00_LEGe_MSD_XtRa_Pulser_20min_window1.5us");
+	if (runnumber == 54)	sprintf(filename, "%s", "run0054-00_MSD26_241Am_2mmcollimator_60min_window1.5us_positivebias");
+	if (runnumber == 55)	sprintf(filename, "%s", "run0055-00_MSD26_148Gd_2mmcollimator_80min_window1.5us");
+	if (runnumber == 56)	sprintf(filename, "%s", "run0056-00_MSD26_241Am_2mmcollimator_60min_window1.5us_negativebias");
+	if (runnumber == 57)	sprintf(filename, "%s", "run0057-00_MSD_148Gd_2mmcollimator_120min_window1.5us");
+	if (runnumber == 60)	sprintf(filename, "%s", "run0060_LEGe_XtRa_152Eu_inChamber_400min_efficiency");
+	if (runnumber == 63)	sprintf(filename, "%s", "run0063_MSD_LEGe_XtRa_241Am_inChamber_2mmcollimator_600min");
+	if (runnumber == 64)	sprintf(filename, "%s", "run0064_LEGe_MSD_XtRa_241Am_inChamber_2mmcollimator_152Eu_outChamber_357min");
+	if (runnumber == 65)	sprintf(filename, "%s", "run0065_LEGe_MSD_XtRa_241Am_inChamber_2mmcollimator_152Eu_outChamber_663min");
+	if (runnumber == 66)	sprintf(filename, "%s", "run0066_LEGe_MSD_XtRa_241Am_inChamber_2mmcollimator_152Eu_outChamber_440min");
+	if (runnumber == 74)	sprintf(filename, "%s", "run0074_LEGe_MSD_XtRa_241Am_inChamber_152Eu_outChamber_triggerfilter_adjusting_55min");
+	if (runnumber == 70)	sprintf(filename, "%s", "run0070_LEGe_MSD_XtRa_241Am_inChamber_2mmcollimator_152Eu_outChamber_CFDdelay_adjusted_1035min");
+	if (runnumber == 75)	sprintf(filename, "%s", "run0075_LEGe_MSD_XtRa_241Am_inChamber_nocollimator_152Eu_outChamber_CFDdelay_adjusted_1511min");
+	if (runnumber == 71)	sprintf(filename, "%s", "run0071_LEGe_MSD_XtRa_241Am_inChamber_2mmcollimator_152Eu_outChamber_CFDdelay_adjusted_1068min");
+	if (runnumber == 76)	sprintf(filename, "%s", "run0076_LEGe_MSD_241Am_inChamber_window1us_742min");
+	if (runnumber == 77)	sprintf(filename, "%s", "run0077_LEGe_MSD_241Am_inChamber_window1us_CFDdelay_adjusting_45min");
+	if (runnumber == 78)	sprintf(filename, "%s", "run0078_LEGe_MSD_241Am_inChamber_window1us_CFDdelay_adjusting_66min");
 	if (runnumber == 79)	sprintf(filename, "%s", "run0079_LEGe_MSD_241Am_inChamber_window1.5us_CFDdelay_adjusted_1560min");
 	if (runnumber == 80)	sprintf(filename, "%s", "run0080_LEGe_MSD_241Am_inChamber_window1.5us_CFDdelay_adjusted_2280min");
 	if (runnumber == 81)	sprintf(filename, "%s", "run0081_LEGe_MSD_241Am_inChamber_window1.5us_CFDdelay_adjusted_2460min");
@@ -303,6 +170,7 @@ void ddas2root()
 	if (runnumber == 101)	sprintf(filename, "%s", "run0101_LEGe_MSD26_241Am_inChamber_2mmCollimator_window1.5us_CFDdelay_adjusted_9000min");
 	if (runnumber == 102)	sprintf(filename, "%s", "run0102_LEGe_MSD26_241Am_inChamber_2mmCollimator_window1.5us_CFDdelay_adjusted_360min");
 	if (runnumber == 103)	sprintf(filename, "%s", "run0103_LEGe_MSD26_241Am_inChamber_2mmCollimator_window1.5us_CFDdelay_adjusted_9000min");
+
 	if (runnumber == 200)	sprintf(filename, "%s", "run0200_LEGe_MSD26_137Cs_M4038_inChamber_vacuum_North_16mm_South_12mm_away_window1.5us_CFDdelay_adjusted");
 	if (runnumber == 201)	sprintf(filename, "%s", "run0201_LEGe_MSD26_137Cs_M4038_inChamber_vacuum_North_16mm_South_12mm_away_window1.5us_CFDdelay_adjusted");
 	if (runnumber == 202)	sprintf(filename, "%s", "run0202_LEGe_MSD26_137Cs_M4038_inChamber_vacuum_North_16mm_South_12mm_away_window1.5us_CFDdelay_adjusted");
@@ -319,7 +187,12 @@ void ddas2root()
 	if (runnumber == 213)	sprintf(filename, "%s", "run0213_North_152Eu_Z2707_On_Cap_window0.02us_CFDdelay_adjusted_Extreme_Summing_for_fun");
 	if (runnumber == 214)	sprintf(filename, "%s", "run0214_LEGe_XtRa_MSD26_60Co_I7281_inChamber_vacuum_XtRa_12mm_away_window0.02us_CFDdelay_adjusted");
 	if (runnumber == 215)	sprintf(filename, "%s", "run0215_LEGe_XtRa_MSD26_60Co_I7281_inChamber_vacuum_XtRa_12mm_away_window1us_CFDdelay_adjusted");
-
+	if (runnumber == 216)	sprintf(filename, "%s", "run0216_LEGe_XtRa_MSD26_60Co_I7281_inChamber_vacuum_XtRa_12mm_away_window1us_CFDdelay_adjusted_AnalogGain1.0");
+	if (runnumber == 217)	sprintf(filename, "%s", "run0217_LEGe_XtRa_MSD26_60Co_I7281_inChamber_vacuum_XtRa_12mm_away_window1us_CFDdelay_adjusted_AnalogGain1.0");
+	if (runnumber == 218)	sprintf(filename, "%s", "run0218_LEGe_XtRa_MSD26_60Co_I7281_inChamber_vacuum_XtRa_12mm_away_window1us_CFDdelay_adjusted_AnalogGain1.0");
+	if (runnumber == 219)	sprintf(filename, "%s", "run0219_LEGe_XtRa_MSD26_60Co_I7281_inChamber_vacuum_XtRa_12mm_away_window1us_CFDdelay0.5usforXtRa_AnalogGain1.0");
+	if (runnumber == 220)	sprintf(filename, "%s", "run0220_LEGe_XtRa_MSD26_60Co_I7281_inChamber_vacuum_XtRa_12mm_away_window1us_CFDdelay0.5us_TriggerRiseandGap0.5usforXtRa_AnalogGain1.0");
+	
 	// name both input and output root files accordingly
 	sprintf(rawrootname, "%s%s%s", inpathname, filename, ".root");
 	sprintf(calrootname, "%s%s%s", outpathname, filename, "_cal.root");
@@ -398,11 +271,14 @@ void ddas2root()
 	// 	if (runnumber == 152)	hlege_e = new TH1D("hlege_e", "hlege_e", 60000, -0.0001420032512, 436.2768890605690); // 60000 channels, 7.3 eV per channel
 	//	if (runnumber == 241)	hlege_e = new TH1D("hlege_e", "hlege_e", 60000, 0.0541091878755, 435.4667414524260); // 60000 channels, 7.3 eV per channel
 	//hlege_e = new TH1D("hlege_e", "hlege_e", 60000, 0.0541091878755, 435.4667414524260); // 60000 channels, 7.3 eV per channel
-	hlege_e = new TH1D("hlege_e", "hlege_e", 60000, -0.0540888491631, 435.8137733893930); // 60000 channels, 7.3 eV per channel run0060
+	//hlege_e = new TH1D("hlege_e", "hlege_e", 60000, -0.0540888491631, 435.8137733893930); // 60000 channels, 7.3 eV per channel run0060
+	hlege_e = new TH1D("hlege_e", "hlege_e", 60000, 0.7583911439124, 1679.872782287820); // 60000 channels, 28 eV per channel run0216 60Co
 	// hnorth_e = new TH1D("hnorth_e", "hnorth_e", 60000, -0.1774488889544, 2286.04224413527); // 60000 channels, 38 eV per channel from Excel calibration
-	hnorth_e = new TH1D("hnorth_e", "hnorth_e", 60000, -0.1943988436200, 2285.29642151811); // 60000 channels, 38 eV per channel from Excel calibration 1/11/2024 run 97-98
+	//hnorth_e = new TH1D("hnorth_e", "hnorth_e", 60000, -0.1943988436200, 2285.29642151811); // 60000 channels, 38 eV per channel from Excel calibration 1/11/2024 run97-98
+	hnorth_e = new TH1D("hnorth_e", "hnorth_e", 60000, -1.1199018269051, 8815.85740025835); // 60000 channels, 147 eV per channel from Excel calibration run0216 60Co 2/25/2024
 	// hsouth_e = new TH1D("hsouth_e", "hsouth_e", 60000, -0.1622624327090, 2278.22727449908); // 60000 channels, 38 eV per channel from Excel calibration
-	hsouth_e = new TH1D("hsouth_e", "hsouth_e", 60000, -0.1195774566938, 2274.16156253889); // 60000 channels, 38 eV per channel from Excel calibration 1/11/2024 run 97-98
+	//hsouth_e = new TH1D("hsouth_e", "hsouth_e", 60000, -0.1195774566938, 2274.16156253889); // 60000 channels, 38 eV per channel from Excel calibration 1/11/2024 run97-98
+	hsouth_e = new TH1D("hsouth_e", "hsouth_e", 60000, -0.6039596145015, 8770.24505369435); // 60000 channels, 146 eV per channel from Excel calibration run0216 60Co 2/25/2024
 	hmsd12_e = new TH1D("hmsd12_e", "hmsd12_e", 60000, 0, 7941.93363844394); // 60000 channels, 512 eV per channel
 	hmsd26_e = new TH1D("hmsd26_e", "hmsd26_e", 60000, -0.0016133749182, 6931.63915798418); // 60000 channels, 115 eV per channel from Excel calibration 1/18/2024 run 100
 	//hmsdtotal_e = new TH1D("hmsdtotal_e", "hmsdtotal_e", 6900, 0, 6900); // 6900 channels, 1000 eV per channel
@@ -435,7 +311,8 @@ void ddas2root()
 			{
 				//lege_e = pChan[j]->GetEnergy();
 				//lege_e = pChan[j]->GetEnergy() * 0.0072712838511 - 0.0001420032512;
-				lege_e = pChan[j]->GetEnergy() * 0.0072644643706 - 0.054088849163; // based on run0060
+				//lege_e = pChan[j]->GetEnergy() * 0.0072644643706 - 0.054088849163; // based on run0060
+				lege_e = pChan[j]->GetEnergy() * 0.0279852398524 - 0.758391143912; // based on run0216
 				hlege_e->Fill(lege_e);
 				lege_t = pChan[j]->GetTime() + timestampshift;
 			}
@@ -449,7 +326,8 @@ void ddas2root()
 			{
 				//north_e = pChan[j]->GetEnergy();
 				//north_e = pChan[j]->GetEnergy() * 0.0381036615504 - 0.1774488889544; // based on run0060
-				north_e = pChan[j]->GetEnergy() * 0.0380915136727 - 0.1943988436200; // based on run0098
+				//north_e = pChan[j]->GetEnergy() * 0.0380915136727 - 0.1943988436200; // based on run0098
+				north_e = pChan[j]->GetEnergy() * 0.1469496217014 - 1.1199018269051; // based on run0216
 				hnorth_e->Fill(north_e);
 				north_t = pChan[j]->GetTime() + timestampshift;
 			}
@@ -463,7 +341,8 @@ void ddas2root()
 			{
 				//south_e = pChan[j]->GetEnergy();
 				//south_e = pChan[j]->GetEnergy() * 0.0379731589489 - 0.1622624327090; // based on run0060
-				south_e = pChan[j]->GetEnergy() * 0.0379046856666 - 0.1195774566938; // based on run0098
+				//south_e = pChan[j]->GetEnergy() * 0.0379046856666 - 0.1195774566938; // based on run0098
+				south_e = pChan[j]->GetEnergy() * 0.1461808168885 - 0.6039596145015; // based on run0216
 				hsouth_e->Fill(south_e);
 				south_t = pChan[j]->GetTime() + timestampshift;
 			}
