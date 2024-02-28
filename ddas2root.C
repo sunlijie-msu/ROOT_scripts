@@ -91,7 +91,7 @@ void ddas2root()
 	char calrootname[400];
 	char inpathname[300], outpathname[300];
 	char filename[400];
-	int runnumber = 220; // modify
+	int runnumber = 224; // modify
 	double timestampshift = 0;
 
 	sprintf(inpathname, "%s", "/mnt/daqtesting/pxct/stagearea/");
@@ -192,6 +192,10 @@ void ddas2root()
 	if (runnumber == 218)	sprintf(filename, "%s", "run0218_LEGe_XtRa_MSD26_60Co_I7281_inChamber_vacuum_XtRa_12mm_away_window1us_CFDdelay_adjusted_AnalogGain1.0");
 	if (runnumber == 219)	sprintf(filename, "%s", "run0219_LEGe_XtRa_MSD26_60Co_I7281_inChamber_vacuum_XtRa_12mm_away_window1us_CFDdelay0.5usforXtRa_AnalogGain1.0");
 	if (runnumber == 220)	sprintf(filename, "%s", "run0220_LEGe_XtRa_MSD26_60Co_I7281_inChamber_vacuum_XtRa_12mm_away_window1us_CFDdelay0.5us_TriggerRiseandGap0.5usforXtRa_AnalogGain1.0");
+	if (runnumber == 221)	sprintf(filename, "%s", "run0221_LEGe_XtRa_152Eu_Z2707_inChamber_atmosphere_XtRa_20ishmm_away_window1us_CFDdelay0.16us_AnalogGain4.0");
+	if (runnumber == 222)	sprintf(filename, "%s", "run0222_LEGe_XtRa_152Eu_Z2707_inChamber_atmosphere_XtRa_20ishmm_away_window1us_CFDoff_AnalogGain4.0");
+	if (runnumber == 223)	sprintf(filename, "%s", "run0223_LEGe_XtRa_152Eu_Z2707_inChamber_atmosphere_XtRa_12ishmm_away_window1us_CFDdelay0.5us_AnalogGain4.0");
+	if (runnumber == 224)	sprintf(filename, "%s", "run0224_LEGe_XtRa_152Eu_Z2707_inChamber_atmosphere_XtRa_12ishmm_away_window1us_CFDoff_AnalogGain4.0");
 	
 	// name both input and output root files accordingly
 	sprintf(rawrootname, "%s%s%s", inpathname, filename, ".root");
@@ -240,8 +244,8 @@ void ddas2root()
 	tree->Branch("south_t", &south_t, "south_t/D");
  	//tree->Branch("msd12_e", &msd12_e, "msd12_e/D");
  	//tree->Branch("msd12_t", &msd12_t, "msd12_t/D");
- 	tree->Branch("msd26_e", &msd26_e, "msd26_e/D");
- 	tree->Branch("msd26_t", &msd26_t, "msd26_t/D");
+ 	//tree->Branch("msd26_e", &msd26_e, "msd26_e/D");
+ 	//tree->Branch("msd26_t", &msd26_t, "msd26_t/D");
  	//tree->Branch("msdtotal_e", &msdtotal_e, "msdtotal_e/D");
 
 // 	tree->Branch("lege_e_low", &lege_e_low, "lege_e_low/D");
@@ -271,14 +275,14 @@ void ddas2root()
 	// 	if (runnumber == 152)	hlege_e = new TH1D("hlege_e", "hlege_e", 60000, -0.0001420032512, 436.2768890605690); // 60000 channels, 7.3 eV per channel
 	//	if (runnumber == 241)	hlege_e = new TH1D("hlege_e", "hlege_e", 60000, 0.0541091878755, 435.4667414524260); // 60000 channels, 7.3 eV per channel
 	//hlege_e = new TH1D("hlege_e", "hlege_e", 60000, 0.0541091878755, 435.4667414524260); // 60000 channels, 7.3 eV per channel
-	//hlege_e = new TH1D("hlege_e", "hlege_e", 60000, -0.0540888491631, 435.8137733893930); // 60000 channels, 7.3 eV per channel run0060
-	hlege_e = new TH1D("hlege_e", "hlege_e", 60000, 0.7583911439124, 1679.872782287820); // 60000 channels, 28 eV per channel run0216 60Co
+	hlege_e = new TH1D("hlege_e", "hlege_e", 60000, -0.0540888491631, 435.8137733893930); // 60000 channels, 7.3 eV per channel run0060
+	//hlege_e = new TH1D("hlege_e", "hlege_e", 60000, 0.7583911439124, 1679.872782287820); // 60000 channels, 28 eV per channel run0216 60Co
 	// hnorth_e = new TH1D("hnorth_e", "hnorth_e", 60000, -0.1774488889544, 2286.04224413527); // 60000 channels, 38 eV per channel from Excel calibration
-	//hnorth_e = new TH1D("hnorth_e", "hnorth_e", 60000, -0.1943988436200, 2285.29642151811); // 60000 channels, 38 eV per channel from Excel calibration 1/11/2024 run97-98
-	hnorth_e = new TH1D("hnorth_e", "hnorth_e", 60000, -1.1199018269051, 8815.85740025835); // 60000 channels, 147 eV per channel from Excel calibration run0216 60Co 2/25/2024
+	hnorth_e = new TH1D("hnorth_e", "hnorth_e", 60000, -0.1943988436200, 2285.29642151811); // 60000 channels, 38 eV per channel from Excel calibration 1/11/2024 run97-98
+	//hnorth_e = new TH1D("hnorth_e", "hnorth_e", 60000, -1.1199018269051, 8815.85740025835); // 60000 channels, 147 eV per channel from Excel calibration run0216 60Co 2/25/2024
 	// hsouth_e = new TH1D("hsouth_e", "hsouth_e", 60000, -0.1622624327090, 2278.22727449908); // 60000 channels, 38 eV per channel from Excel calibration
-	//hsouth_e = new TH1D("hsouth_e", "hsouth_e", 60000, -0.1195774566938, 2274.16156253889); // 60000 channels, 38 eV per channel from Excel calibration 1/11/2024 run97-98
-	hsouth_e = new TH1D("hsouth_e", "hsouth_e", 60000, -0.6039596145015, 8770.24505369435); // 60000 channels, 146 eV per channel from Excel calibration run0216 60Co 2/25/2024
+	hsouth_e = new TH1D("hsouth_e", "hsouth_e", 60000, -0.1195774566938, 2274.16156253889); // 60000 channels, 38 eV per channel from Excel calibration 1/11/2024 run97-98
+	//hsouth_e = new TH1D("hsouth_e", "hsouth_e", 60000, -0.6039596145015, 8770.24505369435); // 60000 channels, 146 eV per channel from Excel calibration run0216 60Co 2/25/2024
 	hmsd12_e = new TH1D("hmsd12_e", "hmsd12_e", 60000, 0, 7941.93363844394); // 60000 channels, 512 eV per channel
 	hmsd26_e = new TH1D("hmsd26_e", "hmsd26_e", 60000, -0.0016133749182, 6931.63915798418); // 60000 channels, 115 eV per channel from Excel calibration 1/18/2024 run 100
 	//hmsdtotal_e = new TH1D("hmsdtotal_e", "hmsdtotal_e", 6900, 0, 6900); // 6900 channels, 1000 eV per channel
@@ -311,8 +315,8 @@ void ddas2root()
 			{
 				//lege_e = pChan[j]->GetEnergy();
 				//lege_e = pChan[j]->GetEnergy() * 0.0072712838511 - 0.0001420032512;
-				//lege_e = pChan[j]->GetEnergy() * 0.0072644643706 - 0.054088849163; // based on run0060
-				lege_e = pChan[j]->GetEnergy() * 0.0279852398524 - 0.758391143912; // based on run0216
+				lege_e = pChan[j]->GetEnergy() * 0.0072644643706 - 0.054088849163; // based on run0060
+				//lege_e = pChan[j]->GetEnergy() * 0.0279852398524 - 0.758391143912; // based on run0216
 				hlege_e->Fill(lege_e);
 				lege_t = pChan[j]->GetTime() + timestampshift;
 			}
@@ -326,8 +330,8 @@ void ddas2root()
 			{
 				//north_e = pChan[j]->GetEnergy();
 				//north_e = pChan[j]->GetEnergy() * 0.0381036615504 - 0.1774488889544; // based on run0060
-				//north_e = pChan[j]->GetEnergy() * 0.0380915136727 - 0.1943988436200; // based on run0098
-				north_e = pChan[j]->GetEnergy() * 0.1469496217014 - 1.1199018269051; // based on run0216
+				north_e = pChan[j]->GetEnergy() * 0.0380915136727 - 0.1943988436200; // based on run0098
+				//north_e = pChan[j]->GetEnergy() * 0.1469496217014 - 1.1199018269051; // based on run0216
 				hnorth_e->Fill(north_e);
 				north_t = pChan[j]->GetTime() + timestampshift;
 			}
@@ -341,8 +345,8 @@ void ddas2root()
 			{
 				//south_e = pChan[j]->GetEnergy();
 				//south_e = pChan[j]->GetEnergy() * 0.0379731589489 - 0.1622624327090; // based on run0060
-				//south_e = pChan[j]->GetEnergy() * 0.0379046856666 - 0.1195774566938; // based on run0098
-				south_e = pChan[j]->GetEnergy() * 0.1461808168885 - 0.6039596145015; // based on run0216
+				south_e = pChan[j]->GetEnergy() * 0.0379046856666 - 0.1195774566938; // based on run0098
+				//south_e = pChan[j]->GetEnergy() * 0.1461808168885 - 0.6039596145015; // based on run0216
 				hsouth_e->Fill(south_e);
 				south_t = pChan[j]->GetTime() + timestampshift;
 			}
