@@ -91,7 +91,7 @@ void ddas2root()
 	char calrootname[400];
 	char inpathname[300], outpathname[300];
 	char filename[400];
-	int runnumber = 224; // modify
+	int runnumber = 225; // modify
 	double timestampshift = 0;
 
 	sprintf(inpathname, "%s", "/mnt/daqtesting/pxct/stagearea/");
@@ -196,6 +196,7 @@ void ddas2root()
 	if (runnumber == 222)	sprintf(filename, "%s", "run0222_LEGe_XtRa_152Eu_Z2707_inChamber_atmosphere_XtRa_20ishmm_away_window1us_CFDoff_AnalogGain4.0");
 	if (runnumber == 223)	sprintf(filename, "%s", "run0223_LEGe_XtRa_152Eu_Z2707_inChamber_atmosphere_XtRa_12ishmm_away_window1us_CFDdelay0.5us_AnalogGain4.0");
 	if (runnumber == 224)	sprintf(filename, "%s", "run0224_LEGe_XtRa_152Eu_Z2707_inChamber_atmosphere_XtRa_12ishmm_away_window1us_CFDoff_AnalogGain4.0");
+	if (runnumber == 225)	sprintf(filename, "%s", "run0225_LEGe_XtRa_152Eu_Z2707_inChamber_atmosphere_XtRa_12mm_away_window1us_CFDdelay0.3us_AnalogGain4.0");
 	
 	// name both input and output root files accordingly
 	sprintf(rawrootname, "%s%s%s", inpathname, filename, ".root");
