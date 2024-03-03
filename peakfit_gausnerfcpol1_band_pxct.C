@@ -43,13 +43,13 @@ void peakfit_gausnerfcpol1_band_pxct() // get histogram and EMG fit one peak
 {
 	const int ID1 = 0;// i=ID1//which detector
 	const int ID2 = 0;// i<=ID2// which detector
-	double binwidth = 0.038;// modify
+	double binwidth;
 	double fitrange_min = 0, fitrange_max = 0;
 	double histomin = 0, histomax = 0, histoNbins = 0;
 	int minbin = 0, maxbin = 0;
 	float Eg, Eg2nd, gaplow = 70., gaphigh = 70.;//fitting range随分辨不同调整
 	int i, ii, jj, ibin;
-	char paraprint[100], histo_name[200], hfit_name[200];
+	char paraprint[300], histo_name[300], hfit_name[300];
 	TH1D* histo[ID2 + 1];//TH1D peak search+gauss fit, create histograms
 	int fit_Nbins;
 	const int peaknum = 50;//search peak numbers
@@ -66,8 +66,8 @@ void peakfit_gausnerfcpol1_band_pxct() // get histogram and EMG fit one peak
 	double inflation_factor = 1.0;
 	TH1D* h_confidence_interval[ID2 + 1][peaknum];
 	TCanvas* canvaspeak[ID2 + 1][peaknum];
-	char pathname[150];
-	char filename[150];
+	char pathname[300];
+	char filename[300];
 	sprintf(pathname, "%s", "F:/e21010/pxct/");
 	sprintf(filename, "%s%s", pathname, "lower_bounds.dat");
 	ifstream infilelowerbounds(filename, ios::in);
@@ -116,6 +116,9 @@ void peakfit_gausnerfcpol1_band_pxct() // get histogram and EMG fit one peak
 	lower_search_bound[0][28] = 1002;	upper_search_bound[0][28] = 1008; //152Eu 1005 XtRa
 	lower_search_bound[0][29] = 1209;	upper_search_bound[0][29] = 1216; //152Eu 1213 XtRa
 	lower_search_bound[0][30] = 1524;	upper_search_bound[0][30] = 1532; //152Eu 1528 XtRa
+	lower_search_bound[0][31] = 1169;	upper_search_bound[0][31] = 1177; //60Co 1173.228 XtRa
+	lower_search_bound[0][32] = 1327;	upper_search_bound[0][32] = 1337; //60Co 1332.501 XtRa
+	lower_search_bound[0][33] = 2500;	upper_search_bound[0][33] = 2510; //60Co sum peak XtRa
 
 
 	for (i = ID1; i <= ID2; i++)//which detector no need to change
@@ -130,7 +133,7 @@ void peakfit_gausnerfcpol1_band_pxct() // get histogram and EMG fit one peak
 
 	sprintf(filename, "%s%s", pathname, "peakpara.dat");
 	ofstream outfile(filename, ios::out);
-	sprintf(filename, "%s%s", pathname, "run0097_98_LEGe_XtRa_152Eu_inChamber_window1.5us_CFDdelay_adjusted_930min_efficiency_cal.root"); // modify
+	sprintf(filename, "%s%s", pathname, "run0216_0217_0218_LEGe_XtRa_MSD26_60Co_I7281_inChamber_vacuum_XtRa_12mm_away_window1us_CFDdelay_adjusted_AnalogGain1.0_cal.root"); // modify
 	TFile* fin = new TFile(filename);//after this statement, you can use any ROOT command1 for this rootfile
 	cout << filename << endl;
 
@@ -141,11 +144,12 @@ void peakfit_gausnerfcpol1_band_pxct() // get histogram and EMG fit one peak
 		histo[i]->Rebin(1);
 		histo[i]->Sumw2(kFALSE);
 		histo[i]->SetBinErrorOption(TH1::kPoisson);
+		binwidth = histo[i]->GetBinWidth(1);
 	}
 
 	for (i = ID1; i <= ID2; i++) // no need to change
 	{
-		for (ii = 14; ii <= 14; ii++)// modify which peak in one detector =0<=13
+		for (ii = 33; ii <= 33; ii++)// modify which peak in one detector =0<=13
 		{
 			sprintf(hfit_name, "%s%d%s%d", histo_name, i, "_peak", ii);
 			canvaspeak[i][ii] = new TCanvas(hfit_name, hfit_name, 1400, 740);//建立画布
@@ -159,7 +163,7 @@ void peakfit_gausnerfcpol1_band_pxct() // get histogram and EMG fit one peak
 			TPad* pad2 = new TPad("pad2", "The pad 30% of the height", 0.0, 0.0, 1.0, 0.3);
 
 			// Set margins for pad1
-			pad1->SetTopMargin(0.02);  // relative to pad1 height
+			pad1->SetTopMargin(0.055);  // relative to pad1 height
 			pad1->SetBottomMargin(0.13); // no bottom margin
 			pad1->SetLeftMargin(0.09);  // relative to pad1 width
 			pad1->SetRightMargin(0.025); // relative to pad1 width
@@ -177,7 +181,7 @@ void peakfit_gausnerfcpol1_band_pxct() // get histogram and EMG fit one peak
 
 			histo[i]->SetTitle("");//图名
 			histo[i]->GetXaxis()->SetTitle("Energy (keV)");//轴名
-			histo[i]->GetYaxis()->SetTitle("Counts per 38 eV");// modify
+			histo[i]->GetYaxis()->SetTitle("Counts per 146 eV");// modify
 			histo[i]->GetXaxis()->CenterTitle();//居中
 			histo[i]->GetYaxis()->CenterTitle();//居中
 			histo[i]->GetXaxis()->SetLabelFont(132);//坐标字体
@@ -228,6 +232,9 @@ void peakfit_gausnerfcpol1_band_pxct() // get histogram and EMG fit one peak
 			if (ii == 28) { gaplow = 2.9; gaphigh = 3.0; Eg = 1005.27; }//152Eu 1005 XtRa
 			if (ii == 29) { gaplow = 3.2; gaphigh = 3.3; Eg = 1212.948; }//152Eu 1213 XtRa
 			if (ii == 30) { gaplow = 4.0; gaphigh = 5.3; Eg = 1528.10; }//152Eu 1528 XtRa
+			if (ii == 31) { gaplow = 4.0; gaphigh = 4.0; Eg = 1173.228; } //60Co 1173.228 XtRa
+			if (ii == 32) { gaplow = 4.0; gaphigh = 4.0; Eg = 1332.501; } //60Co 1332.501 XtRa
+			if (ii == 33) { gaplow = 4.3; gaphigh = 4.3; Eg = 2505.692; } //60Co sum peak XtRa
 
 			histomin = histo[i]->GetXaxis()->GetXmin();
 			histomax = histo[i]->GetXaxis()->GetXmax();
@@ -276,9 +283,9 @@ void peakfit_gausnerfcpol1_band_pxct() // get histogram and EMG fit one peak
 			fEMG[ii]->SetParameters(aguess, bguess, peaky[ii], 0.2, sigmaguess, peakx[ii]);//initial value [0]-A, [1]-B, [2]-N, [3]-τ, [4]-σ, [5]-μ
 			// 			fEMG[ii]->SetParLimits(0,-500,500);//Bkg A
 			// 			fEMG[ii]->SetParLimits(1,-50000,300000);//Bkg B
-			fEMG[ii]->SetParLimits(2, 30000, 40000);//Constant,min,max
-			fEMG[ii]->SetParLimits(3, 0.1, 1.0);//Tau
-			fEMG[ii]->SetParLimits(4, 0.1, 1.0);//Sigma
+			fEMG[ii]->SetParLimits(2, 1e3, 2e4);//Constant,min,max
+			fEMG[ii]->SetParLimits(3, 0.1, 1.1);//Tau
+			fEMG[ii]->SetParLimits(4, 0.1, 1.1);//Sigma
 			fEMG[ii]->SetParLimits(5, peakx[ii] - gaplow / 3, peakx[ii] + gaphigh / 2);//Mean
 			//fEMG[ii]->SetParLimits(5, 1298.8, 1299.9);//Mean
 			fEMG[ii]->SetParNames("BkgA", "BkgB", "Const*bin", "Tau", "Sigma", "Mean");
@@ -367,7 +374,7 @@ void peakfit_gausnerfcpol1_band_pxct() // get histogram and EMG fit one peak
 
 			outfile << histo_name << i << "	Constant*binsize" << ii << "=	" << constant[ii] << "	+/-	" << constant_err[ii] << "	Mean" << ii << "=	" << mean[ii] << "	+/-	" << mean_err[ii] << "	Maximum" << ii << "=	" << peakx[ii] << "	+/-	" << peakxerr[ii] << "	Sigma" << ii << "=	" << sig[ii] << "	+/-	" << sig_err[ii] << "	Tau" << ii << "=	" << tau[ii] << "	+/-	" << tau_err[ii] << "	A" << ii << "=	" << par[ii][0] << "	+/-	" << par_err[ii][0] << "	B" << ii << "=	" << par[ii][1] << "	+/-	" << par_err[ii][1] << "	Chi2" << ii << "=	" << parChi[ii] << "	NDF" << ii << "=	" << parNDF[ii] << "	Area" << ii << "=	" << par[ii][2] / binwidth << "	FWHM" << ii << "=	" << FWHM[ii] << "	+/-	" << FWHM_err[ii] << endl;
 
-			TPaveText* textgaus = new TPaveText(0.7, 0.4, 0.975, 0.98, "brNDC");//加标注left, down, right, up
+			TPaveText* textgaus = new TPaveText(0.7, 0.4, 0.975, 0.945, "brNDC");//加标注left, down, right, up
 			textgaus->SetBorderSize(1);//边框宽度
 			textgaus->SetFillColor(0);//填充颜色
 			textgaus->SetTextAlign(12);//align = 10*HorizontalAlign + VerticalAlign, 12 means水平左对齐、垂直居中对齐
