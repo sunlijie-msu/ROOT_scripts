@@ -91,7 +91,7 @@ void ddas2root()
 	char calrootname[400];
 	char inpathname[300], outpathname[300];
 	char filename[400];
-	int runnumber = 225; // modify
+	int runnumber = 308; // modify
 	double timestampshift = 0;
 
 	sprintf(inpathname, "%s", "/mnt/daqtesting/pxct/stagearea/");
@@ -197,6 +197,7 @@ void ddas2root()
 	if (runnumber == 223)	sprintf(filename, "%s", "run0223_LEGe_XtRa_152Eu_Z2707_inChamber_atmosphere_XtRa_12ishmm_away_window1us_CFDdelay0.5us_AnalogGain4.0");
 	if (runnumber == 224)	sprintf(filename, "%s", "run0224_LEGe_XtRa_152Eu_Z2707_inChamber_atmosphere_XtRa_12ishmm_away_window1us_CFDoff_AnalogGain4.0");
 	if (runnumber == 225)	sprintf(filename, "%s", "run0225_LEGe_XtRa_152Eu_Z2707_inChamber_atmosphere_XtRa_12mm_away_window1us_CFDdelay0.3us_AnalogGain4.0");
+	if (runnumber == 308)	sprintf(filename, "%s", "run0308_Pulser_Ch0_100kHz_30000nsWindow");
 	
 	// name both input and output root files accordingly
 	sprintf(rawrootname, "%s%s%s", inpathname, filename, ".root");
@@ -245,8 +246,8 @@ void ddas2root()
 	tree->Branch("south_t", &south_t, "south_t/D");
  	//tree->Branch("msd12_e", &msd12_e, "msd12_e/D");
  	//tree->Branch("msd12_t", &msd12_t, "msd12_t/D");
- 	//tree->Branch("msd26_e", &msd26_e, "msd26_e/D");
- 	//tree->Branch("msd26_t", &msd26_t, "msd26_t/D");
+ 	tree->Branch("msd26_e", &msd26_e, "msd26_e/D");
+ 	tree->Branch("msd26_t", &msd26_t, "msd26_t/D");
  	//tree->Branch("msdtotal_e", &msdtotal_e, "msdtotal_e/D");
 
 // 	tree->Branch("lege_e_low", &lege_e_low, "lege_e_low/D");
@@ -303,7 +304,7 @@ void ddas2root()
 		pTree->GetEntry(i);
 		pChan = pEvent->GetData();
 		Nchannels = (int)pChan.size();  //get active number of channels
-		// cout<<"  number of active channels = "<<Nchannels<<endl;
+		cout<<Nchannels<<" ";
 		for (int j = 0; j < Nchannels; j++)
 		{
 			//if (pChan[j]->GetChannelID() == 0)

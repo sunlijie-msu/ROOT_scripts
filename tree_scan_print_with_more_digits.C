@@ -1,7 +1,7 @@
 #include "TFile.h"  
 #include "TTree.h"
 
-void scan_branch_with_more_digits() {
+void tree_scan_print_with_more_digits() {
 
 	TFile fin("F:/e21010/pxct/run0039-00_LEGe_MSD26_241Am_2mmcollimator_60min_window1us_CFDdelay0.3us_cal.root");
 
