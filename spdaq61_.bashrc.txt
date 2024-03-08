@@ -1,0 +1,41 @@
+#echo sourcing .bashrc
+
+if [ -f ~/.bash_functions ]; then
+  . ~/.bash_functions
+fi
+if [ -f ~/.bash_aliases ]; then
+  . ~/.bash_aliases
+fi
+
+export PS1='\[[1m\]<\h:\W >\[[m\]'
+export RSYNC_RSH='ssh'
+
+#source /usr/opt/jessie.sh
+#source /usr/opt/buster.sh
+#source /user/pxct/readout/crate_1/setupenv.sh
+#source /user/pxct/readout/crate_1/setupdaq.sh
+#source /etc/profile
+#module load null gnu/gcc/9.4 root/gnu/6.24.06
+alias 777='chmod -R 777 ~/readout/crate_1'
+. /usr/opt/root/root-6.24.06/bin/thisroot.sh
+# add the current directory to the PATH
+alias ll='ls -lhrt --color'
+alias goevt='cd /mnt/daqtesting/pxct/stagearea/'
+alias godaq='cd ~/readout/crate_1/'
+alias godata='cd ~/readout/rootfile/'
+alias nscope='$DDAS_BIN/nscope'
+alias readout='$DAQBIN/DDASReadout'
+alias readoutshell='$DAQBIN/ReadoutShell'
+alias ddasdumper='$DDAS_BIN/ddasdumper'
+alias access1='chmod -R 777 ~/readout'
+alias access2='chmod -R 777 /mnt/daqtesting/pxct/stagearea'
+#Set proxy to webproxy.nscl.msu.edu port 3128 for internet access
+export http_proxy=http://webproxy.nscl.msu.edu:3128/
+
+PATH=${PATH}:.
+# set the umask for user,group, but not other writes
+umask 002
+export PATH
+#export PATH=/usr/opt/ddas/6.1-004/bin:$PATH
+#export LD_LIBRARY_PATH=/usr/opt/ddas/6.1-004/lib:$LD_LIBRARY_PATH
+#chmod -R 777 /user/pxct/readout/crate_1
