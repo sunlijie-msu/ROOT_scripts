@@ -70,7 +70,7 @@
 #include "stdio.h"
 #include "TLegend.h"
 
-void ddas2root()
+void DB2_pulser_ddas2root()
 {
 	//step 0: cd /user/pxct/readout/rootfile/ or use godata
 	//step 1: . /usr/opt/root/root-6.24.06/bin/thisroot.sh or use ./r.sh
@@ -218,6 +218,7 @@ void ddas2root()
 	if (runnumber == 319)	sprintf(filename, "%s", "run0319_Pulser_Ch0_2kHz_1000nsWindow");
 	if (runnumber == 320)	sprintf(filename, "%s", "run0320_Pulser_Ch0_2kHz_Random_1000nsWindow");
 	if (runnumber == 321)	sprintf(filename, "%s", "run0321_Pulser_Ch0249_3kHz_Random_100nsWindow");
+	if (runnumber == 322)	sprintf(filename, "%s", "run0322_Pulser_Ch0249_3kHz_Random_100nsWindow_pileuprejection");
 	
 	// name both input and output root files accordingly
 	sprintf(rawrootname, "%s%s%s", inpathname, filename, ".root");
@@ -252,7 +253,6 @@ void ddas2root()
 	Double_t north_t_low;
 	Double_t south_e_low;
 	Double_t south_t_low;
-
 	Double_t pulser_e;
 	Double_t pulser_t;
 

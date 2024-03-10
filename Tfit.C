@@ -709,3 +709,5 @@ cout<<"RMS= "<<setiosflags(ios::fixed)<<setprecision(9)<<h1->GetRMS();//小数点后
 //To merge/combine files from run0079 up to run0102, including every file in that range, you would use the command:
 hadd sum.root run00{79..99}*.root run0{100..102}*.root
 //This command correctly accounts for the change from two leading zeros to one leading zero as the run numbers move from two to three digits.
+rsync -av --ignore-existing /mnt/daqtesting/pxct/stagearea/run02{25..32}*.root /mnt/analysis/e21010/pxct_data/readout_PXCT_rootfiles/
+ cp /mnt/daqtesting/pxct/stagearea/run02{25..32}*.root /mnt/analysis/e21010/pxct_data/readout_PXCT_rootfiles/
