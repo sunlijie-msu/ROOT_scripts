@@ -99,8 +99,8 @@ void ddas2root()
 	sprintf(inpathname, "%s", "/mnt/daqtesting/pxct/stagearea/");
 	//sprintf(inpathname, "%s", "/user/pxct/readout/rootfile/");
 
-	//sprintf(outpathname, "%s", "/mnt/daqtesting/pxct/stagearea/");
-	sprintf(outpathname, "%s", "/user/pxct/readout/rootfile/");
+	sprintf(outpathname, "%s", "/mnt/daqtesting/pxct/stagearea/");
+	//sprintf(outpathname, "%s", "/user/pxct/readout/rootfile/");
 
 	if (runnumber == 7)	sprintf(filename, "%s", "run0007_LEGe_152Eu_inChamber_vacuum_window1.5us_CFDdelay_adjusted_for_LEGe_efficiency_345min");
 	if (runnumber == 9)	sprintf(filename, "%s", "run0009_LEGe_152Eu_inChamber_vacuum_window1.5us_CFDdelay_adjusted_for_LEGe_efficiency_720min");
@@ -199,6 +199,9 @@ void ddas2root()
 	if (runnumber == 223)	sprintf(filename, "%s", "run0223_LEGe_XtRa_152Eu_Z2707_inChamber_atmosphere_XtRa_12ishmm_away_window1us_CFDdelay0.5us_AnalogGain4.0");
 	if (runnumber == 224)	sprintf(filename, "%s", "run0224_LEGe_XtRa_152Eu_Z2707_inChamber_atmosphere_XtRa_12ishmm_away_window1us_CFDoff_AnalogGain4.0");
 	if (runnumber == 225)	sprintf(filename, "%s", "run0225_LEGe_XtRa_152Eu_Z2707_inChamber_atmosphere_XtRa_12mm_away_window1us_CFDdelay0.3us_AnalogGain4.0");
+	if (runnumber == 228)	sprintf(filename, "%s", "run0228_LEGe_XtRa_MSD26_152Eu_Z2707_inChamber_vacuum_XtRa_12mm_away_window1us_XtRaCFDdelay_0.2us_for_efficiency");
+	if (runnumber == 229)	sprintf(filename, "%s", "run0229_LEGe_XtRa_MSD26_152Eu_Z2707_inChamber_vacuum_XtRa_12mm_away_window1us_XtRaCFDdelay_0.2us_for_efficiency");
+	if (runnumber == 230)	sprintf(filename, "%s", "run0230_LEGe_XtRa_MSD26_152Eu_Z2707_inChamber_vacuum_XtRa_12mm_away_window1us_XtRaCFDdelay_0.2us_for_efficiency");
 
 	if (runnumber == 304)	sprintf(filename, "%s", "run0304_Pulser_Ch0_100kHz_10nsWindow");
 	if (runnumber == 305)	sprintf(filename, "%s", "run0305_Pulser_Ch0_100kHz_1000nsWindow");
@@ -218,6 +221,9 @@ void ddas2root()
 	if (runnumber == 319)	sprintf(filename, "%s", "run0319_Pulser_Ch0_2kHz_1000nsWindow");
 	if (runnumber == 320)	sprintf(filename, "%s", "run0320_Pulser_Ch0_2kHz_Random_1000nsWindow");
 	if (runnumber == 321)	sprintf(filename, "%s", "run0321_Pulser_Ch0249_3kHz_Random_100nsWindow");
+	if (runnumber == 322)	sprintf(filename, "%s", "run0322_Pulser_Ch0249_3kHz_Random_100nsWindow_pileuprejection");
+	if (runnumber == 323)	sprintf(filename, "%s", "run0323_Pulser_Ch0249_1kHz_Random_100nsWindow");
+
 	
 	// name both input and output root files accordingly
 	sprintf(rawrootname, "%s%s%s", inpathname, filename, ".root");
@@ -246,41 +252,40 @@ void ddas2root()
 	Double_t msd26_t;
 	Double_t msdtotal_e;
 
-	Double_t lege_e_low;
-	Double_t lege_t_low;
-	Double_t north_e_low;
-	Double_t north_t_low;
-	Double_t south_e_low;
-	Double_t south_t_low;
-
-	Double_t pulser_e;
-	Double_t pulser_t;
+// 	Double_t lege_e_low;
+// 	Double_t lege_t_low;
+// 	Double_t north_e_low;
+// 	Double_t north_t_low;
+// 	Double_t south_e_low;
+// 	Double_t south_t_low;
+// 	Double_t pulser_e;
+// 	Double_t pulser_t;
 
 	TFile* fout = new TFile(calrootname, "RECREATE");
 	cout << "output file: " << calrootname << endl;
 	TTree* tree = new TTree("tree", "tree");
 
 	// If you have closed the channels in CSRA, please comment out the corresponding branch lines. No other changes are needed.
-// 	tree->Branch("lege_e", &lege_e, "lege_e/D");
-// 	tree->Branch("lege_t", &lege_t, "lege_t/D");
-// 	tree->Branch("north_e", &north_e, "north_e/D");
-// 	tree->Branch("north_t", &north_t, "north_t/D");
-// 	tree->Branch("south_e", &south_e, "south_e/D");
-// 	tree->Branch("south_t", &south_t, "south_t/D");
+	tree->Branch("lege_e", &lege_e, "lege_e/D");
+	tree->Branch("lege_t", &lege_t, "lege_t/D");
+	tree->Branch("north_e", &north_e, "north_e/D");
+	tree->Branch("north_t", &north_t, "north_t/D");
+	tree->Branch("south_e", &south_e, "south_e/D");
+	tree->Branch("south_t", &south_t, "south_t/D");
  	//tree->Branch("msd12_e", &msd12_e, "msd12_e/D");
  	//tree->Branch("msd12_t", &msd12_t, "msd12_t/D");
-//  	tree->Branch("msd26_e", &msd26_e, "msd26_e/D");
-//  	tree->Branch("msd26_t", &msd26_t, "msd26_t/D");
+ 	tree->Branch("msd26_e", &msd26_e, "msd26_e/D");
+ 	tree->Branch("msd26_t", &msd26_t, "msd26_t/D");
  	//tree->Branch("msdtotal_e", &msdtotal_e, "msdtotal_e/D");
 
-	tree->Branch("lege_e_low", &lege_e_low, "lege_e_low/D");
-	tree->Branch("lege_t_low", &lege_t_low, "lege_t_low/D");
-	tree->Branch("north_e_low", &north_e_low, "north_e_low/D");
-	tree->Branch("north_t_low", &north_t_low, "north_t_low/D");
-	tree->Branch("south_e_low", &south_e_low, "south_e_low/D");
-	tree->Branch("south_t_low", &south_t_low, "south_t_low/D");
-	tree->Branch("pulser_e", &pulser_e, "pulser/D");
-	tree->Branch("pulser_t", &pulser_t, "pulser_t/D");
+// 	tree->Branch("lege_e_low", &lege_e_low, "lege_e_low/D");
+// 	tree->Branch("lege_t_low", &lege_t_low, "lege_t_low/D");
+// 	tree->Branch("north_e_low", &north_e_low, "north_e_low/D");
+// 	tree->Branch("north_t_low", &north_t_low, "north_t_low/D");
+// 	tree->Branch("south_e_low", &south_e_low, "south_e_low/D");
+// 	tree->Branch("south_t_low", &south_t_low, "south_t_low/D");
+// 	tree->Branch("pulser_e", &pulser_e, "pulser/D");
+// 	tree->Branch("pulser_t", &pulser_t, "pulser_t/D");
 //  	TBranch* b_pulser_e = tree->Branch("pulser_e", &pulser_e, "pulser_e/D");
 //  	TBranch* b_pulser_t = tree->Branch("pulser_t", &pulser_t, "pulser_t/D");
 
@@ -328,7 +333,7 @@ void ddas2root()
 	for (i = 0; i < totalentries; i++)
 	{
 		lege_e = 0; lege_t = 0; north_e = 0; north_t = 0; south_e = 0; south_t = 0; msd12_e = 0; msd12_t = 0; 	msd26_e = 0; msd26_t = 0;
-		lege_e_low = 0; lege_t_low = 0; north_e_low = 0; north_t_low = 0; south_e_low = 0; south_t_low = 0; pulser_e = 0; pulser_t = 0;
+		//lege_e_low = 0; lege_t_low = 0; north_e_low = 0; north_t_low = 0; south_e_low = 0; south_t_low = 0; pulser_e = 0; pulser_t = 0;
 		pTree->GetEntry(i);
 		pChan = pEvent->GetData();
 		Nchannels = (int)pChan.size();  //get active number of channels
@@ -342,62 +347,62 @@ void ddas2root()
 		}
 		for (int j = 0; j < Nchannels; j++)
 		{
-			if (pChan[j]->GetChannelID() == 9)
-			{
-				pulser_e = pChan[j]->GetEnergy();
-				pulser_t = pChan[j]->GetTime();
-				//b_pulser_e->Fill();
-				//b_pulser_t->Fill();
-				//tree->SetEntries(i_outtree++);
-				//if (pulser_e > 0) tree->Fill();
-				//tree->GetBranch("pulser_e")->Fill();
-				//tree->GetBranch("pulser_t")->Fill();
-			}
-			if (pChan[j]->GetChannelID() == 0)
-			{
-				lege_e_low = pChan[j]->GetEnergy();
-				//hlege_e_low->Fill(lege_e_low);
-				lege_t_low = pChan[j]->GetTime() + timestampshift;
-			}
-// 			if (pChan[j]->GetChannelID() == 1)
+// 			if (pChan[j]->GetChannelID() == 9)
 // 			{
-// 				//lege_e = pChan[j]->GetEnergy();
-// 				//lege_e = pChan[j]->GetEnergy() * 0.0072712838511 - 0.0001420032512;
-// 				lege_e = pChan[j]->GetEnergy() * 0.0072644643706 - 0.054088849163; // based on run0060
-// 				//lege_e = pChan[j]->GetEnergy() * 0.0279852398524 - 0.758391143912; // based on run0216
-// 				hlege_e->Fill(lege_e);
-// 				lege_t = pChan[j]->GetTime() + timestampshift;
+// 				pulser_e = pChan[j]->GetEnergy();
+// 				pulser_t = pChan[j]->GetTime();
+// 				//b_pulser_e->Fill();
+// 				//b_pulser_t->Fill();
+// 				//tree->SetEntries(i_outtree++);
+// 				//if (pulser_e > 0) tree->Fill();
+// 				//tree->GetBranch("pulser_e")->Fill();
+// 				//tree->GetBranch("pulser_t")->Fill();
 // 			}
-			if (pChan[j]->GetChannelID() == 2)
-			{
-				north_e_low = pChan[j]->GetEnergy();
-				//hnorth_e_low->Fill(north_e_low);
-				north_t_low = pChan[j]->GetTime() + timestampshift;
-			}
-// 			if (pChan[j]->GetChannelID() == 3)
+// 			if (pChan[j]->GetChannelID() == 0)
 // 			{
-// 				//north_e = pChan[j]->GetEnergy();
-// 				//north_e = pChan[j]->GetEnergy() * 0.0381036615504 - 0.1774488889544; // based on run0060
-// 				north_e = pChan[j]->GetEnergy() * 0.0380915136727 - 0.1943988436200; // based on run0098
-// 				//north_e = pChan[j]->GetEnergy() * 0.1469496217014 - 1.1199018269051; // based on run0216
-// 				hnorth_e->Fill(north_e);
-// 				north_t = pChan[j]->GetTime() + timestampshift;
+// 				lege_e_low = pChan[j]->GetEnergy();
+// 				//hlege_e_low->Fill(lege_e_low);
+// 				lege_t_low = pChan[j]->GetTime() + timestampshift;
 // 			}
-			if (pChan[j]->GetChannelID() == 4)
+			if (pChan[j]->GetChannelID() == 1)
 			{
-				south_e_low = pChan[j]->GetEnergy();
-				//hsouth_e_low->Fill(south_e_low);
-				south_t_low = pChan[j]->GetTime() + timestampshift;
+				//lege_e = pChan[j]->GetEnergy();
+				//lege_e = pChan[j]->GetEnergy() * 0.0072712838511 - 0.0001420032512;
+				lege_e = pChan[j]->GetEnergy() * 0.0072644643706 - 0.054088849163; // based on run0060
+				//lege_e = pChan[j]->GetEnergy() * 0.0279852398524 - 0.758391143912; // based on run0216
+				hlege_e->Fill(lege_e);
+				lege_t = pChan[j]->GetTime() + timestampshift;
 			}
-// 			if (pChan[j]->GetChannelID() == 5)
+// 			if (pChan[j]->GetChannelID() == 2)
 // 			{
-// 				//south_e = pChan[j]->GetEnergy();
-// 				//south_e = pChan[j]->GetEnergy() * 0.0379731589489 - 0.1622624327090; // based on run0060
-// 				south_e = pChan[j]->GetEnergy() * 0.0379046856666 - 0.1195774566938; // based on run0098
-// 				//south_e = pChan[j]->GetEnergy() * 0.1461808168885 - 0.6039596145015; // based on run0216
-// 				hsouth_e->Fill(south_e);
-// 				south_t = pChan[j]->GetTime() + timestampshift;
+// 				north_e_low = pChan[j]->GetEnergy();
+// 				//hnorth_e_low->Fill(north_e_low);
+// 				north_t_low = pChan[j]->GetTime() + timestampshift;
 // 			}
+			if (pChan[j]->GetChannelID() == 3)
+			{
+				//north_e = pChan[j]->GetEnergy();
+				//north_e = pChan[j]->GetEnergy() * 0.0381036615504 - 0.1774488889544; // based on run0060
+				north_e = pChan[j]->GetEnergy() * 0.0380915136727 - 0.1943988436200; // based on run0098
+				//north_e = pChan[j]->GetEnergy() * 0.1469496217014 - 1.1199018269051; // based on run0216
+				hnorth_e->Fill(north_e);
+				north_t = pChan[j]->GetTime() + timestampshift;
+			}
+// 			if (pChan[j]->GetChannelID() == 4)
+// 			{
+// 				south_e_low = pChan[j]->GetEnergy();
+// 				//hsouth_e_low->Fill(south_e_low);
+// 				south_t_low = pChan[j]->GetTime() + timestampshift;
+// 			}
+			if (pChan[j]->GetChannelID() == 5)
+			{
+				//south_e = pChan[j]->GetEnergy();
+				//south_e = pChan[j]->GetEnergy() * 0.0379731589489 - 0.1622624327090; // based on run0060
+				south_e = pChan[j]->GetEnergy() * 0.0379046856666 - 0.1195774566938; // based on run0098
+				//south_e = pChan[j]->GetEnergy() * 0.1461808168885 - 0.6039596145015; // based on run0216
+				hsouth_e->Fill(south_e);
+				south_t = pChan[j]->GetTime() + timestampshift;
+			}
 			//if (pChan[j]->GetChannelID() == 6)
 			//{
 			//	//msd12_e = pChan[j]->GetEnergy();
@@ -406,15 +411,15 @@ void ddas2root()
 			//	hmsd12_e1keVbin->Fill(msd12_e + gRandom->Uniform(-0.5, 0.5));
 			//	msd12_t = pChan[j]->GetTime() + timestampshift;
 			//}
-// 			if (pChan[j]->GetChannelID() == 8)
-// 			{
-// 				//msd26_e = pChan[j]->GetEnergy();
-// 				//msd26_e = pChan[j]->GetEnergy() * 0.1152143446474 + 22.352486402900; // based on 148Gd and 241Am two peaks
-// 				msd26_e = pChan[j]->GetEnergy() * 0.1155273461893 - 0.001613374918; // based on 241Am two peaks Run 100
-// 				hmsd26_e->Fill(msd26_e);
-// 				//hmsd26_e1keVbin->Fill(msd26_e + gRandom->Uniform(-0.5, 0.5));
-// 				msd26_t = pChan[j]->GetTime() + timestampshift;
-// 			}
+			if (pChan[j]->GetChannelID() == 8)
+			{
+				//msd26_e = pChan[j]->GetEnergy();
+				//msd26_e = pChan[j]->GetEnergy() * 0.1152143446474 + 22.352486402900; // based on 148Gd and 241Am two peaks
+				msd26_e = pChan[j]->GetEnergy() * 0.1155273461893 - 0.001613374918; // based on 241Am two peaks Run 100
+				hmsd26_e->Fill(msd26_e);
+				//hmsd26_e1keVbin->Fill(msd26_e + gRandom->Uniform(-0.5, 0.5));
+				msd26_t = pChan[j]->GetTime() + timestampshift;
+			}
 
 			//if (msd12_e > 200 && msd26_e > 200)
 			//{

@@ -16,7 +16,6 @@ export RSYNC_RSH='ssh'
 #source /user/pxct/readout/crate_1/setupdaq.sh
 #source /etc/profile
 #module load null gnu/gcc/9.4 root/gnu/6.24.06
-alias 777='chmod -R 777 ~/readout/crate_1'
 . /usr/opt/root/root-6.24.06/bin/thisroot.sh
 # add the current directory to the PATH
 alias ll='ls -lhrt --color'
@@ -27,8 +26,8 @@ alias nscope='$DDAS_BIN/nscope'
 alias readout='$DAQBIN/DDASReadout'
 alias readoutshell='$DAQBIN/ReadoutShell'
 alias ddasdumper='$DDAS_BIN/ddasdumper'
-alias access1='chmod -R 777 ~/readout'
-alias access2='chmod -R 777 /mnt/daqtesting/pxct/stagearea'
+alias 77c='chmod -Rf 777 ~/readout/crate_1'
+alias 77s='chmod -Rf 777 /mnt/daqtesting/pxct/stagearea'
 #Set proxy to webproxy.nscl.msu.edu port 3128 for internet access
 export http_proxy=http://webproxy.nscl.msu.edu:3128/
 

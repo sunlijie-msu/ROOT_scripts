@@ -219,6 +219,7 @@ void DB2_pulser_ddas2root()
 	if (runnumber == 320)	sprintf(filename, "%s", "run0320_Pulser_Ch0_2kHz_Random_1000nsWindow");
 	if (runnumber == 321)	sprintf(filename, "%s", "run0321_Pulser_Ch0249_3kHz_Random_100nsWindow");
 	if (runnumber == 322)	sprintf(filename, "%s", "run0322_Pulser_Ch0249_3kHz_Random_100nsWindow_pileuprejection");
+	if (runnumber == 323)	sprintf(filename, "%s", "run0323_Pulser_Ch0249_1kHz_Random_100nsWindow");
 	
 	// name both input and output root files accordingly
 	sprintf(rawrootname, "%s%s%s", inpathname, filename, ".root");
