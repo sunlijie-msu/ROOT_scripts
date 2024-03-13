@@ -42,7 +42,7 @@ using namespace std;
 void peakcali_logpol6_band_pxct_efficiency()//for efficiency curve fit with a credible interval band
 {
 	const int ID1 = 0;// i=ID1//which detector
-	const int ID2 = 1;// i<=ID2// modify which detector
+	const int ID2 = 0;// i<=ID2// modify which detector
 	int i, ii;
 	char paraprint[100], graph_name[200], hcali_name[200];
 	TCanvas* canvascali[ID2 + 1];
@@ -51,7 +51,7 @@ void peakcali_logpol6_band_pxct_efficiency()//for efficiency curve fit with a cr
 	TH1D* h_confidence_interval[ID2 + 1];
 	TPad* pad1;// Double_t xlow, Double_t ylow, Double_t xup, Double_t yup,
 	TPad* pad2;
-	const int num_datapoints = 18;//search peak numbers, modify
+	const int num_datapoints = 21;//search peak numbers, modify
 	Double_t x_value[ID2 + 1][num_datapoints], x_error[ID2 + 1][num_datapoints];
 	Double_t y_value[ID2 + 1][num_datapoints], y_error[ID2 + 1][num_datapoints];
 	Double_t residual[ID2 + 1][num_datapoints], residual_err[ID2 + 1][num_datapoints];
@@ -132,7 +132,7 @@ void peakcali_logpol6_band_pxct_efficiency()//for efficiency curve fit with a cr
 		graph[i]->GetYaxis()->SetNdivisions(505);
 		graph[i]->GetXaxis()->SetTitleOffset(1.2);
 		graph[i]->GetYaxis()->SetTitleOffset(0.8);
-		graph[i]->GetXaxis()->SetRangeUser(0, 1600);
+		graph[i]->GetXaxis()->SetRangeUser(0, 1528);
 		graph[i]->GetYaxis()->SetRangeUser(0, 0.85);
 		graph[i]->SetMarkerStyle(21);
 		graph[i]->SetMarkerColor(1);
@@ -227,7 +227,7 @@ void peakcali_logpol6_band_pxct_efficiency()//for efficiency curve fit with a cr
 			cout << "X_value=	" << energy_point[ipeak] << "	Y_value=	" << logpol6->Eval(energy_point[ipeak]) << "	err_Y_value=	" << err_point[ipeak] << endl;
 		}
 
-		TPaveText* textpol6 = new TPaveText(0.69, 0.14, 0.96, 0.45, "brNDC");//left, down, right, up
+		TPaveText* textpol6 = new TPaveText(0.66, 0.46, 0.969, 0.96, "brNDC");//left, down, right, up
 		textpol6->SetBorderSize(1);
 		textpol6->SetFillColor(0);
 		textpol6->SetTextAlign(12);//align = 10*HorizontalAlign + VerticalAlign, 12 means水平左对齐、垂直居中对齐
@@ -266,21 +266,21 @@ void peakcali_logpol6_band_pxct_efficiency()//for efficiency curve fit with a cr
 		pad2->cd();
 		graph_residual[i] = new TGraphErrors(num_datapoints, x_value[i], residual[i], x_error[i], residual_err[i]);//画error bars TGraph(n,x,y,ex,ey);
 		graph_residual[i]->GetXaxis()->SetTitle("Energy (keV)");
-		graph_residual[i]->GetYaxis()->SetTitle("Fit - Data");
+		graph_residual[i]->GetYaxis()->SetTitle("Fit - Data (%)");
 		graph_residual[i]->GetXaxis()->CenterTitle();//居中
 		graph_residual[i]->GetYaxis()->CenterTitle();//居中
 		graph_residual[i]->GetXaxis()->SetLabelFont(132);//坐标字体
 		graph_residual[i]->GetYaxis()->SetLabelFont(132);//坐标字体
 		graph_residual[i]->GetXaxis()->SetTitleFont(132);//轴名字体
 		graph_residual[i]->GetYaxis()->SetTitleFont(132);//轴名字体
-		graph_residual[i]->GetXaxis()->SetRangeUser(0, 1600);
-		graph_residual[i]->GetYaxis()->SetRangeUser(-0.023, 0.019);
+		graph_residual[i]->GetXaxis()->SetRangeUser(0, 1528);
+		graph_residual[i]->GetYaxis()->SetRangeUser(-0.03, 0.03);
 		graph_residual[i]->GetXaxis()->SetTitleSize(0.17);
 		graph_residual[i]->GetXaxis()->SetTitleOffset(1.2);
 		graph_residual[i]->GetXaxis()->SetLabelSize(0.15);
 		graph_residual[i]->GetXaxis()->SetLabelOffset(0.015);
 		graph_residual[i]->GetYaxis()->SetLabelSize(0.15);
-		graph_residual[i]->GetYaxis()->SetTitleSize(0.17);
+		graph_residual[i]->GetYaxis()->SetTitleSize(0.13);
 		graph_residual[i]->GetYaxis()->SetTitleOffset(0.36);
 // 		graph_residual[i]->GetXaxis()->SetNdivisions(520);//n = n1 + 100*n2 + 10000*n3
 // 		graph_residual[i]->GetXaxis()->SetNdivisions(10, 10, 1);
@@ -290,7 +290,7 @@ void peakcali_logpol6_band_pxct_efficiency()//for efficiency curve fit with a cr
 		graph_residual[i]->SetMarkerColor(1);
 		graph_residual[i]->SetLineWidth(2);
 		graph_residual[i]->Draw("AP");//"A": Axis are drawn around the graph, "P": The current marker is plotted at each point
-		TLine* T1 = new TLine(0, 0, 1600, 0); // TLine(x1, y1, x2, y2)
+		TLine* T1 = new TLine(0, 0, 1528, 0); // TLine(x1, y1, x2, y2)
 		T1->Draw("R");
 
 		sprintf(filename, "%s%s%s", pathname, hcali_name, ".png");

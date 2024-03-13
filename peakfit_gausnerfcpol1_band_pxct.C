@@ -49,7 +49,7 @@ void peakfit_gausnerfcpol1_band_pxct() // get histogram and EMG fit one peak
 	int minbin = 0, maxbin = 0;
 	float Eg, Eg2nd, gaplow = 70., gaphigh = 70.;//fitting range随分辨不同调整
 	int i, ii, jj, ibin;
-	char paraprint[300], histo_name[300], hfit_name[300];
+	char paraprint[300], histo_name[300], hfit_name[300], tempname[300];
 	TH1D* histo[ID2 + 1];//TH1D peak search+gauss fit, create histograms
 	int fit_Nbins;
 	const int peaknum = 50;//search peak numbers
@@ -133,13 +133,14 @@ void peakfit_gausnerfcpol1_band_pxct() // get histogram and EMG fit one peak
 
 	sprintf(filename, "%s%s", pathname, "peakpara.dat");
 	ofstream outfile(filename, ios::out);
-	sprintf(filename, "%s%s", pathname, "run0216_0217_0218_LEGe_XtRa_MSD26_60Co_I7281_inChamber_vacuum_XtRa_12mm_away_window1us_CFDdelay_adjusted_AnalogGain1.0_cal.root"); // modify
+	sprintf(filename, "%s%s", pathname, "run0228_0229_0230_LEGe_XtRa_MSD26_152Eu_Z2707_inChamber_vacuum_XtRa_12mm_away_window1us_XtRaCFDdelay_0.2us_for_efficiency_cal.root"); // modify
 	TFile* fin = new TFile(filename);//after this statement, you can use any ROOT command1 for this rootfile
 	cout << filename << endl;
 
 	for (i = ID1; i <= ID2; i++)//which detector no need to change
 	{
-		sprintf(histo_name, "%s", "hsouth_e"); // modify
+		sprintf(histo_name, "%s", "hnorth_e"); // modify
+		//sprintf(histo_name, "%s", "hsouth_e"); // modify
 		histo[i] = (TH1D*)fin->Get(histo_name); //Get spectrum
 		histo[i]->Rebin(1);
 		histo[i]->Sumw2(kFALSE);
@@ -149,7 +150,7 @@ void peakfit_gausnerfcpol1_band_pxct() // get histogram and EMG fit one peak
 
 	for (i = ID1; i <= ID2; i++) // no need to change
 	{
-		for (ii = 33; ii <= 33; ii++)// modify which peak in one detector =0<=13
+		for (ii = 11; ii <= 11; ii++)// modify which peak in one detector =0<=13
 		{
 			sprintf(hfit_name, "%s%d%s%d", histo_name, i, "_peak", ii);
 			canvaspeak[i][ii] = new TCanvas(hfit_name, hfit_name, 1400, 740);//建立画布
@@ -181,7 +182,8 @@ void peakfit_gausnerfcpol1_band_pxct() // get histogram and EMG fit one peak
 
 			histo[i]->SetTitle("");//图名
 			histo[i]->GetXaxis()->SetTitle("Energy (keV)");//轴名
-			histo[i]->GetYaxis()->SetTitle("Counts per 146 eV");// modify
+			sprintf(tempname, "%s%.0f%s", "Counts per ", binwidth*1000, " eV");
+			histo[i]->GetYaxis()->SetTitle(tempname);
 			histo[i]->GetXaxis()->CenterTitle();//居中
 			histo[i]->GetYaxis()->CenterTitle();//居中
 			histo[i]->GetXaxis()->SetLabelFont(132);//坐标字体
@@ -212,7 +214,7 @@ void peakfit_gausnerfcpol1_band_pxct() // get histogram and EMG fit one peak
 			if (ii == 7) { gaplow = 0.7; gaphigh = 0.7; Eg = 33.196; }//241Am 33.2 LEGe
 			if (ii == 9) { gaplow = 2.1; gaphigh = 2.1; Eg = 121.7817; }//152Eu 122 XtRa
 			if (ii == 10) { gaplow = 2.5; gaphigh = 2.5; Eg = 344.2785; }//152Eu 344 XtRa
-			if (ii == 11) { gaplow = 3.0; gaphigh = 2.9; Eg = 1299.1420; }//152Eu 1299 XtRa
+			if (ii == 11) { gaplow = 3.2; gaphigh = 3.0; Eg = 1299.1420; }//152Eu 1299 XtRa
 			if (ii == 12) { gaplow = 120; gaphigh = 90; Eg = 5486; }//241Am 5486 MSD26
 			if (ii == 13) { gaplow = 0.4; gaphigh = 0.4; Eg = 11.89; }//241Am 11.89 LEGe
 			if (ii == 14) { gaplow = 3.5; gaphigh = 3.5; Eg = 1408.013; }//152Eu 1408 XtRa
@@ -283,9 +285,9 @@ void peakfit_gausnerfcpol1_band_pxct() // get histogram and EMG fit one peak
 			fEMG[ii]->SetParameters(aguess, bguess, peaky[ii], 0.2, sigmaguess, peakx[ii]);//initial value [0]-A, [1]-B, [2]-N, [3]-τ, [4]-σ, [5]-μ
 			// 			fEMG[ii]->SetParLimits(0,-500,500);//Bkg A
 			// 			fEMG[ii]->SetParLimits(1,-50000,300000);//Bkg B
-			fEMG[ii]->SetParLimits(2, 1e3, 2e4);//Constant,min,max
-			fEMG[ii]->SetParLimits(3, 0.1, 1.1);//Tau
-			fEMG[ii]->SetParLimits(4, 0.1, 1.1);//Sigma
+			fEMG[ii]->SetParLimits(2, 1.5e3, 4e5);//Constant,min,max
+			fEMG[ii]->SetParLimits(3, 0.04, 1.1);//Tau
+			fEMG[ii]->SetParLimits(4, 0.2, 1.1);//Sigma
 			fEMG[ii]->SetParLimits(5, peakx[ii] - gaplow / 3, peakx[ii] + gaphigh / 2);//Mean
 			//fEMG[ii]->SetParLimits(5, 1298.8, 1299.9);//Mean
 			fEMG[ii]->SetParNames("BkgA", "BkgB", "Const*bin", "Tau", "Sigma", "Mean");
