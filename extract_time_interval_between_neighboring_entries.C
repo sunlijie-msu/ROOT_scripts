@@ -127,15 +127,20 @@ void extract_time_interval_between_neighboring_entries()
 	for (unsigned long i = 1; i < totalentries; i++)
 	{
 		tree->GetEntry(i);
+
 		t2_lege = lege_t_low / 1000;
 		hinterval_lege->Fill(t2_lege - t1_lege);
 		t1_lege = t2_lege;
+
 		t2_north = north_t_low / 1000;
+		//if (north_e_low>11780&&north_e_low<12800)
 		hinterval_north->Fill(t2_north - t1_north);
 		t1_north = t2_north;
+
 		t2_south = south_t_low / 1000;
 		hinterval_south->Fill(t2_south - t1_south);
 		t1_south = t2_south;
+
 		t2_pulser = pulser_t / 1000;
 		hinterval_pulser->Fill(t2_pulser - t1_pulser);
 		t1_pulser = t2_pulser;
