@@ -39,7 +39,7 @@
 #include "stdio.h"
 #include "TLegend.h"
 using namespace std;
-void extract_time_interval_between_neighboring_entries()
+void extract_time_interval_between_neighboring_entries() // pxct daq dead time test
 {
 	char inpathname[300], outpathname[300];
 	char calrootname[400];
