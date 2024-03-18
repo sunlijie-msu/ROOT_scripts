@@ -61,8 +61,8 @@ void peakcali_logpol6_band_pxct_efficiency()//for efficiency curve fit with a cr
 	double p7err[300], p6err[300], p5err[300], p4err[300], p3err[300], p2err[300], p1err[300], p0err[300];
 	double parChi[ID2 + 1], parNDF[ID2 + 1], p_value[ID2 + 1];
 
-	const int Npoint = 3;
-	double energy_point[Npoint] = { 100, 500, 1000 };// set location of point for single value. modify
+	const int Npoint = 4;
+	double energy_point[Npoint] = { 100, 500, 1000, 3000 };// set location of point for single value. modify
 	double err_point[Npoint];  // error on the function at point x0 for single value
 
 	char pathname[150], filename[150];
@@ -131,8 +131,8 @@ void peakcali_logpol6_band_pxct_efficiency()//for efficiency curve fit with a cr
 
 		if (i == 0) num_datapoints = 21;
 		if (i == 1) num_datapoints = 22;
-		//graph[i] = new TGraphErrors(num_datapoints, x_value[i], y_value[i], x_error[i], y_error[i]);//error bars TGraph(n,x,y,ex,ey);
-		graph[i] = new TGraphErrors(num_datapoints, x_value[i], y_value[i], x_error[i], y_stat_err[i]);//error bars TGraph(n,x,y,ex,ey);
+		graph[i] = new TGraphErrors(num_datapoints, x_value[i], y_value[i], x_error[i], y_error[i]);//error bars TGraph(n,x,y,ex,ey);
+		//graph[i] = new TGraphErrors(num_datapoints, x_value[i], y_value[i], x_error[i], y_stat_err[i]);//error bars TGraph(n,x,y,ex,ey);
 		sprintf(graph_name, "%s%d", "gEfficiency_XtRa", i + 1);
 		graph[i]->SetTitle(graph_name);
 		graph[i]->SetName(graph_name);
@@ -152,6 +152,7 @@ void peakcali_logpol6_band_pxct_efficiency()//for efficiency curve fit with a cr
 		graph[i]->GetYaxis()->SetNdivisions(505);
 		graph[i]->GetXaxis()->SetTitleOffset(1.2);
 		graph[i]->GetYaxis()->SetTitleOffset(0.8);
+		graph[i]->GetXaxis()->SetLimits(0, 1536);
 		graph[i]->GetXaxis()->SetRangeUser(0, 1536);
 		graph[i]->GetYaxis()->SetRangeUser(0, 0.85);
 		graph[i]->SetMarkerStyle(21);
@@ -240,7 +241,9 @@ void peakcali_logpol6_band_pxct_efficiency()//for efficiency curve fit with a cr
 		p_value[i] = logpol6->GetProb();//This probability is not the ¡°probability that your fit is good.¡± If you did many fake experiments (draw many random samples of data points from the assumed distribution (your fit function)), this is the percentage of experiments that would give ¦Ö2 values ¡Ý to the one you got in this experiment.
 
 		// To extract FWHM values at energies of interest
-		Fit_result_pointer->GetConfidenceIntervals(Npoint, 1, 1, energy_point, err_point, 0.683, true);//get the error of FWHM at energies of interest, this command is independent of the colored band
+		Fit_result_pointer->GetConfidenceIntervals(Npoint, 1, 1, energy_point, err_point, 0.683, false);
+		// use false because the inflation factor in this case is smaller than 1.
+		//get the error of FWHM at energies of interest, this command is independent of the colored band
 		//(Number of x points, 1, 1, x, err, confidence level, false); norm is a flag to control if the intervals need to be inflated by the chi2/ndf value. true is inflated, false is not inflated.
 		//err_point contains one side of the error bar, so the full error bar length is 2*err_point
 		for (int ipeak = 0; ipeak < Npoint; ipeak++)//get sigma/tau at energies of interest for output file
@@ -273,9 +276,9 @@ void peakcali_logpol6_band_pxct_efficiency()//for efficiency curve fit with a cr
 		textpol6->AddText(paraprint);
 		sprintf(paraprint, "NDF=%.0f", parNDF[i]);
 		textpol6->AddText(paraprint);
-		sprintf(paraprint, "p-val=%e", p_value[i]);
+		sprintf(paraprint, "p-val=%f", p_value[i]);
 		textpol6->AddText(paraprint);
-		//textpol6->Draw();
+		textpol6->Draw();
 		
 		for (ii = 0; ii < num_datapoints; ii++)// for plotting the residuals
 		{
@@ -289,8 +292,8 @@ void peakcali_logpol6_band_pxct_efficiency()//for efficiency curve fit with a cr
 
 		//auto graph_residual = new TGraphMultiErrors(num_datapoints, x_value[i], residual[i], x_error[i], x_error[i], residual_err[i], residual_err[i]);//»­error bars TGraph(n,x,y,exl,exh,eyl,eyh);
 		//graph_residual->AddYError(num_datapoints, residual_stat_err[i], residual_stat_err[i]);
-		//graph_residual[i] = new TGraphErrors(num_datapoints, x_value[i], residual[i], x_error[i], residual_err[i]);//»­error bars TGraph(n,x,y,ex,ey);
-		graph_residual[i] = new TGraphErrors(num_datapoints, x_value[i], residual[i], x_error[i], residual_stat_err[i]);//»­error bars TGraph(n,x,y,ex,ey);
+		graph_residual[i] = new TGraphErrors(num_datapoints, x_value[i], residual[i], x_error[i], residual_err[i]);//»­error bars TGraph(n,x,y,ex,ey);
+		//graph_residual[i] = new TGraphErrors(num_datapoints, x_value[i], residual[i], x_error[i], residual_stat_err[i]);//»­error bars TGraph(n,x,y,ex,ey);
 		graph_residual[i]->GetXaxis()->SetTitle("Energy (keV)");
 		graph_residual[i]->GetYaxis()->SetTitle("Fit - Data (%)");
 		graph_residual[i]->GetXaxis()->CenterTitle();//¾ÓÖÐ
@@ -299,6 +302,7 @@ void peakcali_logpol6_band_pxct_efficiency()//for efficiency curve fit with a cr
 		graph_residual[i]->GetYaxis()->SetLabelFont(132);//×ø±ê×ÖÌå
 		graph_residual[i]->GetXaxis()->SetTitleFont(132);//ÖáÃû×ÖÌå
 		graph_residual[i]->GetYaxis()->SetTitleFont(132);//ÖáÃû×ÖÌå
+		graph_residual[i]->GetXaxis()->SetLimits(0, 1536);
 		graph_residual[i]->GetXaxis()->SetRangeUser(0, 1536);
 		graph_residual[i]->GetYaxis()->SetRangeUser(-0.04, 0.04);
 		graph_residual[i]->GetXaxis()->SetTitleSize(0.15);
@@ -324,7 +328,7 @@ void peakcali_logpol6_band_pxct_efficiency()//for efficiency curve fit with a cr
 		graph_residual_stat[i]->SetMarkerColor(3);
 		graph_residual_stat[i]->SetLineWidth(2);
 		graph_residual_stat[i]->SetLineColor(3);
-		//graph_residual_stat[i]->Draw("P same");//"P": The current marker is plotted at each point
+		graph_residual_stat[i]->Draw("P same");//"P": The current marker is plotted at each point
 
 		sprintf(filename, "%s%s%s", pathname, hcali_name, ".png");
 		canvascali[i]->SaveAs(filename);
