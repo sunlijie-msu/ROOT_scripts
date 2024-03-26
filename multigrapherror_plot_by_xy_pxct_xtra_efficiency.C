@@ -236,7 +236,7 @@ void multigrapherror_plot_by_xy_pxct_xtra_efficiency() // reading x and y values
 		const int Npoint = 4;
 		double energy_point[Npoint] = { 100, 500, 1000, 3000 };// set location of point for single value. modify
 		double err_point[Npoint];  // error on the function at point x0 for single value
-		Fit_result_pointer->GetConfidenceIntervals(Npoint, 1, 1, energy_point, err_point, 0.683, true);//get the error of FWHM at energies of interest, this command is independent of the colored band
+		Fit_result_pointer->GetConfidenceIntervals(Npoint, 1, 1, energy_point, err_point, 0.683, false);//get the error of FWHM at energies of interest, this command is independent of the colored band
 		//(Number of x points, 1, 1, x, err, confidence level, false); norm is a flag to control if the intervals need to be inflated by the chi2/ndf value. true is inflated, false is not inflated.
 		//err_point contains one side of the error bar, so the full error bar length is 2*err_point
 		for (int ipeak = 0; ipeak < Npoint; ipeak++)//get sigma/tau at energies of interest for output file
@@ -321,17 +321,17 @@ void multigrapherror_plot_by_xy_pxct_xtra_efficiency() // reading x and y values
 	multigraph->GetYaxis()->SetLabelFont(132);
 	multigraph->GetXaxis()->SetTitleFont(132);
 	multigraph->GetYaxis()->SetTitleFont(132);
-	multigraph->GetYaxis()->SetLabelSize(0.08);
-	multigraph->GetYaxis()->SetTitleSize(0.08);
-	multigraph->GetXaxis()->SetLabelSize(0.08);
-	multigraph->GetXaxis()->SetTitleSize(0.08);
+	multigraph->GetYaxis()->SetLabelSize(0.09);
+	multigraph->GetYaxis()->SetTitleSize(0.09);
+	multigraph->GetXaxis()->SetLabelSize(0.09);
+	multigraph->GetXaxis()->SetTitleSize(0.09);
 	multigraph->GetYaxis()->SetTickLength(0.02);
 	multigraph->GetYaxis()->SetNdivisions(505);
 	multigraph->GetXaxis()->SetTitleOffset(1.05);
 	multigraph->GetYaxis()->SetTitleOffset(0.65);
 	multigraph->GetXaxis()->SetLabelOffset(0.09);
-	multigraph->GetXaxis()->SetLimits(0, 4000);
-	multigraph->GetXaxis()->SetRangeUser(0, 4000);
+	multigraph->GetXaxis()->SetLimits(0, 1536);
+	multigraph->GetXaxis()->SetRangeUser(0, 1536);
 	multigraph->GetYaxis()->SetRangeUser(0, 0.85);
 
 	// Adding legend
@@ -372,10 +372,10 @@ void multigrapherror_plot_by_xy_pxct_xtra_efficiency() // reading x and y values
 	graph_residual[0]->GetXaxis()->SetTitleOffset(1.05);
 	graph_residual[0]->GetYaxis()->SetTitleOffset(0.20);
 	graph_residual[0]->GetYaxis()->SetNdivisions(105);
-	graph_residual[0]->GetXaxis()->SetLimits(0, 4000);
-	graph_residual[0]->GetXaxis()->SetRangeUser(0, 4000);
+	graph_residual[0]->GetXaxis()->SetLimits(0, 1536);
+	graph_residual[0]->GetXaxis()->SetRangeUser(0, 1536);
 	graph_residual[0]->GetYaxis()->SetRangeUser(-0.035, 0.035);
-	TLine* T1 = new TLine(0, 0, 4000, 0); // TLine(x1, y1, x2, y2)
+	TLine* T1 = new TLine(0, 0, 1536, 0); // TLine(x1, y1, x2, y2)
 	T1->Draw("R");
 
 	pad3->cd();
@@ -389,15 +389,15 @@ void multigrapherror_plot_by_xy_pxct_xtra_efficiency() // reading x and y values
 	graph_residual[1]->GetYaxis()->SetTitleFont(132);
 	graph_residual[1]->GetYaxis()->SetLabelSize(0.18);
 	graph_residual[1]->GetYaxis()->SetTitleSize(0.16);
-	graph_residual[1]->GetXaxis()->SetLabelSize(0.20);
-	graph_residual[1]->GetXaxis()->SetTitleSize(0.22);
+	graph_residual[1]->GetXaxis()->SetLabelSize(0.22);
+	graph_residual[1]->GetXaxis()->SetTitleSize(0.23);
 	graph_residual[1]->GetYaxis()->SetTickLength(0.02);
 	graph_residual[1]->GetXaxis()->SetTickLength(0.07);
-	graph_residual[1]->GetXaxis()->SetTitleOffset(1.05);
+	graph_residual[1]->GetXaxis()->SetTitleOffset(1.03);
 	graph_residual[1]->GetYaxis()->SetTitleOffset(0.39);
 	graph_residual[1]->GetYaxis()->SetNdivisions(105);
-	graph_residual[1]->GetXaxis()->SetLimits(0, 4000);
-	graph_residual[1]->GetXaxis()->SetRangeUser(0, 4000);
+	graph_residual[1]->GetXaxis()->SetLimits(0, 1536);
+	graph_residual[1]->GetXaxis()->SetRangeUser(0, 1536);
 	graph_residual[1]->GetYaxis()->SetRangeUser(-0.035, 0.035);
 	T1->Draw("R");
 

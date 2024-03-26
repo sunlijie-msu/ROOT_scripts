@@ -135,14 +135,15 @@ void peakfit_gausnerfcpol1_band_pxct() // get histogram and EMG fit one peak
 	sprintf(filename, "%s%s", pathname, "peakpara.dat");
 	ofstream outfile(filename, ios::out);
 	//sprintf(filename, "%s%s", pathname, "run0200_0201_0202_LEGe_MSD26_137Cs_M4038_inChamber_vacuum_North_16mm_South_12mm_away_window1.5us_CFDdelay_adjusted_cal.root"); // modify
-	sprintf(filename, "%s%s", pathname, "run0228_0229_0230_LEGe_XtRa_MSD26_152Eu_Z2707_inChamber_vacuum_XtRa_12mm_away_window1us_XtRaCFDdelay_0.2us_for_efficiency_cal_south_bkgsubtracted.root"); // modify
+	//sprintf(filename, "%s%s", pathname, "run0228_0229_0230_LEGe_XtRa_MSD26_152Eu_Z2707_inChamber_vacuum_XtRa_12mm_away_window1us_XtRaCFDdelay_0.2us_for_efficiency_cal_South_bkgsubtracted.root"); // modify
+	sprintf(filename, "%s%s", pathname, "run0216_0217_0218_LEGe_XtRa_MSD26_60Co_I7281_inChamber_vacuum_XtRa_12mm_away_window1us_CFDdelay_adjusted_AnalogGain1.0_cal_North_betagated.root"); // modify
 	TFile* fin = new TFile(filename);//after this statement, you can use any ROOT command1 for this rootfile
 	cout << filename << endl;
 
 	for (i = ID1; i <= ID2; i++)//which detector no need to change
 	{
 		//sprintf(histo_name, "%s", "hnorth_e_pure"); // modify
-		sprintf(histo_name, "%s", "hsouth_e_pure"); // modify
+		sprintf(histo_name, "%s", "hnorth_e_purebetagated"); // modify
 		histo[i] = (TH1D*)fin->Get(histo_name); //Get spectrum
 		histo[i]->Rebin(1);
 		histo[i]->Sumw2(kFALSE);
@@ -152,7 +153,7 @@ void peakfit_gausnerfcpol1_band_pxct() // get histogram and EMG fit one peak
 
 	for (i = ID1; i <= ID2; i++) // no need to change
 	{
-		for (ii = 26; ii <= 26; ii++)// modify which peak in one detector =0<=13
+		for (ii = 32; ii <= 32; ii++)// modify which peak in one detector =0<=13
 		{
 			sprintf(hfit_name, "%s%d%s%d", histo_name, i, "_peak", ii);
 			canvaspeak[i][ii] = new TCanvas(hfit_name, hfit_name, 1400, 740);//½¨Á¢»­²¼
@@ -288,7 +289,7 @@ void peakfit_gausnerfcpol1_band_pxct() // get histogram and EMG fit one peak
 			fEMG[ii]->SetParameters(aguess, bguess, peaky[ii], 0.2, sigmaguess, peakx[ii]);//initial value [0]-A, [1]-B, [2]-N, [3]-¦Ó, [4]-¦Ò, [5]-¦Ì
 			// 			fEMG[ii]->SetParLimits(0,-500,500);//Bkg A
 			// 			fEMG[ii]->SetParLimits(1,-50000,300000);//Bkg B
-			fEMG[ii]->SetParLimits(2, 1.5e3, 3e6);//Constant,min,max
+			fEMG[ii]->SetParLimits(2, 1.5e2, 3e6);//Constant,min,max
 			fEMG[ii]->SetParLimits(3, 0.04, 1.1);//Tau
 			fEMG[ii]->SetParLimits(4, 0.2, 1.1);//Sigma
 			fEMG[ii]->SetParLimits(5, peakx[ii] - gaplow / 3, peakx[ii] + gaphigh / 2);//Mean

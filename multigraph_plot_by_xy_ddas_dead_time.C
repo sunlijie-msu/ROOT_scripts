@@ -154,7 +154,7 @@ void multigraph_plot_by_xy_ddas_dead_time() // reading x and y values from a fil
 	}
 
 	// Setting up axis titles
-	multigraph->GetXaxis()->SetTitle("Trigger Rate / s");
+	multigraph->GetXaxis()->SetTitle("Input Count Rate / s");
 	multigraph->GetYaxis()->SetTitle("Acceptance (%)");
 	multigraph->GetXaxis()->CenterTitle();
 	multigraph->GetYaxis()->CenterTitle();
