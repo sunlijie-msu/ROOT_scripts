@@ -140,15 +140,15 @@ void peakfit_gausnerfcpol1_band_doublepeak_pxct() // get histogram and EMG fit t
 
 	sprintf(filename, "%s%s", pathname, "peakpara.dat");
 	ofstream outfile(filename, ios::out);
-	//sprintf(filename, "%s%s", pathname, "run0228_0229_0230_LEGe_XtRa_MSD26_152Eu_Z2707_inChamber_vacuum_XtRa_12mm_away_window1us_XtRaCFDdelay_0.2us_for_efficiency_cal.root"); // modify
-	sprintf(filename, "%s%s", pathname, "run0228_0229_0230_LEGe_XtRa_MSD26_152Eu_Z2707_inChamber_vacuum_XtRa_12mm_away_window1us_XtRaCFDdelay_0.2us_for_efficiency_cal_South_bkgsubtracted.root"); // modify
+	sprintf(filename, "%s%s", pathname, "run0075_LEGe_MSD_XtRa_241Am_inChamber_nocollimator_152Eu_outChamber_CFDdelay_adjusted_1511min_cal.root"); // modify
+	//sprintf(filename, "%s%s", pathname, "run0228_0229_0230_LEGe_XtRa_MSD26_152Eu_Z2707_inChamber_vacuum_XtRa_12mm_away_window1us_XtRaCFDdelay_0.2us_for_efficiency_cal_South_bkgsubtracted.root"); // modify
 	TFile* fin = new TFile(filename);//after this statement, you can use any ROOT command1 for this rootfile
 	cout << filename << endl;
 
 	for (i = ID1; i <= ID2; i++)//which detector no need to change
 	{
-		sprintf(histo_name, "%s", "hsouth_e_pure"); // modify
-		//sprintf(histo_name, "%s", "hsouth_e"); // modify
+		//sprintf(histo_name, "%s", "hsouth_e_pure"); // modify
+		sprintf(histo_name, "%s", "hmsdtotal_e"); // modify
 		histo[i] = (TH1D*)fin->Get(histo_name); //Get spectrum
 		histo[i]->Rebin(1);
 		histo[i]->Sumw2(kFALSE);
@@ -158,7 +158,7 @@ void peakfit_gausnerfcpol1_band_doublepeak_pxct() // get histogram and EMG fit t
 
 	for (i = ID1; i <= ID2; i++) // no need to change
 	{
-		for (ii = 25; ii <= 25; ii++)// modify which peak in one detector =0<=13
+		for (ii = 12; ii <= 12; ii++)// modify which peak in one detector =0<=13
 		{
 			sprintf(hfit_name, "%s%d%s%d", histo_name, i, "_peak", ii);
 			canvaspeak[i][ii] = new TCanvas(hfit_name, hfit_name, 1400, 740);//½¨Á¢»­²¼
@@ -308,16 +308,16 @@ void peakfit_gausnerfcpol1_band_doublepeak_pxct() // get histogram and EMG fit t
 			
 			//fEMG[ii]->SetParLimits(0,0,700);//Bkg A
 			// 	fEMG[ii]->SetParLimits(1,-50000,300000);//Bkg B
-			fEMG[ii]->SetParLimits(2, 2200, 3700);//Constant,min,max
-			fEMG[ii]->SetParLimits(3, 0.05, 0.4);//Tau
-			fEMG[ii]->SetParLimits(4, 0.55, 0.9);//Sigma
-			fEMG[ii]->SetParLimits(5, peakx[ii] - gaplow / 3, peakx[ii] + gaphigh / 2);//Mean
-			fEMG[ii]->SetParLimits(5, 564, 565);//Mean
-			fEMG[ii]->SetParLimits(6, 700, 1100);//Constant_2nd,min,max
-			fEMG[ii]->SetParLimits(7, 0.20, 0.4);//Tau_2nd
-			fEMG[ii]->SetParLimits(8, 0.3, 0.69);//Sigma_2nd
-			fEMG[ii]->SetParLimits(9, peakx[ii], peakx[ii] + gaphigh);//Mean_2nd
-			fEMG[ii]->SetParLimits(9, 565.8, 566.7);//Mean_2nd
+			fEMG[ii]->SetParLimits(2, 8e6, 1e7);//Constant,min,max
+			fEMG[ii]->SetParLimits(3, 13, 25);//Tau
+			fEMG[ii]->SetParLimits(4, 17, 28);//Sigma
+			fEMG[ii]->SetParLimits(5, peakx[ii] - gaplow, peakx[ii] + gaphigh);//Mean
+			fEMG[ii]->SetParLimits(5, 5464, 5485);//Mean
+			fEMG[ii]->SetParLimits(6, 1.2e6, 1.5e6);//Constant_2nd,min,max
+			fEMG[ii]->SetParLimits(7, 16, 25);//Tau_2nd
+			fEMG[ii]->SetParLimits(8, 17, 28);//Sigma_2nd
+			fEMG[ii]->SetParLimits(9, peakx[ii] + gaplow, peakx[ii] + gaplow);//Mean_2nd
+			fEMG[ii]->SetParLimits(9, 5410, 5435);//Mean_2nd
 
 // 			//fEMG[ii]->SetParLimits(0,0,700);//Bkg A
 // 			// 	fEMG[ii]->SetParLimits(1,-50000,300000);//Bkg B
