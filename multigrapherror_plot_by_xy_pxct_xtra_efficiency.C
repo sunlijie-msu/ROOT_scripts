@@ -291,7 +291,7 @@ void multigrapherror_plot_by_xy_pxct_xtra_efficiency() // reading x and y values
 		std::vector<double> residual_err(x_values.size());
 		for (int i = 0; i < x_values.size(); i++)
 		{
-			residual[i] = logpol6->Eval(x_values[i]) - y_values[i];
+			residual[i] = y_values[i] - logpol6->Eval(x_values[i]);
 			residual_err[i] = y_errors[i];
 		}
 		graph_residual[i_detector] = new TGraphErrors(x_values.size(), &x_values[0], &residual[0], &x_errors[0], &residual_err[0]);
@@ -321,14 +321,14 @@ void multigrapherror_plot_by_xy_pxct_xtra_efficiency() // reading x and y values
 	multigraph->GetYaxis()->SetLabelFont(132);
 	multigraph->GetXaxis()->SetTitleFont(132);
 	multigraph->GetYaxis()->SetTitleFont(132);
-	multigraph->GetYaxis()->SetLabelSize(0.09);
-	multigraph->GetYaxis()->SetTitleSize(0.09);
-	multigraph->GetXaxis()->SetLabelSize(0.09);
-	multigraph->GetXaxis()->SetTitleSize(0.09);
+	multigraph->GetYaxis()->SetLabelSize(0.10);
+	multigraph->GetYaxis()->SetTitleSize(0.10);
+	multigraph->GetXaxis()->SetLabelSize(0.10);
+	multigraph->GetXaxis()->SetTitleSize(0.10);
 	multigraph->GetYaxis()->SetTickLength(0.02);
 	multigraph->GetYaxis()->SetNdivisions(505);
 	multigraph->GetXaxis()->SetTitleOffset(1.05);
-	multigraph->GetYaxis()->SetTitleOffset(0.65);
+	multigraph->GetYaxis()->SetTitleOffset(0.613);
 	multigraph->GetXaxis()->SetLabelOffset(0.09);
 	multigraph->GetXaxis()->SetLimits(0, 1536);
 	multigraph->GetXaxis()->SetRangeUser(0, 1536);
@@ -357,20 +357,20 @@ void multigrapherror_plot_by_xy_pxct_xtra_efficiency() // reading x and y values
 
 	pad2->cd();
 	graph_residual[0]->Draw("AP");
-	graph_residual[0]->GetYaxis()->SetTitle("Data (%)");
+	graph_residual[0]->GetYaxis()->SetTitle("Fit (%)");
 	graph_residual[0]->GetYaxis()->CenterTitle();
 	graph_residual[0]->GetXaxis()->SetLabelFont(132);
 	graph_residual[0]->GetYaxis()->SetLabelFont(132);
 	graph_residual[0]->GetXaxis()->SetTitleFont(132);
 	graph_residual[0]->GetYaxis()->SetTitleFont(132);
-	graph_residual[0]->GetYaxis()->SetLabelSize(0.35);
-	graph_residual[0]->GetYaxis()->SetTitleSize(0.30);
+	graph_residual[0]->GetYaxis()->SetLabelSize(0.41);
+	graph_residual[0]->GetYaxis()->SetTitleSize(0.385);
 	graph_residual[0]->GetXaxis()->SetLabelSize(0.07);
 	graph_residual[0]->GetXaxis()->SetTitleSize(0.08);
 	graph_residual[0]->GetXaxis()->SetTickLength(0.14);
 	graph_residual[0]->GetYaxis()->SetTickLength(0.010);
 	graph_residual[0]->GetXaxis()->SetTitleOffset(1.05);
-	graph_residual[0]->GetYaxis()->SetTitleOffset(0.20);
+	graph_residual[0]->GetYaxis()->SetTitleOffset(0.162);
 	graph_residual[0]->GetYaxis()->SetNdivisions(105);
 	graph_residual[0]->GetXaxis()->SetLimits(0, 1536);
 	graph_residual[0]->GetXaxis()->SetRangeUser(0, 1536);
@@ -381,20 +381,20 @@ void multigrapherror_plot_by_xy_pxct_xtra_efficiency() // reading x and y values
 	pad3->cd();
 	graph_residual[1]->Draw("AP");
 	graph_residual[1]->GetXaxis()->SetTitle("Energy (keV)");
-	graph_residual[1]->GetYaxis()->SetTitle("Fit #minus ");
+	graph_residual[1]->GetYaxis()->SetTitle("Data #minus ");
 	graph_residual[1]->GetXaxis()->CenterTitle();
 	graph_residual[1]->GetXaxis()->SetLabelFont(132);
 	graph_residual[1]->GetYaxis()->SetLabelFont(132);
 	graph_residual[1]->GetXaxis()->SetTitleFont(132);
 	graph_residual[1]->GetYaxis()->SetTitleFont(132);
-	graph_residual[1]->GetYaxis()->SetLabelSize(0.18);
-	graph_residual[1]->GetYaxis()->SetTitleSize(0.16);
-	graph_residual[1]->GetXaxis()->SetLabelSize(0.22);
-	graph_residual[1]->GetXaxis()->SetTitleSize(0.23);
+	graph_residual[1]->GetYaxis()->SetLabelSize(0.21);
+	graph_residual[1]->GetYaxis()->SetTitleSize(0.22);
+	graph_residual[1]->GetXaxis()->SetLabelSize(0.24);
+	graph_residual[1]->GetXaxis()->SetTitleSize(0.24);
 	graph_residual[1]->GetYaxis()->SetTickLength(0.02);
 	graph_residual[1]->GetXaxis()->SetTickLength(0.07);
-	graph_residual[1]->GetXaxis()->SetTitleOffset(1.03);
-	graph_residual[1]->GetYaxis()->SetTitleOffset(0.39);
+	graph_residual[1]->GetXaxis()->SetTitleOffset(1.00);
+	graph_residual[1]->GetYaxis()->SetTitleOffset(0.29);
 	graph_residual[1]->GetYaxis()->SetNdivisions(105);
 	graph_residual[1]->GetXaxis()->SetLimits(0, 1536);
 	graph_residual[1]->GetXaxis()->SetRangeUser(0, 1536);
