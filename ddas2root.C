@@ -99,8 +99,8 @@ void ddas2root()
 	sprintf(inpathname, "%s", "/mnt/daqtesting/pxct/stagearea/");
 	//sprintf(inpathname, "%s", "/user/pxct/readout/rootfile/");
 
-	sprintf(outpathname, "%s", "/mnt/daqtesting/pxct/stagearea/");
-	//sprintf(outpathname, "%s", "/user/pxct/readout/rootfile/");
+	//sprintf(outpathname, "%s", "/mnt/daqtesting/pxct/stagearea/");
+	sprintf(outpathname, "%s", "/user/pxct/readout/rootfile/");
 
 	if (runnumber == 7)	sprintf(filename, "%s", "run0007_LEGe_152Eu_inChamber_vacuum_window1.5us_CFDdelay_adjusted_for_LEGe_efficiency_345min");
 	if (runnumber == 9)	sprintf(filename, "%s", "run0009_LEGe_152Eu_inChamber_vacuum_window1.5us_CFDdelay_adjusted_for_LEGe_efficiency_720min");
@@ -202,6 +202,9 @@ void ddas2root()
 	if (runnumber == 228)	sprintf(filename, "%s", "run0228_LEGe_XtRa_MSD26_152Eu_Z2707_inChamber_vacuum_XtRa_12mm_away_window1us_XtRaCFDdelay_0.2us_for_efficiency");
 	if (runnumber == 229)	sprintf(filename, "%s", "run0229_LEGe_XtRa_MSD26_152Eu_Z2707_inChamber_vacuum_XtRa_12mm_away_window1us_XtRaCFDdelay_0.2us_for_efficiency");
 	if (runnumber == 230)	sprintf(filename, "%s", "run0230_LEGe_XtRa_MSD26_152Eu_Z2707_inChamber_vacuum_XtRa_12mm_away_window1us_XtRaCFDdelay_0.2us_for_efficiency");
+	if (runnumber == 233)	sprintf(filename, "%s", "run0233_LEGe_XtRa_Room_background_XtRa_12mm_away_window1us_for_background_subtraction");
+	if (runnumber == 234)	sprintf(filename, "%s", "run0234_LEGe_XtRa_60Co_I7281_onChamberWall_window1us_TrigRise0.016us_TrigGap1.000us_CFDdisabled");
+	if (runnumber == 235)	sprintf(filename, "%s", "run0235_LEGe_XtRa_60Co_I7281_onChamberWall_window1us_TrigRise0.016us_TrigGap1.000us_CFDdelay0.504us");
 
 	if (runnumber == 304)	sprintf(filename, "%s", "run0304_Pulser_Ch0_100kHz_10nsWindow");
 	if (runnumber == 305)	sprintf(filename, "%s", "run0305_Pulser_Ch0_100kHz_1000nsWindow");
@@ -265,18 +268,18 @@ void ddas2root()
 	cout << "output file: " << calrootname << endl;
 	TTree* tree = new TTree("tree", "tree");
 
-	// If you have closed the channels in CSRA, please comment out the corresponding branch lines. No other changes are needed.
+	// If you have closed these channels in CSRA, please comment out the corresponding tree->branch lines. No other changes are needed.
 	tree->Branch("lege_e", &lege_e, "lege_e/D");
 	tree->Branch("lege_t", &lege_t, "lege_t/D");
 	tree->Branch("north_e", &north_e, "north_e/D");
 	tree->Branch("north_t", &north_t, "north_t/D");
 	tree->Branch("south_e", &south_e, "south_e/D");
 	tree->Branch("south_t", &south_t, "south_t/D");
- 	//tree->Branch("msd12_e", &msd12_e, "msd12_e/D");
- 	//tree->Branch("msd12_t", &msd12_t, "msd12_t/D");
- 	tree->Branch("msd26_e", &msd26_e, "msd26_e/D");
- 	tree->Branch("msd26_t", &msd26_t, "msd26_t/D");
- 	//tree->Branch("msdtotal_e", &msdtotal_e, "msdtotal_e/D");
+//  	tree->Branch("msd12_e", &msd12_e, "msd12_e/D");
+//  	tree->Branch("msd12_t", &msd12_t, "msd12_t/D");
+//  	tree->Branch("msd26_e", &msd26_e, "msd26_e/D");
+//  	tree->Branch("msd26_t", &msd26_t, "msd26_t/D");
+//  	tree->Branch("msdtotal_e", &msdtotal_e, "msdtotal_e/D");
 
 // 	tree->Branch("lege_e_low", &lege_e_low, "lege_e_low/D");
 // 	tree->Branch("lege_t_low", &lege_t_low, "lege_t_low/D");
@@ -319,9 +322,9 @@ void ddas2root()
 	//hsouth_e = new TH1D("hsouth_e", "hsouth_e", 60000, -0.6039596145015, 8770.24505369435); // 60000 channels, 146 eV per channel from Excel calibration run0216 60Co 2/25/2024
 	hmsd12_e = new TH1D("hmsd12_e", "hmsd12_e", 60000, 0, 7941.93363844394); // 60000 channels, 512 eV per channel
 	hmsd26_e = new TH1D("hmsd26_e", "hmsd26_e", 60000, -0.0016133749182, 6931.63915798418); // 60000 channels, 115 eV per channel from Excel calibration 1/18/2024 run 100
-	//hmsdtotal_e = new TH1D("hmsdtotal_e", "hmsdtotal_e", 6900, 0, 6900); // 6900 channels, 1000 eV per channel
-	//hmsd12_e1keVbin = new TH1D("hmsd12_e1keVbin", "hmsd12_e1keVbin", 7942, 0, 7942); // 7942 channels, 1 keV per channel
-	//hmsd26_e1keVbin = new TH1D("hmsd26_e1keVbin", "hmsd26_e1keVbin", 6935, 0, 6935); // 6935 channels, 1 keV per channel
+	hmsdtotal_e = new TH1D("hmsdtotal_e", "hmsdtotal_e", 6900, 0, 6900); // 6900 channels, 1000 eV per channel
+	hmsd12_e1keVbin = new TH1D("hmsd12_e1keVbin", "hmsd12_e1keVbin", 7942, 0, 7942); // 7942 channels, 1 keV per channel
+	hmsd26_e1keVbin = new TH1D("hmsd26_e1keVbin", "hmsd26_e1keVbin", 6935, 0, 6935); // 6935 channels, 1 keV per channel
 
 	//hlege_e_low = new TH1D("hlege_e_low", "hlege_e_low", 60000, 0, 60000); // 60000 channels
 	//hnorth_e_low = new TH1D("hnorth_e_low", "hnorth_e_low", 60000, 0, 60000); // 60000 channels
@@ -342,7 +345,7 @@ void ddas2root()
 		{
 			if (pChan[j]->GetChannelID() == pChan[j - 1]->GetChannelID())
 			{
-				cout << "!!! Multi events in one entry: " << i << " ch: " << pChan[j]->GetChannelID() << " e: " << pChan[j]->GetEnergy() << " t: " << pChan[j]->GetTime() << endl;
+				cout << "!!! Multi events in one entry: " << i << " ch: " << pChan[j]->GetChannelID() << ", e: " << pChan[j]->GetEnergy() << ", t: " << pChan[j]->GetTime() << endl;
 			}
 		}
 		for (int j = 0; j < Nchannels; j++)
@@ -403,14 +406,14 @@ void ddas2root()
 				hsouth_e->Fill(south_e);
 				south_t = pChan[j]->GetTime() + timestampshift;
 			}
-			//if (pChan[j]->GetChannelID() == 6)
-			//{
-			//	//msd12_e = pChan[j]->GetEnergy();
-			//	msd12_e = pChan[j]->GetEnergy() * 0.1323655606407 + 0;
-			//	hmsd12_e->Fill(msd12_e);
-			//	hmsd12_e1keVbin->Fill(msd12_e + gRandom->Uniform(-0.5, 0.5));
-			//	msd12_t = pChan[j]->GetTime() + timestampshift;
-			//}
+			if (pChan[j]->GetChannelID() == 6)
+			{
+				//msd12_e = pChan[j]->GetEnergy();
+				msd12_e = pChan[j]->GetEnergy() * 0.1323655606407 + 0;
+				hmsd12_e->Fill(msd12_e);
+				//hmsd12_e1keVbin->Fill(msd12_e + gRandom->Uniform(-0.5, 0.5));
+				msd12_t = pChan[j]->GetTime() + timestampshift;
+			}
 			if (pChan[j]->GetChannelID() == 8)
 			{
 				//msd26_e = pChan[j]->GetEnergy();
@@ -421,11 +424,13 @@ void ddas2root()
 				msd26_t = pChan[j]->GetTime() + timestampshift;
 			}
 
-			//if (msd12_e > 200 && msd26_e > 200)
-			//{
-			//	msdtotal_e = msd12_e + msd26_e;
-			//	hmsdtotal_e->Fill(msdtotal_e);
-			//}
+			if (msd12_e > 100 && msd26_e > 100)
+			{
+				hmsd12_e1keVbin->Fill(msd12_e + gRandom->Uniform(-0.5, 0.5));
+				hmsd26_e1keVbin->Fill(msd26_e + gRandom->Uniform(-0.5, 0.5));
+				msdtotal_e = msd12_e + msd26_e;
+				hmsdtotal_e->Fill(msdtotal_e);
+			}
 
 			//if (runnumber >= 92 && lege_e > 59 && lege_e < 60.1 && msd26_e > 5470 && msd26_e < 5510)
 			//{

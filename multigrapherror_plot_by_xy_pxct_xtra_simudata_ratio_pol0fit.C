@@ -43,7 +43,7 @@
 #include "TLegend.h"
 using namespace std;
 
-void multigrapherror_plot_by_xy_pxct_xtra_efficiency() // reading x and y values from a file where the first column is x values and the subsequent columns are y values
+void multigrapherror_plot_by_xy_pxct_xtra_simudata_ratio_pol0fit() // reading x and y values from a file where the first column is x values and the subsequent columns are y values
 // https://root.cern.ch/doc/master/classTMultiGraph.html
 {
 	char pathname[300], filename[300], detectorname[300], figurename[300];
@@ -111,10 +111,11 @@ void multigrapherror_plot_by_xy_pxct_xtra_efficiency() // reading x and y values
 	TH1D* h_confidence_interval[2];
 	int colors[] = { kRed + 2, kBlue + 2, kRed - 9, kAzure - 9, kBlack, kGreen + 1, kViolet + 1, kOrange + 7, kMagenta, kCyan + 1, kYellow + 1, kSpring + 7 };
 	int styles[] = { 24, 20, 24, 25, 22, 23, 26, 27, 28, 29 };
-	TF1* logpol6 = new TF1("logpol6", "exp([0]+[1]*log(x)+[2]*pow(log(x),2)+[3]*pow(log(x),3)+[4]*pow(log(x),4)+[5]*pow(log(x),5)+[6]*pow(log(x),6))", 0, 8000);
-	logpol6->SetNpx(80000);
-	logpol6->SetParNames("p0", "p1", "p2", "p3", "p4", "p5", "p6");//y=exp(p0+p1*lnx+p2*(lnx)^2+...
-	logpol6->SetLineWidth(2);
+
+	TF1* pol0 = new TF1("pol0", "pol0", 0, 8000);
+	pol0->SetNpx(80000);
+	pol0->SetParNames("p0");
+	pol0->SetLineWidth(2);
 
 	// Loop over all detectors
 	for (size_t i_detector = 0; i_detector < detector_name.size(); i_detector++)
@@ -125,18 +126,30 @@ void multigrapherror_plot_by_xy_pxct_xtra_efficiency() // reading x and y values
 		y_values.clear();
 		y_errors.clear();
 		sprintf(pathname, "%s", "F:/e21010/pxct/");
-		sprintf(filename, "%s%s%s%s", pathname, "x_y_values_for_pxct_", detector_name[i_detector].c_str(), "_efficiency.txt");
+		sprintf(filename, "%s%s%s%s", pathname, "x_y_values_for_pxct_", detector_name[i_detector].c_str(), "_simudata_ratio.txt");
 		ifstream infile_xy_values(filename, ios::in); // open the txt file for reading
 		string line;
-		std::vector<std::string> lines;
-		while (getline(infile_xy_values, line))
+
+		// Read the header line
+		if (getline(infile_xy_values, line))
 		{
-			lines.push_back(line);
+			stringstream ss(line);
+			string name;
+			while (ss >> name)
+			{ // Read each name in the header and does nothing with it
+				header.push_back(name);
+			}
 		}
-		for (size_t i = 1; i < lines.size() - 0; i++) // Skip the first line (header) and the last line 7000 keV if needed
+		// Read the first 6 lines and does nothing with them
+		for (int i = 0; i < 6; ++i)
 		{
-			stringstream ss(lines[i]);
+			getline(infile_xy_values, line); // Read and discard the line
+		}
+		while (getline(infile_xy_values, line))
+		{ //Read a line of text from infile and store it in the line string variable
+			stringstream ss(line);
 			double x, x_err, y, y_err;
+			// Read an x value and x error from the line
 			if (ss >> x >> x_err >> y >> y_err)
 			{
 				x_values.push_back(x);
@@ -145,35 +158,6 @@ void multigrapherror_plot_by_xy_pxct_xtra_efficiency() // reading x and y values
 				y_errors.push_back(y_err);
 			}
 		}
-
-		// Read the header line
-		//if (getline(infile_xy_values, line))
-		//{
-		//	stringstream ss(line);
-		//	string name;
-		//	while (ss >> name)
-		//	{ // Read each name in the header and does nothing with it
-		//		header.push_back(name);
-		//	}
-		//}
-		// Read the first 6 lines and does nothing with them
-		//for (int i = 0; i < 6; ++i)
-		//{
-		//	getline(infile_xy_values, line); // Read and discard the line
-		//}
-		//while (getline(infile_xy_values, line))
-		//{ //Read a line of text from infile and store it in the line string variable
-		//	stringstream ss(line);
-		//	double x, x_err, y, y_err;
-		//	// Read an x value and x error from the line
-		//	if (ss >> x >> x_err >> y >> y_err)
-		//	{
-		//		x_values.push_back(x);
-		//		x_errors.push_back(x_err);
-		//		y_values.push_back(y);
-		//		y_errors.push_back(y_err);
-		//	}
-		//}
 
 		// Print the data for verification
 		cout << "Loaded data from " << filename << endl;
@@ -193,21 +177,16 @@ void multigrapherror_plot_by_xy_pxct_xtra_efficiency() // reading x and y values
 		graph[i_detector]->SetLineWidth(2);
 		graph[i_detector]->SetTitle("");
 		graph[i_detector]->SetName(detector_name[i_detector].c_str());
-		//graph[i_detector]->GetXaxis()->SetLimits(0, 6200);
+		//graph[i_detector]->GetXaxis()->SetLimits(0, 1536);
 		multigraph->Add(graph[i_detector], "P"); // Use "P" to draw only markers, "L" to draw only lines, "PL" to draw both
 
-		logpol6->SetLineColor(colors[(i_detector+2) % (sizeof(colors) / sizeof(colors[0]))]);
-		logpol6->SetLineWidth(0); // Set the line width to 0 to hide the fit line because it is always above data points
-		logpol6->SetParameter(0, -70);
-		//logpol6->SetParLimits(0, -100, 0);
-		logpol6->SetParameter(1, 38);
-		//logpol6->SetParLimits(1, 0, 100);
-		logpol6->SetParameter(2, -3.0);
-		//logpol6->SetParLimits(2, -10, 0);
-		graph[i_detector]->Fit("logpol6", "MQ");
-		graph[i_detector]->Fit("logpol6", "MQ");
-		graph[i_detector]->Fit("logpol6", "MQ");
-		TFitResultPtr Fit_result_pointer = graph[i_detector]->Fit("logpol6", "MS");
+		pol0->SetLineColor(colors[(i_detector+2) % (sizeof(colors) / sizeof(colors[0]))]);
+		pol0->SetLineWidth(0); // Set the line width to 0 to hide the fit line because it is always above data points
+		pol0->SetParameter(0, 0.0);
+		graph[i_detector]->Fit("pol0", "MQ");//pol0 can be used directly without TF1 constructor in CINT
+		graph[i_detector]->Fit("pol0", "MQ");//pol0 can be used directly without TF1 constructor in CINT
+		graph[i_detector]->Fit("pol0", "MQ");//pol0 can be used directly without TF1 constructor in CINT
+		TFitResultPtr Fit_result_pointer = graph[i_detector]->Fit("pol0", "MS");
 		//"S" means the result of the fit is returned in the TFitResultPtr
 		//¡°E¡± Perform better errors estimation using the Minos technique.
 		//¡°M¡± Improve fit results, by using the IMPROVE algorithm of TMinuit.
@@ -237,25 +216,13 @@ void multigrapherror_plot_by_xy_pxct_xtra_efficiency() // reading x and y values
 		double p7[2], p6[2], p5[2], p4[2], p3[2], p2[2], p1[2], p0[2];
 		double p7err[2], p6err[2], p5err[2], p4err[2], p3err[2], p2err[2], p1err[2], p0err[2];
 		double parChi[2], parNDF[2], p_value[2];
-		p0[i_detector] = logpol6->GetParameter(0);
-		p1[i_detector] = logpol6->GetParameter(1);
-		p2[i_detector] = logpol6->GetParameter(2);
-		p3[i_detector] = logpol6->GetParameter(3);
-		p4[i_detector] = logpol6->GetParameter(4);
-		p5[i_detector] = logpol6->GetParameter(5);
-		p6[i_detector] = logpol6->GetParameter(6);
+		p0[i_detector] = pol0->GetParameter(0);
 
-		p0err[i_detector] = logpol6->GetParError(0);
-		p1err[i_detector] = logpol6->GetParError(1);
-		p2err[i_detector] = logpol6->GetParError(2);
-		p3err[i_detector] = logpol6->GetParError(3);
-		p4err[i_detector] = logpol6->GetParError(4);
-		p5err[i_detector] = logpol6->GetParError(5);
-		p6err[i_detector] = logpol6->GetParError(6);
+		p0err[i_detector] = pol0->GetParError(0);
 
-		parChi[i_detector] = logpol6->GetChisquare();
-		parNDF[i_detector] = logpol6->GetNDF();
-		p_value[i_detector] = logpol6->GetProb();//This probability is not the ¡°probability that your fit is good.¡± If you did many fake experiments (draw many random samples of data points from the assumed distribution (your fit function)), this is the percentage of experiments that would give ¦Ö2 values ¡Ý to the one you got in this experiment.
+		parChi[i_detector] = pol0->GetChisquare();
+		parNDF[i_detector] = pol0->GetNDF();
+		p_value[i_detector] = pol0->GetProb();//This probability is not the ¡°probability that your fit is good.¡± If you did many fake experiments (draw many random samples of data points from the assumed distribution (your fit function)), this is the percentage of experiments that would give ¦Ö2 values ¡Ý to the one you got in this experiment.
 
 		// To extract FWHM values at energies of interest
 		const int Npoint = 4;
@@ -266,7 +233,7 @@ void multigrapherror_plot_by_xy_pxct_xtra_efficiency() // reading x and y values
 		//err_point contains one side of the error bar, so the full error bar length is 2*err_point
 		for (int ipeak = 0; ipeak < Npoint; ipeak++)//get sigma/tau at energies of interest for output file
 		{
-			cout << "X_value=	" << energy_point[ipeak] << "	Y_value=	" << logpol6->Eval(energy_point[ipeak]) << "	err_Y_value=	" << err_point[ipeak] << endl;
+			cout << "X_value=	" << energy_point[ipeak] << "	Y_value=	" << pol0->Eval(energy_point[ipeak]) << "	err_Y_value=	" << err_point[ipeak] << endl;
 		}
 
 		TPaveText* textpol6 = new TPaveText(0.66, 0.46, 0.969, 0.96, "brNDC");//left, down, right, up
@@ -276,18 +243,6 @@ void multigrapherror_plot_by_xy_pxct_xtra_efficiency() // reading x and y values
 		textpol6->SetTextFont(132);//font = 10 * fontID + precision, 12+2,12 means Symbol; 13+2, 13 means News Times Roman
 		char paraprint[100];
 		sprintf(paraprint, "y=exp[sum(p_i ln(E)^i)]");
-		textpol6->AddText(paraprint);
-		sprintf(paraprint, "p6=%e+/-%e", p6[i_detector], p6err[i_detector]);
-		textpol6->AddText(paraprint);
-		sprintf(paraprint, "p5=%e+/-%e", p5[i_detector], p5err[i_detector]);
-		textpol6->AddText(paraprint);
-		sprintf(paraprint, "p4=%e+/-%e", p4[i_detector], p4err[i_detector]);
-		textpol6->AddText(paraprint);
-		sprintf(paraprint, "p3=%e+/-%e", p3[i_detector], p3err[i_detector]);
-		textpol6->AddText(paraprint);
-		sprintf(paraprint, "p2=%e+/-%e", p2[i_detector], p2err[i_detector]);
-		textpol6->AddText(paraprint);
-		sprintf(paraprint, "p1=%e+/-%e", p1[i_detector], p1err[i_detector]);
 		textpol6->AddText(paraprint);
 		sprintf(paraprint, "p0=%e+/-%e", p0[i_detector], p0err[i_detector]);
 		textpol6->AddText(paraprint);
@@ -299,12 +254,6 @@ void multigrapherror_plot_by_xy_pxct_xtra_efficiency() // reading x and y values
 		textpol6->AddText(paraprint);
 		//textpol6->Draw();
 		// print all the fit parameters
-		cout << "p6=" << p6[i_detector] << " +/- " << p6err[i_detector] << endl;
-		cout << "p5=" << p5[i_detector] << " +/- " << p5err[i_detector] << endl;
-		cout << "p4=" << p4[i_detector] << " +/- " << p4err[i_detector] << endl;
-		cout << "p3=" << p3[i_detector] << " +/- " << p3err[i_detector] << endl;
-		cout << "p2=" << p2[i_detector] << " +/- " << p2err[i_detector] << endl;
-		cout << "p1=" << p1[i_detector] << " +/- " << p1err[i_detector] << endl;
 		cout << "p0=" << p0[i_detector] << " +/- " << p0err[i_detector] << endl;
 		cout << "Chi2=" << parChi[i_detector] << endl;
 		cout << "NDF=" << parNDF[i_detector] << endl;
@@ -316,10 +265,8 @@ void multigrapherror_plot_by_xy_pxct_xtra_efficiency() // reading x and y values
 		std::vector<double> residual_err(x_values.size());
 		for (int i = 0; i < x_values.size(); i++)
 		{
-			residual[i] = y_values[i] - logpol6->Eval(x_values[i]);
-			//residual[i] = residual[i] / y_values[i]; // Relative residuals
+			residual[i] = y_values[i] - pol0->Eval(x_values[i]);
 			residual_err[i] = y_errors[i];
-			//residual_err[i] = residual_err[i] / y_values[i]; // Relative errors
 		}
 		graph_residual[i_detector] = new TGraphErrors(x_values.size(), &x_values[0], &residual[0], &x_errors[0], &residual_err[0]);
 		graph_residual[i_detector]->SetMarkerColor(colors[i_detector % (sizeof(colors) / sizeof(colors[0]))]);
@@ -332,7 +279,7 @@ void multigrapherror_plot_by_xy_pxct_xtra_efficiency() // reading x and y values
 	}
 
 	multigraph->Draw("A"); // "A" Axis are drawn around the graph
-	logpol6->Draw("C same");
+	pol0->Draw("C same");
 	// Overlay the confidence intervals
 	for (size_t i = 0; i < detector_name.size(); i++)
 	{
@@ -341,7 +288,7 @@ void multigrapherror_plot_by_xy_pxct_xtra_efficiency() // reading x and y values
 	multigraph->Draw("P"); // Draw the markers again to make them visible
 	// Setting up axis titles
 	multigraph->GetXaxis()->SetTitle("Energy (keV)");
-	multigraph->GetYaxis()->SetTitle("Detection Efficiency (%)");
+	multigraph->GetYaxis()->SetTitle("Efficiency Ratio (%)");
 	multigraph->GetXaxis()->CenterTitle();
 	multigraph->GetYaxis()->CenterTitle();
 	multigraph->GetXaxis()->SetLabelFont(132);
@@ -357,9 +304,9 @@ void multigrapherror_plot_by_xy_pxct_xtra_efficiency() // reading x and y values
 	multigraph->GetXaxis()->SetTitleOffset(1.05);
 	multigraph->GetYaxis()->SetTitleOffset(0.613);
 	multigraph->GetXaxis()->SetLabelOffset(0.09);
-	multigraph->GetXaxis()->SetLimits(0, 6200);
-	multigraph->GetXaxis()->SetRangeUser(0, 6200);
-	multigraph->GetYaxis()->SetRangeUser(0, 0.85);
+	multigraph->GetXaxis()->SetLimits(500, 1536);
+	multigraph->GetXaxis()->SetRangeUser(500, 1536);
+	//multigraph->GetYaxis()->SetRangeUser(0, 0.85);
 
 	// Adding legend
 	TLegend* legend1 = new TLegend(0.79, 0.82, 0.96, 0.95);//left, down, right, up
@@ -399,10 +346,10 @@ void multigrapherror_plot_by_xy_pxct_xtra_efficiency() // reading x and y values
 	graph_residual[0]->GetXaxis()->SetTitleOffset(1.05);
 	graph_residual[0]->GetYaxis()->SetTitleOffset(0.162);
 	graph_residual[0]->GetYaxis()->SetNdivisions(105);
-	graph_residual[0]->GetXaxis()->SetLimits(0, 6200);
-	graph_residual[0]->GetXaxis()->SetRangeUser(0, 6200);
-	graph_residual[0]->GetYaxis()->SetRangeUser(-0.039, 0.039);
-	TLine* T1 = new TLine(0, 0, 6200, 0); // TLine(x1, y1, x2, y2)
+	graph_residual[0]->GetXaxis()->SetLimits(500, 1536);
+	graph_residual[0]->GetXaxis()->SetRangeUser(500, 1536);
+	//graph_residual[0]->GetYaxis()->SetRangeUser(-0.035, 0.035);
+	TLine* T1 = new TLine(500, 0, 1536, 0); // TLine(x1, y1, x2, y2)
 	T1->Draw("R");
 
 	pad3->cd();
@@ -423,9 +370,9 @@ void multigrapherror_plot_by_xy_pxct_xtra_efficiency() // reading x and y values
 	graph_residual[1]->GetXaxis()->SetTitleOffset(1.00);
 	graph_residual[1]->GetYaxis()->SetTitleOffset(0.29);
 	graph_residual[1]->GetYaxis()->SetNdivisions(105);
-	graph_residual[1]->GetXaxis()->SetLimits(0, 6200);
-	graph_residual[1]->GetXaxis()->SetRangeUser(0, 6200);
-	graph_residual[1]->GetYaxis()->SetRangeUser(-0.039, 0.039);
+	graph_residual[1]->GetXaxis()->SetLimits(500, 1536);
+	graph_residual[1]->GetXaxis()->SetRangeUser(500, 1536);
+	//graph_residual[1]->GetYaxis()->SetRangeUser(-0.035, 0.035);
 	T1->Draw("R");
 
 
@@ -447,7 +394,7 @@ void multigrapherror_plot_by_xy_pxct_xtra_efficiency() // reading x and y values
 
 	canvaspeak->cd();
 	canvaspeak->Update();
-	sprintf(filename, "%s%s", pathname, "Fig_PXCT_Gamma_Efficiency_XtRa");
+	sprintf(filename, "%s%s", pathname, "Fig_PXCT_Gamma_Efficiency_SimuData_Ratio_XtRa");
 	sprintf(figurename, "%s%s", filename, ".png");
 	canvaspeak->SaveAs(figurename);
 	sprintf(figurename, "%s%s", filename, ".eps");
