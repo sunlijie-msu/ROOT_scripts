@@ -205,6 +205,14 @@ void ddas2root()
 	if (runnumber == 233)	sprintf(filename, "%s", "run0233_LEGe_XtRa_Room_background_XtRa_12mm_away_window1us_for_background_subtraction");
 	if (runnumber == 234)	sprintf(filename, "%s", "run0234_LEGe_XtRa_60Co_I7281_onChamberWall_window1us_TrigRise0.016us_TrigGap1.000us_CFDdisabled");
 	if (runnumber == 235)	sprintf(filename, "%s", "run0235_LEGe_XtRa_60Co_I7281_onChamberWall_window1us_TrigRise0.016us_TrigGap1.000us_CFDdelay0.504us");
+	if (runnumber == 236)	sprintf(filename, "%s", "run0236_LEGe_XtRa_60Co_I7281_MiddleXtRa_window1us_TrigRise0.016us_TrigGap1.000us_ThN10000_ThS10000_LED");
+	if (runnumber == 237)	sprintf(filename, "%s", "run0237_LEGe_XtRa_60Co_I7281_MiddleXtRa_window1us_TrigRise0.016us_TrigGap1.000us_ThN16384_ThS16384_LED");
+	if (runnumber == 239)	sprintf(filename, "%s", "run0239_LEGe_XtRa_60Co_I7281_MiddleXtRa_window1us_TrigRise0.016us_TrigGap1.000us_ThN5000_ThS5000_LED");
+	if (runnumber == 240)	sprintf(filename, "%s", "run0240_LEGe_XtRa_60Co_I7281_MiddleXtRa_window1us_TrigRise0.016us_TrigGap1.000us_ThN500_ThS950_LED");
+	if (runnumber == 241)	sprintf(filename, "%s", "run0241_LEGe_XtRa_60Co_I7281_MiddleXtRa_window1us_TrigRise0.016us_TrigGap1.000us_ThN2000_ThS2000_LED");
+	if (runnumber == 242)	sprintf(filename, "%s", "run0242_LEGe_XtRa_60Co_I7281_MiddleXtRa_window1us_TrigRise0.016us_TrigGap1.000us_ThN530_ThS1050_CFDDelay0.504us");
+	if (runnumber == 243)	sprintf(filename, "%s", "run0243_LEGe_XtRa_60Co_I7281_MiddleXtRa_window1us_TrigRise0.016us_TrigGap1.000us_ThN530_ThS1050_CFDDelay0.104us");
+	if (runnumber == 244)	sprintf(filename, "%s", "run0244_LEGe_XtRa_60Co_I7281_MiddleXtRa_window1us_TrigRise0.064us_TrigGap0.952us_ThN260_ThS610_LED");
 
 	if (runnumber == 304)	sprintf(filename, "%s", "run0304_Pulser_Ch0_100kHz_10nsWindow");
 	if (runnumber == 305)	sprintf(filename, "%s", "run0305_Pulser_Ch0_100kHz_1000nsWindow");
@@ -245,14 +253,19 @@ void ddas2root()
 
 	Double_t lege_e;
 	Double_t lege_t;
+	Double_t lege_tled;
 	Double_t north_e;
 	Double_t north_t;
+	Double_t north_tled;
 	Double_t south_e;
 	Double_t south_t;
+	Double_t south_tled;
 	Double_t msd12_e;
 	Double_t msd12_t;
+	Double_t msd12_tled;
 	Double_t msd26_e;
 	Double_t msd26_t;
+	Double_t msd26_tled;
 	Double_t msdtotal_e;
 
 // 	Double_t lege_e_low;
@@ -271,15 +284,19 @@ void ddas2root()
 	// If you have closed these channels in CSRA, please comment out the corresponding tree->branch lines. No other changes are needed.
 	tree->Branch("lege_e", &lege_e, "lege_e/D");
 	tree->Branch("lege_t", &lege_t, "lege_t/D");
+	tree->Branch("lege_tled", &lege_tled, "lege_tled/D");
 	tree->Branch("north_e", &north_e, "north_e/D");
 	tree->Branch("north_t", &north_t, "north_t/D");
+	tree->Branch("north_tled", &north_tled, "north_tled/D");
 	tree->Branch("south_e", &south_e, "south_e/D");
 	tree->Branch("south_t", &south_t, "south_t/D");
-//  	tree->Branch("msd12_e", &msd12_e, "msd12_e/D");
-//  	tree->Branch("msd12_t", &msd12_t, "msd12_t/D");
-//  	tree->Branch("msd26_e", &msd26_e, "msd26_e/D");
-//  	tree->Branch("msd26_t", &msd26_t, "msd26_t/D");
-//  	tree->Branch("msdtotal_e", &msdtotal_e, "msdtotal_e/D");
+	tree->Branch("south_tled", &south_tled, "south_tled/D");
+ // 	tree->Branch("msd12_e", &msd12_e, "msd12_e/D");
+ // 	tree->Branch("msd12_t", &msd12_t, "msd12_t/D");
+	//tree->Branch("msd12_tled", &msd12_tled, "msd12_tled/D");
+ // 	tree->Branch("msd26_e", &msd26_e, "msd26_e/D");
+ // 	tree->Branch("msd26_t", &msd26_t, "msd26_t/D");
+	//tree->Branch("msd26_tled", &msd26_tled, "msd26_tled/D");
 
 // 	tree->Branch("lege_e_low", &lege_e_low, "lege_e_low/D");
 // 	tree->Branch("lege_t_low", &lege_t_low, "lege_t_low/D");
@@ -335,7 +352,7 @@ void ddas2root()
 
 	for (i = 0; i < totalentries; i++)
 	{
-		lege_e = 0; lege_t = 0; north_e = 0; north_t = 0; south_e = 0; south_t = 0; msd12_e = 0; msd12_t = 0; 	msd26_e = 0; msd26_t = 0;
+		lege_e = 0; lege_t = 0; lege_tled = 0; north_e = 0; north_t = 0; north_tled = 0; south_e = 0; south_t = 0; south_tled = 0; msd12_e = 0; msd12_t = 0; msd12_tled = 0; msd26_e = 0; msd26_t = 0; msd26_tled = 0; msdtotal_e = 0;
 		//lege_e_low = 0; lege_t_low = 0; north_e_low = 0; north_t_low = 0; south_e_low = 0; south_t_low = 0; pulser_e = 0; pulser_t = 0;
 		pTree->GetEntry(i);
 		pChan = pEvent->GetData();
@@ -375,6 +392,7 @@ void ddas2root()
 				//lege_e = pChan[j]->GetEnergy() * 0.0279852398524 - 0.758391143912; // based on run0216
 				hlege_e->Fill(lege_e);
 				lege_t = pChan[j]->GetTime() + timestampshift;
+				lege_tled = pChan[j]->GetCoarseTime() + timestampshift;
 			}
 // 			if (pChan[j]->GetChannelID() == 2)
 // 			{
@@ -390,6 +408,7 @@ void ddas2root()
 				//north_e = pChan[j]->GetEnergy() * 0.1469496217014 - 1.1199018269051; // based on run0216
 				hnorth_e->Fill(north_e);
 				north_t = pChan[j]->GetTime() + timestampshift;
+				north_tled = pChan[j]->GetCoarseTime() + timestampshift;
 			}
 // 			if (pChan[j]->GetChannelID() == 4)
 // 			{
@@ -405,6 +424,7 @@ void ddas2root()
 				//south_e = pChan[j]->GetEnergy() * 0.1461808168885 - 0.6039596145015; // based on run0216
 				hsouth_e->Fill(south_e);
 				south_t = pChan[j]->GetTime() + timestampshift;
+				south_tled = pChan[j]->GetCoarseTime() + timestampshift;
 			}
 			if (pChan[j]->GetChannelID() == 6)
 			{
@@ -413,6 +433,7 @@ void ddas2root()
 				hmsd12_e->Fill(msd12_e);
 				//hmsd12_e1keVbin->Fill(msd12_e + gRandom->Uniform(-0.5, 0.5));
 				msd12_t = pChan[j]->GetTime() + timestampshift;
+				msd12_tled = pChan[j]->GetCoarseTime() + timestampshift;
 			}
 			if (pChan[j]->GetChannelID() == 8)
 			{
@@ -422,6 +443,7 @@ void ddas2root()
 				hmsd26_e->Fill(msd26_e);
 				//hmsd26_e1keVbin->Fill(msd26_e + gRandom->Uniform(-0.5, 0.5));
 				msd26_t = pChan[j]->GetTime() + timestampshift;
+				msd26_tled = pChan[j]->GetCoarseTime() + timestampshift;
 			}
 
 			if (msd12_e > 100 && msd26_e > 100)
