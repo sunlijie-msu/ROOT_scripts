@@ -213,7 +213,18 @@ void ddas2root()
 	if (runnumber == 242)	sprintf(filename, "%s", "run0242_LEGe_XtRa_60Co_I7281_MiddleXtRa_window1us_TrigRise0.016us_TrigGap1.000us_ThN530_ThS1050_CFDDelay0.504us");
 	if (runnumber == 243)	sprintf(filename, "%s", "run0243_LEGe_XtRa_60Co_I7281_MiddleXtRa_window1us_TrigRise0.016us_TrigGap1.000us_ThN530_ThS1050_CFDDelay0.104us");
 	if (runnumber == 244)	sprintf(filename, "%s", "run0244_LEGe_XtRa_60Co_I7281_MiddleXtRa_window1us_TrigRise0.064us_TrigGap0.952us_ThN260_ThS610_LED");
-
+	if (runnumber == 245)	sprintf(filename, "%s", "run0245_LEGe_XtRa_60Co_I7281_MiddleXtRa_window1us_TrigRise0.104us_TrigGap0.912us_ThN210_ThS340_LED");
+	if (runnumber == 246)	sprintf(filename, "%s", "run0246_LEGe_XtRa_60Co_I7281_MiddleXtRa_window1us_TrigRise0.200us_TrigGap0.816us_ThN190_ThS330_LED");
+	if (runnumber == 247)	sprintf(filename, "%s", "run0247_LEGe_XtRa_60Co_I7281_MiddleXtRa_window1us_TrigRise0.104us_TrigGap0.912us_ThN2520_ThS2520_LED");
+	if (runnumber == 248)	sprintf(filename, "%s", "run0248_LEGe_XtRa_60Co_I7281_MiddleXtRa_window1us_TrigRise0.064us_TrigGap0.504us_ThN260_ThS610_CFDDelay0.504us");
+	if (runnumber == 249)	sprintf(filename, "%s", "run0249_LEGe_XtRa_60Co_I7281_MiddleXtRa_window1us_TrigRise0.064us_TrigGap0.952us_ThN260_ThS610_CFDDelay0.504us");
+	if (runnumber == 250)	sprintf(filename, "%s", "run0250_LEGe_XtRa_60Co_I7281_MiddleXtRa_window1us_TrigRise0.064us_TrigGap0.952us_ThN260_ThS610_CFDDelay0.504us_Scale4");
+	if (runnumber == 251)	sprintf(filename, "%s", "run0251_LEGe_XtRa_60Co_I7281_MiddleXtRa_window1us_TrigRise0.064us_TrigGap0.952us_ThN260_ThS610_CFDDelay0.504us_Scale7");
+	if (runnumber == 252)	sprintf(filename, "%s", "run0252_LEGe_XtRa_60Co_I7281_MiddleXtRa_window1us_TrigRise0.064us_TrigGap0.952us_ThN260_ThS610_CFDDelay0.104us_Scale7");
+	if (runnumber == 253)	sprintf(filename, "%s", "run0253_LEGe_XtRa_60Co_I7281_MiddleXtRa_window1us_TrigRise0.048us_TrigGap0.968us_ThN270_ThS720_LED");
+	if (runnumber == 254)	sprintf(filename, "%s", "run0254_LEGe_XtRa_60Co_I7281_MiddleXtRa_window1us_TrigRise0.032us_TrigGap0.984us_ThN330_ThS860_LED");
+	if (runnumber == 255)	sprintf(filename, "%s", "run0255_LEGe_XtRa_60Co_I7281_MiddleXtRa_window1us_TrigRise0.064us_TrigGap0.952us_ThN300_ThS700_CFDDelay0.008us_Scale7");
+	
 	if (runnumber == 304)	sprintf(filename, "%s", "run0304_Pulser_Ch0_100kHz_10nsWindow");
 	if (runnumber == 305)	sprintf(filename, "%s", "run0305_Pulser_Ch0_100kHz_1000nsWindow");
 	if (runnumber == 306)	sprintf(filename, "%s", "run0306_Pulser_Ch0_100kHz_10000nsWindow");
