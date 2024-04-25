@@ -224,6 +224,13 @@ void ddas2root()
 	if (runnumber == 253)	sprintf(filename, "%s", "run0253_LEGe_XtRa_60Co_I7281_MiddleXtRa_window1us_TrigRise0.048us_TrigGap0.968us_ThN270_ThS720_LED");
 	if (runnumber == 254)	sprintf(filename, "%s", "run0254_LEGe_XtRa_60Co_I7281_MiddleXtRa_window1us_TrigRise0.032us_TrigGap0.984us_ThN330_ThS860_LED");
 	if (runnumber == 255)	sprintf(filename, "%s", "run0255_LEGe_XtRa_60Co_I7281_MiddleXtRa_window1us_TrigRise0.064us_TrigGap0.952us_ThN300_ThS700_CFDDelay0.008us_Scale7");
+	if (runnumber == 256)	sprintf(filename, "%s", "run0256_LEGe_XtRa_60Co_I7281_MiddleXtRa_window1us_TrigRise0.016us_TrigGap1.000us_ThN550_ThS1500_LED");
+	if (runnumber == 257)	sprintf(filename, "%s", "run0257_LEGe_XtRa_60Co_I7281_MiddleXtRa_window1us_TrigRise0.064us_TrigGap0.952us_ThN300_ThS700_CFDDelay0.200us_Scale7");
+	if (runnumber == 258)	sprintf(filename, "%s", "run0258_LEGe_XtRa_60Co_I7281_MiddleXtRa_window1us_TrigRise0.064us_TrigGap0.952us_ThN300_ThS700_CFDDelay0.064us_Scale7");
+	if (runnumber == 259)	sprintf(filename, "%s", "run0259_LEGe_XtRa_60Co_I7281_MiddleXtRa_window1us_TrigRise0.064us_TrigGap0.952us_ThN300_ThS700_CFDDelay0.064us_Scale4");
+	if (runnumber == 260)	sprintf(filename, "%s", "run0260_LEGe_XtRa_60Co_I7281_MiddleXtRa_window1us_TrigRise0.064us_TrigGap0.952us_ThN300_ThS700_CFDDelay0.120us_Scale7");
+	if (runnumber == 261)	sprintf(filename, "%s", "run0261_LEGe_XtRa_60Co_I7281_MiddleXtRa_window1us_TrigRise0.064us_TrigGap0.952us_ThN300_ThS700_LED");
+	if (runnumber == 262)	sprintf(filename, "%s", "run0262_LEGe_XtRa_60Co_I7281_OnChamberWall_window1us_TrigRise0.064us_TrigGap0.952us_ThL150_N300_S700_LED");
 	
 	if (runnumber == 304)	sprintf(filename, "%s", "run0304_Pulser_Ch0_100kHz_10nsWindow");
 	if (runnumber == 305)	sprintf(filename, "%s", "run0305_Pulser_Ch0_100kHz_1000nsWindow");
@@ -295,13 +302,13 @@ void ddas2root()
 	// If you have closed these channels in CSRA, please comment out the corresponding tree->branch lines. No other changes are needed.
 	tree->Branch("lege_e", &lege_e, "lege_e/D");
 	tree->Branch("lege_t", &lege_t, "lege_t/D");
-	tree->Branch("lege_tled", &lege_tled, "lege_tled/D");
+	//tree->Branch("lege_tled", &lege_tled, "lege_tled/D");
 	tree->Branch("north_e", &north_e, "north_e/D");
 	tree->Branch("north_t", &north_t, "north_t/D");
-	tree->Branch("north_tled", &north_tled, "north_tled/D");
+	//tree->Branch("north_tled", &north_tled, "north_tled/D");
 	tree->Branch("south_e", &south_e, "south_e/D");
 	tree->Branch("south_t", &south_t, "south_t/D");
-	tree->Branch("south_tled", &south_tled, "south_tled/D");
+	//tree->Branch("south_tled", &south_tled, "south_tled/D");
  // 	tree->Branch("msd12_e", &msd12_e, "msd12_e/D");
  // 	tree->Branch("msd12_t", &msd12_t, "msd12_t/D");
 	//tree->Branch("msd12_tled", &msd12_tled, "msd12_tled/D");
@@ -340,8 +347,8 @@ void ddas2root()
 	// 	if (runnumber == 152)	hlege_e = new TH1D("hlege_e", "hlege_e", 60000, -0.0001420032512, 436.2768890605690); // 60000 channels, 7.3 eV per channel
 	//	if (runnumber == 241)	hlege_e = new TH1D("hlege_e", "hlege_e", 60000, 0.0541091878755, 435.4667414524260); // 60000 channels, 7.3 eV per channel
 	//hlege_e = new TH1D("hlege_e", "hlege_e", 60000, 0.0541091878755, 435.4667414524260); // 60000 channels, 7.3 eV per channel
-	hlege_e = new TH1D("hlege_e", "hlege_e", 60000, -0.0540888491631, 435.8137733893930); // 60000 channels, 7.3 eV per channel run0060
-	//hlege_e = new TH1D("hlege_e", "hlege_e", 60000, 0.7583911439124, 1679.872782287820); // 60000 channels, 28 eV per channel run0216 60Co
+	//hlege_e = new TH1D("hlege_e", "hlege_e", 60000, -0.0540888491631, 435.8137733893930); // 60000 channels, 7.3 eV per channel run0060
+	hlege_e = new TH1D("hlege_e", "hlege_e", 60000, 0.7583911439124, 1679.872782287820); // 60000 channels, 28 eV per channel run0216 60Co
 	// hnorth_e = new TH1D("hnorth_e", "hnorth_e", 60000, -0.1774488889544, 2286.04224413527); // 60000 channels, 38 eV per channel from Excel calibration
 	hnorth_e = new TH1D("hnorth_e", "hnorth_e", 60000, -0.1943988436200, 2285.29642151811); // 60000 channels, 38 eV per channel from Excel calibration 1/11/2024 run97-98
 	//hnorth_e = new TH1D("hnorth_e", "hnorth_e", 60000, -1.1199018269051, 8815.85740025835); // 60000 channels, 147 eV per channel from Excel calibration run0216 60Co 2/25/2024
@@ -399,11 +406,11 @@ void ddas2root()
 			{
 				//lege_e = pChan[j]->GetEnergy();
 				//lege_e = pChan[j]->GetEnergy() * 0.0072712838511 - 0.0001420032512;
-				lege_e = pChan[j]->GetEnergy() * 0.0072644643706 - 0.054088849163; // based on run0060
-				//lege_e = pChan[j]->GetEnergy() * 0.0279852398524 - 0.758391143912; // based on run0216
+				//lege_e = pChan[j]->GetEnergy() * 0.0072644643706 - 0.054088849163; // based on run0060 Gain 4.0
+				lege_e = pChan[j]->GetEnergy() * 0.0279852398524 - 0.758391143912; // based on run0216 Gain 1.0
 				hlege_e->Fill(lege_e);
 				lege_t = pChan[j]->GetTime() + timestampshift;
-				lege_tled = pChan[j]->GetCoarseTime() + timestampshift;
+				//lege_tled = pChan[j]->GetCoarseTime() + timestampshift;
 			}
 // 			if (pChan[j]->GetChannelID() == 2)
 // 			{
@@ -419,7 +426,7 @@ void ddas2root()
 				//north_e = pChan[j]->GetEnergy() * 0.1469496217014 - 1.1199018269051; // based on run0216
 				hnorth_e->Fill(north_e);
 				north_t = pChan[j]->GetTime() + timestampshift;
-				north_tled = pChan[j]->GetCoarseTime() + timestampshift;
+				//north_tled = pChan[j]->GetCoarseTime() + timestampshift;
 			}
 // 			if (pChan[j]->GetChannelID() == 4)
 // 			{
@@ -435,7 +442,7 @@ void ddas2root()
 				//south_e = pChan[j]->GetEnergy() * 0.1461808168885 - 0.6039596145015; // based on run0216
 				hsouth_e->Fill(south_e);
 				south_t = pChan[j]->GetTime() + timestampshift;
-				south_tled = pChan[j]->GetCoarseTime() + timestampshift;
+				//south_tled = pChan[j]->GetCoarseTime() + timestampshift;
 			}
 			if (pChan[j]->GetChannelID() == 6)
 			{
@@ -444,7 +451,7 @@ void ddas2root()
 				hmsd12_e->Fill(msd12_e);
 				//hmsd12_e1keVbin->Fill(msd12_e + gRandom->Uniform(-0.5, 0.5));
 				msd12_t = pChan[j]->GetTime() + timestampshift;
-				msd12_tled = pChan[j]->GetCoarseTime() + timestampshift;
+				//msd12_tled = pChan[j]->GetCoarseTime() + timestampshift;
 			}
 			if (pChan[j]->GetChannelID() == 8)
 			{
@@ -454,7 +461,7 @@ void ddas2root()
 				hmsd26_e->Fill(msd26_e);
 				//hmsd26_e1keVbin->Fill(msd26_e + gRandom->Uniform(-0.5, 0.5));
 				msd26_t = pChan[j]->GetTime() + timestampshift;
-				msd26_tled = pChan[j]->GetCoarseTime() + timestampshift;
+				//msd26_tled = pChan[j]->GetCoarseTime() + timestampshift;
 			}
 
 			if (msd12_e > 100 && msd26_e > 100)
