@@ -231,7 +231,13 @@ void ddas2root()
 	if (runnumber == 260)	sprintf(filename, "%s", "run0260_LEGe_XtRa_60Co_I7281_MiddleXtRa_window1us_TrigRise0.064us_TrigGap0.952us_ThN300_ThS700_CFDDelay0.120us_Scale7");
 	if (runnumber == 261)	sprintf(filename, "%s", "run0261_LEGe_XtRa_60Co_I7281_MiddleXtRa_window1us_TrigRise0.064us_TrigGap0.952us_ThN300_ThS700_LED");
 	if (runnumber == 262)	sprintf(filename, "%s", "run0262_LEGe_XtRa_60Co_I7281_OnChamberWall_window1us_TrigRise0.064us_TrigGap0.952us_ThL150_N300_S700_LED");
-	
+	if (runnumber == 263)	sprintf(filename, "%s", "run0263_LEGe_XtRa_60Co_I7281_OnLEGeCap_window1us_TrigRise0.064us_TrigGap0.952us_ThL150_N300_S700_CFDDelay0.120us_Scale7");
+	if (runnumber == 264)	sprintf(filename, "%s", "run0264_LEGe_XtRa_152Eu_Z2707_OnLEGeCap_window1us_TrigRise0.064us_TrigGap0.952us_ThL310_N300_S730_LED");
+	if (runnumber == 265)	sprintf(filename, "%s", "run0265_LEGe_XtRa_152Eu_Z2707_OnLEGeCap_window1us_TrigRise0.064us_TrigGap0.952us_ThL310_N300_S730_CFDDelay0.120us_Scale7");
+	if (runnumber == 266)	sprintf(filename, "%s", "run0266_LEGe_XtRa_152Eu_Z2707_OnLEGeCap_window1us_TrigRise0.064us_TrigGap0.952us_ThL310_N300_S730_CFDDelay0.200us_Scale7");
+	if (runnumber == 267)	sprintf(filename, "%s", "run0267_LEGe_XtRa_152Eu_Z2707_OnLEGeCap_window1us_TrigRise0.064us_TrigGap0.952us_ThL310_N300_S730_CFDDelay0.304us_Scale7");
+	if (runnumber == 268)	sprintf(filename, "%s", "run0268_LEGe_XtRa_152Eu_Z2707_OnLEGeCap_window1us_TrigRise0.064us_TrigGap0.952us_ThL310_N300_S730_CFDDelay0.400us_Scale7");
+
 	if (runnumber == 304)	sprintf(filename, "%s", "run0304_Pulser_Ch0_100kHz_10nsWindow");
 	if (runnumber == 305)	sprintf(filename, "%s", "run0305_Pulser_Ch0_100kHz_1000nsWindow");
 	if (runnumber == 306)	sprintf(filename, "%s", "run0306_Pulser_Ch0_100kHz_10000nsWindow");
@@ -347,8 +353,8 @@ void ddas2root()
 	// 	if (runnumber == 152)	hlege_e = new TH1D("hlege_e", "hlege_e", 60000, -0.0001420032512, 436.2768890605690); // 60000 channels, 7.3 eV per channel
 	//	if (runnumber == 241)	hlege_e = new TH1D("hlege_e", "hlege_e", 60000, 0.0541091878755, 435.4667414524260); // 60000 channels, 7.3 eV per channel
 	//hlege_e = new TH1D("hlege_e", "hlege_e", 60000, 0.0541091878755, 435.4667414524260); // 60000 channels, 7.3 eV per channel
-	//hlege_e = new TH1D("hlege_e", "hlege_e", 60000, -0.0540888491631, 435.8137733893930); // 60000 channels, 7.3 eV per channel run0060
-	hlege_e = new TH1D("hlege_e", "hlege_e", 60000, 0.7583911439124, 1679.872782287820); // 60000 channels, 28 eV per channel run0216 60Co
+	hlege_e = new TH1D("hlege_e", "hlege_e", 60000, -0.0540888491631, 435.8137733893930); // 60000 channels, 7.3 eV per channel run0060
+	//hlege_e = new TH1D("hlege_e", "hlege_e", 60000, 0.7583911439124, 1679.872782287820); // 60000 channels, 28 eV per channel run0216 60Co
 	// hnorth_e = new TH1D("hnorth_e", "hnorth_e", 60000, -0.1774488889544, 2286.04224413527); // 60000 channels, 38 eV per channel from Excel calibration
 	hnorth_e = new TH1D("hnorth_e", "hnorth_e", 60000, -0.1943988436200, 2285.29642151811); // 60000 channels, 38 eV per channel from Excel calibration 1/11/2024 run97-98
 	//hnorth_e = new TH1D("hnorth_e", "hnorth_e", 60000, -1.1199018269051, 8815.85740025835); // 60000 channels, 147 eV per channel from Excel calibration run0216 60Co 2/25/2024
@@ -406,8 +412,8 @@ void ddas2root()
 			{
 				//lege_e = pChan[j]->GetEnergy();
 				//lege_e = pChan[j]->GetEnergy() * 0.0072712838511 - 0.0001420032512;
-				//lege_e = pChan[j]->GetEnergy() * 0.0072644643706 - 0.054088849163; // based on run0060 Gain 4.0
-				lege_e = pChan[j]->GetEnergy() * 0.0279852398524 - 0.758391143912; // based on run0216 Gain 1.0
+				lege_e = pChan[j]->GetEnergy() * 0.0072644643706 - 0.054088849163; // based on run0060 Gain 4.0
+				//lege_e = pChan[j]->GetEnergy() * 0.0279852398524 - 0.758391143912; // based on run0216 Gain 1.0
 				hlege_e->Fill(lege_e);
 				lege_t = pChan[j]->GetTime() + timestampshift;
 				//lege_tled = pChan[j]->GetCoarseTime() + timestampshift;
