@@ -237,6 +237,14 @@ void ddas2root()
 	if (runnumber == 266)	sprintf(filename, "%s", "run0266_LEGe_XtRa_152Eu_Z2707_OnLEGeCap_window1us_TrigRise0.064us_TrigGap0.952us_ThL310_N300_S730_CFDDelay0.200us_Scale7");
 	if (runnumber == 267)	sprintf(filename, "%s", "run0267_LEGe_XtRa_152Eu_Z2707_OnLEGeCap_window1us_TrigRise0.064us_TrigGap0.952us_ThL310_N300_S730_CFDDelay0.304us_Scale7");
 	if (runnumber == 268)	sprintf(filename, "%s", "run0268_LEGe_XtRa_152Eu_Z2707_OnLEGeCap_window1us_TrigRise0.064us_TrigGap0.952us_ThL310_N300_S730_CFDDelay0.400us_Scale7");
+	if (runnumber == 269)	sprintf(filename, "%s", "run0269_LEGe_XtRa_152Eu_Z2707_OnLEGeCap_window1us_TrigRise0.200_0.064us_TrigGap0.816_0.952us_ThL310_N300_S730_CFDDelay0.200us_Scale7");
+	if (runnumber == 270)	sprintf(filename, "%s", "run0270_LEGe_XtRa_152Eu_Z2707_OnLEGeCap_window1us_TrigRise0.064_0.064us_TrigGap0.600_0.952us_ThL310_N300_S730_CFDDelay0.304us_Scale7");
+	if (runnumber == 271)	sprintf(filename, "%s", "run0271_LEGe_XtRa_152Eu_Z2707_OnLEGeCap_window1us_TrigRise0.064us_TrigGap0.952us_ThL310_N300_S730_CFDDelay0.120_0.304us_Scale3_7");
+	if (runnumber == 272)	sprintf(filename, "%s", "run0272_LEGe_XtRa_152Eu_Z2707_OnLEGeCap_window1us_TrigRise0.064us_TrigGap0.952us_ThL310_N300_S730_CFDDelay0.304_0.120us_Scale7");
+	if (runnumber == 273)	sprintf(filename, "%s", "run0273_LEGe_XtRa_152Eu_Z2707_OnLEGeCap_window1us_TrigRise0.064us_TrigGap0.952us_ThL310_N300_S730_CFDDelay0.120us_Scale0_7");
+	if (runnumber == 274)	sprintf(filename, "%s", "run0274_LEGe_XtRa_152Eu_Z2707_OnLEGeCap_window1us_TrigRise0.064us_TrigGap0.952us_ThL310_N300_S730_CFDDelay0.120us_Scale7");
+	if (runnumber == 275)	sprintf(filename, "%s", "run0275_LEGe_XtRa_152Eu_Z2707_OnLEGeCap_window1us_TrigRise0.064us_TrigGap0.952us_ThL310_N300_S730_CFDDelay0.120us_Scale2_7");
+	if (runnumber == 276)	sprintf(filename, "%s", "run0276_LEGe_XtRa_152Eu_Z2707_OnLEGeCap_window1us_TrigRise0.064us_TrigGap0.952us_ThL310_N300_S730_CFDDelay0.304us_Scale7");
 
 	if (runnumber == 304)	sprintf(filename, "%s", "run0304_Pulser_Ch0_100kHz_10nsWindow");
 	if (runnumber == 305)	sprintf(filename, "%s", "run0305_Pulser_Ch0_100kHz_1000nsWindow");
