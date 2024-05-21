@@ -263,6 +263,8 @@ void ddas2root()
 	if (runnumber == 292)	sprintf(filename, "%s", "run0292_LEGe_XtRa_152Eu_Z2707_OnLEGeCap_window1us_TrigRise0.200_0.064us_TrigGap0.816_0.952us_ThL240_N300_S730_LED");
 	if (runnumber == 293)	sprintf(filename, "%s", "run0293_LEGe_XtRa_152Eu_Z2707_OnLEGeCap_window1us_TrigRise0.304_0.064us_TrigGap0.712_0.952us_ThL210_N300_S730_LED");
 	if (runnumber == 294)	sprintf(filename, "%s", "run0294_LEGe_XtRa_152Eu_Z2707_OnLEGeCap_window1us_TrigRise0.400_0.064us_TrigGap0.616_0.952us_ThL190_N300_S730_LED");
+	if (runnumber == 295)	sprintf(filename, "%s", "run0295_LEGe_MSD_241Am_Z7117_ChamberCenter_window1us_TrigRise0.064_0.064_0.112us_TrigGap0.952_0.952_0.904us_Th350_2400_500_LED");
+	if (runnumber == 296)	sprintf(filename, "%s", "run0296_LEGe_MSD_241Am_Z7117_ChamberCenter_window1us_TrigRise0.064_0.064_0.112us_TrigGap0.952_0.952_0.904us_Th350_2400_500_CFDDelay0.304us_Scale7");
 
 
 	if (runnumber == 304)	sprintf(filename, "%s", "run0304_Pulser_Ch0_100kHz_10nsWindow");
@@ -336,18 +338,18 @@ void ddas2root()
 	tree->Branch("lege_e", &lege_e, "lege_e/D");
 	tree->Branch("lege_t", &lege_t, "lege_t/D");
 	//tree->Branch("lege_tled", &lege_tled, "lege_tled/D");
-	tree->Branch("north_e", &north_e, "north_e/D");
-	tree->Branch("north_t", &north_t, "north_t/D");
+	//tree->Branch("north_e", &north_e, "north_e/D");
+	//tree->Branch("north_t", &north_t, "north_t/D");
 	//tree->Branch("north_tled", &north_tled, "north_tled/D");
-	tree->Branch("south_e", &south_e, "south_e/D");
-	tree->Branch("south_t", &south_t, "south_t/D");
+	//tree->Branch("south_e", &south_e, "south_e/D");
+	//tree->Branch("south_t", &south_t, "south_t/D");
 	//tree->Branch("south_tled", &south_tled, "south_tled/D");
- // 	tree->Branch("msd12_e", &msd12_e, "msd12_e/D");
- // 	tree->Branch("msd12_t", &msd12_t, "msd12_t/D");
-	//tree->Branch("msd12_tled", &msd12_tled, "msd12_tled/D");
- // 	tree->Branch("msd26_e", &msd26_e, "msd26_e/D");
- // 	tree->Branch("msd26_t", &msd26_t, "msd26_t/D");
-	//tree->Branch("msd26_tled", &msd26_tled, "msd26_tled/D");
+  	tree->Branch("msd12_e", &msd12_e, "msd12_e/D");
+  	tree->Branch("msd12_t", &msd12_t, "msd12_t/D");
+	//tree->Branch("msd12_tled", &msd12_tled, "msd12_tled/D"); // likely useless
+  	tree->Branch("msd26_e", &msd26_e, "msd26_e/D");
+  	tree->Branch("msd26_t", &msd26_t, "msd26_t/D");
+	//tree->Branch("msd26_tled", &msd26_tled, "msd26_tled/D"); // likely useless
 
 // 	tree->Branch("lege_e_low", &lege_e_low, "lege_e_low/D");
 // 	tree->Branch("lege_t_low", &lege_t_low, "lege_t_low/D");
@@ -373,6 +375,7 @@ void ddas2root()
 	TH1D* hsouth_e_low;
 	TH1D* htiming_lege_msd12;
 	TH1D* htiming_lege_msd26;
+	TH1D* htiming_msd12_msd26;
 
 	// 	if (runnumber == 0)	hlege_e = new TH1D("hlege_e", "hlege_e", 60000, -0.0270924805469, 436.3668916340480); // 60000 channels, 7.3 eV per channel
 	// 	if (runnumber == 1)	hlege_e = new TH1D("hlege_e", "hlege_e", 60000, -0.0584419300571, 435.7108166612020); // 60000 channels, 7.3 eV per channel
@@ -397,8 +400,9 @@ void ddas2root()
 	//hlege_e_low = new TH1D("hlege_e_low", "hlege_e_low", 60000, 0, 60000); // 60000 channels
 	//hnorth_e_low = new TH1D("hnorth_e_low", "hnorth_e_low", 60000, 0, 60000); // 60000 channels
 	//hsouth_e_low = new TH1D("hsouth_e_low", "hsouth_e_low", 60000, 0, 60000); // 60000 channels
-	//htiming_lege_msd12 = new TH1D("htiming_lege_msd12", "htiming_lege_msd12", 3000, -1500, 1500); // 3000 channels, 1 ns per channel
-	//htiming_lege_msd26 = new TH1D("htiming_lege_msd26", "htiming_lege_msd26", 3000, -1500, 1500); // 3000 channels, 1 ns per channel
+	htiming_lege_msd12 = new TH1D("htiming_lege_msd12", "htiming_lege_msd12", 3000, -1500, 1500); // 3000 channels, 1 ns per channel
+	htiming_lege_msd26 = new TH1D("htiming_lege_msd26", "htiming_lege_msd26", 3000, -1500, 1500); // 3000 channels, 1 ns per channel
+	htiming_msd12_msd26 = new TH1D("htiming_msd12_msd26", "htiming_msd12_msd26", 3000, -1500, 1500); // 3000 channels, 1 ns per channel
 	//i_outtree = 0;
 
 	for (i = 0; i < totalentries; i++)
@@ -451,71 +455,75 @@ void ddas2root()
  			//	//hnorth_e_low->Fill(north_e_low);
  			//	north_t_low = pChan[j]->GetTime() + timestampshift;
  			//}
-			if (pChan[j]->GetChannelID() == 3)
-			{
-				//north_e = pChan[j]->GetEnergy();
-				//north_e = pChan[j]->GetEnergy() * 0.0381036615504 - 0.1774488889544; // based on run0060
-				north_e = pChan[j]->GetEnergy() * 0.0380915136727 - 0.1943988436200; // based on run0098
-				//north_e = pChan[j]->GetEnergy() * 0.1469496217014 - 1.1199018269051; // based on run0216
-				hnorth_e->Fill(north_e);
-				north_t = pChan[j]->GetTime() + timestampshift;
-				//north_tled = pChan[j]->GetCoarseTime() + timestampshift;
-			}
+// 			if (pChan[j]->GetChannelID() == 3)
+// 			{
+// 				//north_e = pChan[j]->GetEnergy();
+// 				//north_e = pChan[j]->GetEnergy() * 0.0381036615504 - 0.1774488889544; // based on run0060
+// 				north_e = pChan[j]->GetEnergy() * 0.0380915136727 - 0.1943988436200; // based on run0098
+// 				//north_e = pChan[j]->GetEnergy() * 0.1469496217014 - 1.1199018269051; // based on run0216
+// 				hnorth_e->Fill(north_e);
+// 				north_t = pChan[j]->GetTime() + timestampshift;
+// 				//north_tled = pChan[j]->GetCoarseTime() + timestampshift;
+// 			}
  			//if (pChan[j]->GetChannelID() == 4)
  			//{
  			//	south_e_low = pChan[j]->GetEnergy();
  			//	//hsouth_e_low->Fill(south_e_low);
  			//	south_t_low = pChan[j]->GetTime() + timestampshift;
  			//}
-			if (pChan[j]->GetChannelID() == 5)
+// 			if (pChan[j]->GetChannelID() == 5)
+// 			{
+// 				//south_e = pChan[j]->GetEnergy();
+// 				//south_e = pChan[j]->GetEnergy() * 0.0379731589489 - 0.1622624327090; // based on run0060
+// 				south_e = pChan[j]->GetEnergy() * 0.0379046856666 - 0.1195774566938; // based on run0098
+// 				//south_e = pChan[j]->GetEnergy() * 0.1461808168885 - 0.6039596145015; // based on run0216
+// 				hsouth_e->Fill(south_e);
+// 				south_t = pChan[j]->GetTime() + timestampshift;
+// 				//south_tled = pChan[j]->GetCoarseTime() + timestampshift;
+// 			}
+			if (pChan[j]->GetChannelID() == 6)
 			{
-				//south_e = pChan[j]->GetEnergy();
-				//south_e = pChan[j]->GetEnergy() * 0.0379731589489 - 0.1622624327090; // based on run0060
-				south_e = pChan[j]->GetEnergy() * 0.0379046856666 - 0.1195774566938; // based on run0098
-				//south_e = pChan[j]->GetEnergy() * 0.1461808168885 - 0.6039596145015; // based on run0216
-				hsouth_e->Fill(south_e);
-				south_t = pChan[j]->GetTime() + timestampshift;
-				//south_tled = pChan[j]->GetCoarseTime() + timestampshift;
+				//msd12_e = pChan[j]->GetEnergy();
+				msd12_e = pChan[j]->GetEnergy() * 0.1323655606407 + 0;
+				hmsd12_e->Fill(msd12_e);
+				//hmsd12_e1keVbin->Fill(msd12_e + gRandom->Uniform(-0.5, 0.5));
+				msd12_t = pChan[j]->GetTime() + timestampshift;
+				//msd12_tled = pChan[j]->GetCoarseTime() + timestampshift;
 			}
-			//if (pChan[j]->GetChannelID() == 6)
-			//{
-			//	//msd12_e = pChan[j]->GetEnergy();
-			//	msd12_e = pChan[j]->GetEnergy() * 0.1323655606407 + 0;
-			//	hmsd12_e->Fill(msd12_e);
-			//	//hmsd12_e1keVbin->Fill(msd12_e + gRandom->Uniform(-0.5, 0.5));
-			//	msd12_t = pChan[j]->GetTime() + timestampshift;
-			//	//msd12_tled = pChan[j]->GetCoarseTime() + timestampshift;
-			//}
-			//if (pChan[j]->GetChannelID() == 8)
-			//{
-			//	//msd26_e = pChan[j]->GetEnergy();
-			//	//msd26_e = pChan[j]->GetEnergy() * 0.1152143446474 + 22.352486402900; // based on 148Gd and 241Am two peaks
-			//	msd26_e = pChan[j]->GetEnergy() * 0.1155273461893 - 0.001613374918; // based on 241Am two peaks Run 100
-			//	hmsd26_e->Fill(msd26_e);
-			//	//hmsd26_e1keVbin->Fill(msd26_e + gRandom->Uniform(-0.5, 0.5));
-			//	msd26_t = pChan[j]->GetTime() + timestampshift;
-			//	//msd26_tled = pChan[j]->GetCoarseTime() + timestampshift;
-			//}
+			if (pChan[j]->GetChannelID() == 8)
+			{
+				//msd26_e = pChan[j]->GetEnergy();
+				//msd26_e = pChan[j]->GetEnergy() * 0.1152143446474 + 22.352486402900; // based on 148Gd and 241Am two peaks
+				msd26_e = pChan[j]->GetEnergy() * 0.1155273461893 - 0.001613374918; // based on 241Am two peaks Run 100
+				hmsd26_e->Fill(msd26_e);
+				//hmsd26_e1keVbin->Fill(msd26_e + gRandom->Uniform(-0.5, 0.5));
+				msd26_t = pChan[j]->GetTime() + timestampshift;
+				//msd26_tled = pChan[j]->GetCoarseTime() + timestampshift;
+			}
 
-			//if (msd12_e > 100 && msd26_e > 100)
-			//{
-			//	hmsd12_e1keVbin->Fill(msd12_e + gRandom->Uniform(-0.5, 0.5));
-			//	hmsd26_e1keVbin->Fill(msd26_e + gRandom->Uniform(-0.5, 0.5));
-			//	msdtotal_e = msd12_e + msd26_e;
-			//	hmsdtotal_e->Fill(msdtotal_e);
-			//}
+			if (msd12_e > 100 && msd26_e > 100)
+			{
+				hmsd12_e1keVbin->Fill(msd12_e + gRandom->Uniform(-0.5, 0.5));
+				hmsd26_e1keVbin->Fill(msd26_e + gRandom->Uniform(-0.5, 0.5));
+				msdtotal_e = msd12_e + msd26_e;
+				hmsdtotal_e->Fill(msdtotal_e);
+			}
 
 			//if (runnumber >= 92 && lege_e > 59 && lege_e < 60.1 && msd26_e > 5470 && msd26_e < 5510)
 			//{
 			//	htiming_lege_msd26->Fill(lege_t - msd26_t);
 			//}
 
-			//if (runnumber < 92 && lege_e > 58.5 && lege_e < 60.5 && msd12_e>1700 && msd12_e < 2200 && msd26_e>3300 && msd26_e < 3800 && msd12_e + msd26_e > 5400 && msd12_e + msd26_e < 5560)
-			//{
-			//	htiming_lege_msd12->Fill(lege_t - msd12_t);
-			//	htiming_lege_msd26->Fill(lege_t - msd26_t);
-			//}
+			if (lege_e > 58.5 && lege_e < 60.5 && msd12_e>1700 && msd12_e < 2200 && msd26_e>3300 && msd26_e < 3800 && msd12_e + msd26_e > 5400 && msd12_e + msd26_e < 5560)
+			{
+				htiming_lege_msd12->Fill(lege_t - msd12_t);
+				htiming_lege_msd26->Fill(lege_t - msd26_t);
+			}
 
+			if (msd12_e>1700 && msd12_e < 2200 && msd26_e>3300 && msd26_e < 3800 && msd12_e + msd26_e > 5400 && msd12_e + msd26_e < 5560)
+			{
+				htiming_msd12_msd26->Fill(msd12_t - msd26_t);
+			}
 
 		} // (int j = 0; j < Nchannels; j++)
 		tree->Fill();
