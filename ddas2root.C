@@ -265,7 +265,12 @@ void ddas2root()
 	if (runnumber == 294)	sprintf(filename, "%s", "run0294_LEGe_XtRa_152Eu_Z2707_OnLEGeCap_window1us_TrigRise0.400_0.064us_TrigGap0.616_0.952us_ThL190_N300_S730_LED");
 	if (runnumber == 295)	sprintf(filename, "%s", "run0295_LEGe_MSD_241Am_Z7117_ChamberCenter_window1us_TrigRise0.064_0.064_0.112us_TrigGap0.952_0.952_0.904us_Th350_2400_500_LED");
 	if (runnumber == 296)	sprintf(filename, "%s", "run0296_LEGe_MSD_241Am_Z7117_ChamberCenter_window1us_TrigRise0.064_0.064_0.112us_TrigGap0.952_0.952_0.904us_Th350_2400_500_CFDDelay0.304us_Scale7");
-
+	if (runnumber == 297)	sprintf(filename, "%s", "run0297_LEGe_MSD_241Am_Z7117_ChamberCenter_window1us_TrigRise0.064_0.016_0.016us_TrigGap0.952_1.000_1.000us_Th350_2700_1000_LED");
+	if (runnumber == 298)	sprintf(filename, "%s", "run0298_LEGe_MSD_241Am_Z7117_ChamberCenter_window1us_TrigRise0.064_0.016_0.016us_TrigGap0.952_1.000_1.000us_Th350_2700_1000_MSDCFDDelay0.304us_Scale7");
+	if (runnumber == 299)	sprintf(filename, "%s", "run0299_LEGe_MSD_241Am_Z7117_ChamberCenter_window1us_TrigRise0.064_0.016_0.016us_TrigGap0.952_1.000_1.000us_Th350_2700_1000_CFDDelay0.304us_Scale7");
+	if (runnumber == 328)	sprintf(filename, "%s", "run0328_LEGe_MSD_241Am_Z7117_ChamberCenter_window1us_TrigRise0.064_0.016_0.016us_TrigGap0.952_1.000_1.000us_Th350_2700_1000_CFDDelay0.104us_Scale7");
+	if (runnumber == 329)	sprintf(filename, "%s", "run0329_LEGe_MSD_241Am_Z7117_ChamberCenter_window1us_TrigRise0.064_0.016_0.016us_TrigGap0.952_1.000_1.000us_Th350_2700_1000_CFDDelay0.504us_Scale7");
+	if (runnumber == 330)	sprintf(filename, "%s", "run0330_LEGe_MSD_241Am_Z7117_ChamberCenter_window1.5us_TrigRise0.064_0.016_0.016us_TrigGap0.952_1.000_1.000us_Th350_2700_1000_CFDDelay0.304us_Scale7");
 
 	if (runnumber == 304)	sprintf(filename, "%s", "run0304_Pulser_Ch0_100kHz_10nsWindow");
 	if (runnumber == 305)	sprintf(filename, "%s", "run0305_Pulser_Ch0_100kHz_1000nsWindow");

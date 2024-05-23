@@ -84,10 +84,10 @@ void peakfit_expdecay_band_lifetime_pxct_singlerun() // get histogram and expone
 	int Which_MSD;
 	if (Which_Dataset == 1)
 	{
-		Which_MSD = 26; // Modify: 12 for MSD12; 26 for MSD26;
+		Which_MSD = 12; // Modify: 12 for MSD12; 26 for MSD26;
 		Ea_central = 5421; // 5421 for MSDtotal, based on LISE++ calculation
-		if (Which_MSD == 12)	bin_start_low = 240; // Don't change
-		if (Which_MSD == 26)	bin_start_low = 160; // Don't change
+		if (Which_MSD == 12)	bin_start_low = 210; // Don't change
+		if (Which_MSD == 26)	bin_start_low = 210; // Don't change
 		Ea_gate_start = 80; // 3; 3 means +/-3 keV = 6 keV; 20 means +/-20 keV = 40 keV, which is good for MSD26
 		Ea_gate_end = 80; // 30; Keep end - start <= 4, due to Windows OS limitation
 	}
@@ -104,12 +104,13 @@ void peakfit_expdecay_band_lifetime_pxct_singlerun() // get histogram and expone
 		//if (i >= 96 && i <= 99) continue;
 		msd_e_cut_low = Ea_central - i;
 		msd_e_cut_high = Ea_central + i;
-		if (Which_Dataset == 1) sprintf(filename, "%s%s%04d%s%04d%s", pathname, "timing_msdtotal_e_", msd_e_cut_low, "_", msd_e_cut_high, "_msdtotal_t.root");
-		if (Which_Dataset == 2) sprintf(filename, "%s%s%04d%s%04d%s", pathname, "timing_msd26_e_", msd_e_cut_low, "_", msd_e_cut_high, "_msd26_t.root");
-		if (Which_Dataset == 1) sprintf(filename, "%s%s", pathname, "run0079_LEGe_MSD_241Am_inChamber_window1.5us_CFDdelay_adjusted_cal_5400_5560_forPRC.root");
+		//if (Which_Dataset == 1) sprintf(filename, "%s%s%04d%s%04d%s", pathname, "timing_msdtotal_e_", msd_e_cut_low, "_", msd_e_cut_high, "_msdtotal_t.root");
+		//if (Which_Dataset == 2) sprintf(filename, "%s%s%04d%s%04d%s", pathname, "timing_msd26_e_", msd_e_cut_low, "_", msd_e_cut_high, "_msd26_t.root");
+		//if (Which_Dataset == 1) sprintf(filename, "%s%s", pathname, "run0079_LEGe_MSD_241Am_inChamber_window1.5us_CFDdelay_adjusted_cal_5400_5560_forPRC.root");
+		if (Which_Dataset == 1) sprintf(filename, "%s%s", pathname, "run0299_LEGe_MSD_241Am_Z7117_ChamberCenter_window1us_TrigRise0.064_0.016_0.016us_TrigGap0.952_1.000_1.000us_Th350_2700_1000_CFDDelay0.304us_Scale7_cal.root");
 		fin = new TFile(filename);//after this statement, you can use any ROOT command1 for this rootfile
 		cout << filename << endl;
-		sprintf(histo_name, "%s%d%s", "htiming_lege_msd", Which_MSD, "_bin1ns");
+		//sprintf(histo_name, "%s%d%s", "htiming_lege_msd", Which_MSD, "_bin1ns");
 		sprintf(histo_name, "%s%d", "htiming_lege_msd", Which_MSD);
 		//sprintf(histo_name, "%s", "h_decay_exponential_GetRandom"); // Fake test
 		histo[i] = (TH1D*)fin->Get(histo_name); //Get spectrum
@@ -259,7 +260,7 @@ void peakfit_expdecay_band_lifetime_pxct_singlerun() // get histogram and expone
 			// 			p2[ii]->SetLineColor(4);
 			//b[ii]->SetParameters(par[ii][0], par[ii][1]);//set parameters for drawing bkg
 			//b[ii]->SetLineColor(8);
-			fEMG[ii]->SetLineWidth(2);
+			fEMG[ii]->SetLineWidth(3);
 			fEMG[ii]->SetLineColor(kAzure);
 			// The confidence band is not always properly displayed.
 
@@ -340,7 +341,7 @@ void peakfit_expdecay_band_lifetime_pxct_singlerun() // get histogram and expone
 			textgaus->AddText(paraprint);
 			sprintf(paraprint, "p-val=%.2f", p_value[ii]);
 			textgaus->AddText(paraprint);
-			//textgaus->Draw();
+			textgaus->Draw();
 
 			// for residuals plot
 			double x_values[fit_Nbins], y_values[fit_Nbins], y_fit_values[fit_Nbins], y_residuals[fit_Nbins], x_errors[fit_Nbins], y_errors[fit_Nbins];
@@ -391,6 +392,7 @@ void peakfit_expdecay_band_lifetime_pxct_singlerun() // get histogram and expone
 			graph_residual[i]->Draw("APZ");//"A": Axis are drawn around the graph, "P": The current marker is plotted at each point, "Z": Do not draw small horizontal and vertical lines the end of the error bars. Without "Z", the default is to draw these.
 			TLine* T1 = new TLine(fitrange_min, 0, fitrange_max, 0);
 			T1->SetLineColor(kAzure);
+			T1->SetLineWidth(3);
 			T1->Draw("R");//"R" means the line is drawn with the current line attributes
 
 			pad1->SetLogy(0); // residuals are wrong if logy is turn on earlier
