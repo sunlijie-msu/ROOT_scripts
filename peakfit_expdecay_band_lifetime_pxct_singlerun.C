@@ -84,7 +84,7 @@ void peakfit_expdecay_band_lifetime_pxct_singlerun() // get histogram and expone
 	int Which_MSD;
 	if (Which_Dataset == 1)
 	{
-		Which_MSD = 26; // Modify: 12 for MSD12; 26 for MSD26;
+		Which_MSD = 12; // Modify: 12 for MSD12; 26 for MSD26;
 		Ea_central = 5421; // 5421 for MSDtotal, based on LISE++ calculation
 		if (Which_MSD == 12)	bin_start_low = 239; // Don't change
 		if (Which_MSD == 26)	bin_start_low = 230; // Don't change
@@ -107,7 +107,7 @@ void peakfit_expdecay_band_lifetime_pxct_singlerun() // get histogram and expone
 		//if (Which_Dataset == 1) sprintf(filename, "%s%s%04d%s%04d%s", pathname, "timing_msdtotal_e_", msd_e_cut_low, "_", msd_e_cut_high, "_msdtotal_tootoot");
 		//if (Which_Dataset == 2) sprintf(filename, "%s%s%04d%s%04d%s", pathname, "timing_msd26_e_", msd_e_cut_low, "_", msd_e_cut_high, "_msd26_t.root");
 		//if (Which_Dataset == 1) sprintf(filename, "%s%s", pathname, "run0079_LEGe_MSD_241Am_inChamber_window1.5us_CFDdelay_adjusted_cal_5400_5560_forPRC.root");
-		if (Which_Dataset == 1) sprintf(filename, "%s%s", pathname, "run0330_LEGe_MSD_241Am_Z7117_ChamberCenter_window1.5us_TrigRise0.064_0.016_0.016us_TrigGap0.952_1.000_1.000us_Th350_2700_1000_CFDDelay0.304us_Scale7_cal.root");
+		if (Which_Dataset == 1) sprintf(filename, "%s%s", pathname, "run0331_LEGe_MSD_241Am_Z7117_ChamberCenter_window1.5us_TrigRise0.064_0.016_0.016us_TrigGap0.952_1.000_1.000us_Th350_2700_1000_CFDDelay0.304us_Scale7_cal.root");
 		fin = new TFile(filename);//after this statement, you can use any ROOT command1 for this rootfile
 		cout << filename << endl;
 		//sprintf(histo_name, "%s%d%s", "htiming_lege_msd", Which_MSD, "_bin1ns");
@@ -227,7 +227,7 @@ void peakfit_expdecay_band_lifetime_pxct_singlerun() // get histogram and expone
 			int Total_decays_guess = 2000 * i;
 			fEMG[ii]->SetParameters(6e6, 67.8, 1);//initial value
 			//fEMG[ii]->SetParameters(2e6, 68, 2);//initial value Fake test
-			fEMG[ii]->SetParLimits(0, 1e4, 1e6);//N
+			fEMG[ii]->SetParLimits(0, 1e5, 2e6);//N
 			fEMG[ii]->SetParLimits(1, 40, 140);//T
 			fEMG[ii]->SetParLimits(2, 0, 4);//B
 			// 			fEMG[ii]->SetParLimits(3, 80, 120);//Tau
@@ -261,7 +261,7 @@ void peakfit_expdecay_band_lifetime_pxct_singlerun() // get histogram and expone
 			//b[ii]->SetParameters(par[ii][0], par[ii][1]);//set parameters for drawing bkg
 			//b[ii]->SetLineColor(8);
 			fEMG[ii]->SetLineWidth(3);
-			fEMG[ii]->SetLineColor(kRed);
+			fEMG[ii]->SetLineColor(kOrange+7);
 			// The confidence band is not always properly displayed.
 
 			// Uncertainty Band
@@ -273,7 +273,7 @@ void peakfit_expdecay_band_lifetime_pxct_singlerun() // get histogram and expone
 			//h_confidence_interval will contain the CL result that you can draw on top of your fitted graph.
 			//where h_confidence_interval will hold the errors and could superimpose it on the same canvas where you plot central values.
 			h_confidence_interval[i][ii]->SetStats(kFALSE);
-			h_confidence_interval[i][ii]->SetFillColor(kRed - 9);
+			h_confidence_interval[i][ii]->SetFillColor(kOrange - 9);
 			histo[i]->SetLineColor(kBlack);
 			histo[i]->SetMarkerColor(kBlack);
 			h_confidence_interval[i][ii]->Draw("e3 same"); // plot the uncertainty band
@@ -391,7 +391,7 @@ void peakfit_expdecay_band_lifetime_pxct_singlerun() // get histogram and expone
 			pad2->cd();
 			graph_residual[i]->Draw("APZ");//"A": Axis are drawn around the graph, "P": The current marker is plotted at each point, "Z": Do not draw small horizontal and vertical lines the end of the error bars. Without "Z", the default is to draw these.
 			TLine* T1 = new TLine(fitrange_min, 0, fitrange_max, 0);
-			T1->SetLineColor(kRed);
+			T1->SetLineColor(kOrange+7);
 			T1->SetLineWidth(3);
 			T1->Draw("R");//"R" means the line is drawn with the current line attributes
 

@@ -108,7 +108,7 @@ void peakfit_6gausnpol1() // get histogram and Gausn fit one peak
 	gtotal->SetParName(18, "Mean6");
 	gtotal->SetParName(19, "Sigma6");
 	gtotal->SetParLimits(4, 0.1, 0.15);//Sigma_1
-	//gtotal->SetParLimits(15, 7.09, 7.14);//Mean_5
+	gtotal->SetParLimits(15, 7.10, 7.15);//Mean_5
 	gtotal->SetParLimits(16, 0.1, 0.2);//Sigma_5
 	// Perform the fit
 	histo->Fit("gtotal", "MLE", "", 4, 8.3);
