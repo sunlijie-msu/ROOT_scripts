@@ -86,8 +86,8 @@ void peakfit_expdecay_band_lifetime_pxct_singlerun() // get histogram and expone
 	{
 		Which_MSD = 12; // Modify: 12 for MSD12; 26 for MSD26;
 		Ea_central = 5421; // 5421 for MSDtotal, based on LISE++ calculation
-		if (Which_MSD == 12)	bin_start_low = 239; // Don't change
-		if (Which_MSD == 26)	bin_start_low = 230; // Don't change
+		if (Which_MSD == 12)	bin_start_low = 230; // Don't change
+		if (Which_MSD == 26)	bin_start_low = 210; // Don't change
 		Ea_gate_start = 80; // 3; 3 means +/-3 keV = 6 keV; 20 means +/-20 keV = 40 keV, which is good for MSD26
 		Ea_gate_end = 80; // 30; Keep end - start <= 4, due to Windows OS limitation
 	}
@@ -107,7 +107,7 @@ void peakfit_expdecay_band_lifetime_pxct_singlerun() // get histogram and expone
 		//if (Which_Dataset == 1) sprintf(filename, "%s%s%04d%s%04d%s", pathname, "timing_msdtotal_e_", msd_e_cut_low, "_", msd_e_cut_high, "_msdtotal_tootoot");
 		//if (Which_Dataset == 2) sprintf(filename, "%s%s%04d%s%04d%s", pathname, "timing_msd26_e_", msd_e_cut_low, "_", msd_e_cut_high, "_msd26_t.root");
 		//if (Which_Dataset == 1) sprintf(filename, "%s%s", pathname, "run0079_LEGe_MSD_241Am_inChamber_window1.5us_CFDdelay_adjusted_cal_5400_5560_forPRC.root");
-		if (Which_Dataset == 1) sprintf(filename, "%s%s", pathname, "run0331_LEGe_MSD_241Am_Z7117_ChamberCenter_window1.5us_TrigRise0.064_0.016_0.016us_TrigGap0.952_1.000_1.000us_Th350_2700_1000_CFDDelay0.304us_Scale7_cal.root");
+		if (Which_Dataset == 1) sprintf(filename, "%s%s", pathname, "run0330_0331_0332_LEGe_MSD_241Am_Z7117_ChamberCenter_window1.5us_TrigRise0.064_0.016_0.016us_TrigGap0.952_1.000_1.000us_Th350_2700_1000_CFDDelay0.304us_Scale7_cal.root");
 		fin = new TFile(filename);//after this statement, you can use any ROOT command1 for this rootfile
 		cout << filename << endl;
 		//sprintf(histo_name, "%s%d%s", "htiming_lege_msd", Which_MSD, "_bin1ns");
@@ -227,7 +227,7 @@ void peakfit_expdecay_band_lifetime_pxct_singlerun() // get histogram and expone
 			int Total_decays_guess = 2000 * i;
 			fEMG[ii]->SetParameters(6e6, 67.8, 1);//initial value
 			//fEMG[ii]->SetParameters(2e6, 68, 2);//initial value Fake test
-			fEMG[ii]->SetParLimits(0, 1e5, 2e6);//N
+			fEMG[ii]->SetParLimits(0, 1e6, 3e6);//N
 			fEMG[ii]->SetParLimits(1, 40, 140);//T
 			fEMG[ii]->SetParLimits(2, 0, 4);//B
 			// 			fEMG[ii]->SetParLimits(3, 80, 120);//Tau
@@ -379,7 +379,7 @@ void peakfit_expdecay_band_lifetime_pxct_singlerun() // get histogram and expone
 			graph_residual[i]->GetYaxis()->SetTickLength(0.010);
 			graph_residual[i]->SetStats(0);
 			graph_residual[i]->GetXaxis()->SetRangeUser(fitrange_min, fitrange_max);
-			graph_residual[i]->GetYaxis()->SetRangeUser(-53, 53); 
+			graph_residual[i]->GetYaxis()->SetRangeUser(-170, 170); 
 			graph_residual[i]->SetLineWidth(1);
 			graph_residual[i]->SetLineColor(kBlack);
 			graph_residual[i]->SetMarkerStyle(6);
