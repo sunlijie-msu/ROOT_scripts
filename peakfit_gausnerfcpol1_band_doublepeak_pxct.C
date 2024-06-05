@@ -140,15 +140,15 @@ void peakfit_gausnerfcpol1_band_doublepeak_pxct() // get histogram and EMG fit t
 
 	sprintf(filename, "%s%s", pathname, "peakpara.dat");
 	ofstream outfile(filename, ios::out);
-	sprintf(filename, "%s%s", pathname, "run0075_LEGe_MSD_XtRa_241Am_inChamber_nocollimator_152Eu_outChamber_CFDdelay_adjusted_1511min_cal.root"); // modify
-	//sprintf(filename, "%s%s", pathname, "run0228_0229_0230_LEGe_XtRa_MSD26_152Eu_Z2707_inChamber_vacuum_XtRa_12mm_away_window1us_XtRaCFDdelay_0.2us_for_efficiency_cal_South_bkgsubtracted.root"); // modify
+	//sprintf(filename, "%s%s", pathname, "run0228_0229_0230_LEGe_XtRa_MSD26_152Eu_Z2707_inChamber_vacuum_XtRa_12mm_away_window1us_XtRaCFDdelay_0.2us_for_efficiency_cal.root"); // modify
+	sprintf(filename, "%s%s", pathname, "run0334_LEGe_241Am_Z7117_ChamberCenter_window1.5us_TrigRise0.064us_TrigGap0.952us_Th350_CFDDelay0.304us_Scale7_for_X_efficiency_cal.root");
 	TFile* fin = new TFile(filename);//after this statement, you can use any ROOT command1 for this rootfile
 	cout << filename << endl;
 
 	for (i = ID1; i <= ID2; i++)//which detector no need to change
 	{
-		//sprintf(histo_name, "%s", "hsouth_e_pure"); // modify
-		sprintf(histo_name, "%s", "hmsdtotal_e"); // modify
+		sprintf(histo_name, "%s", "hlege_e"); // modify
+		//sprintf(histo_name, "%s", "hmsdtotal_e"); // modify
 		histo[i] = (TH1D*)fin->Get(histo_name); //Get spectrum
 		histo[i]->Rebin(1);
 		histo[i]->Sumw2(kFALSE);
@@ -158,7 +158,7 @@ void peakfit_gausnerfcpol1_band_doublepeak_pxct() // get histogram and EMG fit t
 
 	for (i = ID1; i <= ID2; i++) // no need to change
 	{
-		for (ii = 12; ii <= 12; ii++)// modify which peak in one detector =0<=13
+		for (ii = 8; ii <= 8; ii++)// modify which peak in one detector
 		{
 			sprintf(hfit_name, "%s%d%s%d", histo_name, i, "_peak", ii);
 			canvaspeak[i][ii] = new TCanvas(hfit_name, hfit_name, 1400, 740);//½¨Á¢»­²¼
@@ -219,7 +219,9 @@ void peakfit_gausnerfcpol1_band_doublepeak_pxct() // get histogram and EMG fit t
 			if (ii == 2) { gaplow = 1.4; gaphigh = 1.4; Eg = 121.7817; }//152Eu 122 LEGe
 			if (ii == 4) { gaplow = 1.0; gaphigh = 1.0; Eg = 59.541; }//241Am	59.5 LEGe
 			if (ii == 5) { gaplow = 0.8; gaphigh = 0.8; Eg = 26.345; }//241Am 26.3 LEGe
+			if (ii == 6) { gaplow = 1.4; gaphigh = 0.9; Eg = 40.1; }//152Eu 40.1 and 39.5 LEGe
 			if (ii == 7) { gaplow = 0.7; gaphigh = 0.7; Eg = 33.196; }//241Am 33.2 LEGe
+			if (ii == 8) { gaplow = 0.6; gaphigh = 0.6; Eg = 13.9; }//241Am 13.9 and 13.8 LEGe
 			if (ii == 9) { gaplow = 2.1; gaphigh = 2.1; Eg = 121.7817; }//152Eu 122 XtRa
 			if (ii == 10) { gaplow = 2.5; gaphigh = 2.5; Eg = 344.2785; }//152Eu 344 XtRa
 			if (ii == 11) { gaplow = 3.2; gaphigh = 3.0; Eg = 1299.1420; }//152Eu 1299 XtRa
@@ -308,29 +310,29 @@ void peakfit_gausnerfcpol1_band_doublepeak_pxct() // get histogram and EMG fit t
 			
 			//fEMG[ii]->SetParLimits(0,0,700);//Bkg A
 			// 	fEMG[ii]->SetParLimits(1,-50000,300000);//Bkg B
-			fEMG[ii]->SetParLimits(2, 8e6, 1e7);//Constant,min,max
-			fEMG[ii]->SetParLimits(3, 13, 25);//Tau
-			fEMG[ii]->SetParLimits(4, 17, 28);//Sigma
-			fEMG[ii]->SetParLimits(5, peakx[ii] - gaplow, peakx[ii] + gaphigh);//Mean
-			fEMG[ii]->SetParLimits(5, 5464, 5485);//Mean
-			fEMG[ii]->SetParLimits(6, 1.2e6, 1.5e6);//Constant_2nd,min,max
-			fEMG[ii]->SetParLimits(7, 16, 25);//Tau_2nd
-			fEMG[ii]->SetParLimits(8, 17, 28);//Sigma_2nd
-			fEMG[ii]->SetParLimits(9, peakx[ii] + gaplow, peakx[ii] + gaplow);//Mean_2nd
-			fEMG[ii]->SetParLimits(9, 5410, 5435);//Mean_2nd
+			//fEMG[ii]->SetParLimits(2, 8e6, 1e7);//Constant,min,max
+			//fEMG[ii]->SetParLimits(3, 13, 25);//Tau
+			//fEMG[ii]->SetParLimits(4, 17, 28);//Sigma
+			//fEMG[ii]->SetParLimits(5, peakx[ii] - gaplow, peakx[ii] + gaphigh);//Mean
+			//fEMG[ii]->SetParLimits(5, 5464, 5485);//Mean
+			//fEMG[ii]->SetParLimits(6, 1.2e6, 1.5e6);//Constant_2nd,min,max
+			//fEMG[ii]->SetParLimits(7, 16, 25);//Tau_2nd
+			//fEMG[ii]->SetParLimits(8, 17, 28);//Sigma_2nd
+			//fEMG[ii]->SetParLimits(9, peakx[ii] + gaplow, peakx[ii] + gaplow);//Mean_2nd
+			//fEMG[ii]->SetParLimits(9, 5410, 5435);//Mean_2nd
 
-// 			//fEMG[ii]->SetParLimits(0,0,700);//Bkg A
-// 			// 	fEMG[ii]->SetParLimits(1,-50000,300000);//Bkg B
-// 			fEMG[ii]->SetParLimits(2, 200, 400);//Constant,min,max
-// 			fEMG[ii]->SetParLimits(3, 0.03, 0.8);//Tau
-// 			fEMG[ii]->SetParLimits(4, 0.01, 1.0);//Sigma
-// 			fEMG[ii]->SetParLimits(5, peakx[ii] - gaplow / 3, peakx[ii] + gaphigh / 2);//Mean
-// 			//fEMG[ii]->SetParLimits(5, 5464, 5480);//Mean
-// 			fEMG[ii]->SetParLimits(6, 500, 850);//Constant_2nd,min,max
-// 			fEMG[ii]->SetParLimits(7, 0.03, 0.7);//Tau_2nd
-// 			fEMG[ii]->SetParLimits(8, 0.01, 1.0);//Sigma_2nd
-// 			//fEMG[ii]->SetParLimits(9, peakx[ii], peakx[ii] + gaphigh);//Mean_2nd
-// 			fEMG[ii]->SetParLimits(9, 583, 584);//Mean_2nd
+			//fEMG[ii]->SetParLimits(0,0,700);//Bkg A
+			// 	fEMG[ii]->SetParLimits(1,-50000,300000);//Bkg B
+			fEMG[ii]->SetParLimits(2, 1400, 1e5);//Constant,min,max
+			fEMG[ii]->SetParLimits(3, 0.02, 0.05);//Tau
+			fEMG[ii]->SetParLimits(4, 0.01, 0.2);//Sigma
+			fEMG[ii]->SetParLimits(5, peakx[ii] - gaplow, peakx[ii] + gaphigh);//Mean
+			fEMG[ii]->SetParLimits(5, 13.95, 14.06);//Mean
+			fEMG[ii]->SetParLimits(6, 150, 1e4);//Constant_2nd,min,max
+			fEMG[ii]->SetParLimits(7, 0.02, 0.05);//Tau_2nd
+			fEMG[ii]->SetParLimits(8, 0.01, 0.2);//Sigma_2nd
+			fEMG[ii]->SetParLimits(9, peakx[ii] + gaplow, peakx[ii] + gaplow);//Mean_2nd
+			fEMG[ii]->SetParLimits(9, 13.79, 13.89);//Mean_2nd
 
 			fEMG[ii]->SetParNames("BkgA", "BkgB", "Const*bin", "Tau", "Sigma", "Mean", "Const_2nd*bin", "Tau_2nd", "Sigma_2nd", "Mean_2nd");
 			histo[i]->Fit("fEMG", "MLE", "", fitrange_min, fitrange_max);

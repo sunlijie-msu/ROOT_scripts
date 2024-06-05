@@ -120,6 +120,7 @@ void peakfit_gausnerfcpol1_band_pxct() // get histogram and EMG fit one peak
 	lower_search_bound[0][32] = 1327;	upper_search_bound[0][32] = 1337; //60Co 1332.501 XtRa
 	lower_search_bound[0][33] = 2500;	upper_search_bound[0][33] = 2510; //60Co sum peak XtRa
 	lower_search_bound[0][34] = 658;	upper_search_bound[0][34] = 665; //137Cs 662 South
+	lower_search_bound[0][35] = 15.5;	upper_search_bound[0][35] = 16.2; //241Am 15.9 LEGe
 
 
 	for (i = ID1; i <= ID2; i++)//which detector no need to change
@@ -136,14 +137,15 @@ void peakfit_gausnerfcpol1_band_pxct() // get histogram and EMG fit one peak
 	ofstream outfile(filename, ios::out);
 	//sprintf(filename, "%s%s", pathname, "run0200_0201_0202_LEGe_MSD26_137Cs_M4038_inChamber_vacuum_North_16mm_South_12mm_away_window1.5us_CFDdelay_adjusted_cal.root"); // modify
 	//sprintf(filename, "%s%s", pathname, "run0228_0229_0230_LEGe_XtRa_MSD26_152Eu_Z2707_inChamber_vacuum_XtRa_12mm_away_window1us_XtRaCFDdelay_0.2us_for_efficiency_cal_South_bkgsubtracted.root"); // modify
-	sprintf(filename, "%s%s", pathname, "run0216_0217_0218_LEGe_XtRa_MSD26_60Co_I7281_inChamber_vacuum_XtRa_12mm_away_window1us_CFDdelay_adjusted_AnalogGain1.0_cal_North_betagated.root"); // modify
+	//sprintf(filename, "%s%s", pathname, "run0216_0217_0218_LEGe_XtRa_MSD26_60Co_I7281_inChamber_vacuum_XtRa_12mm_away_window1us_CFDdelay_adjusted_AnalogGain1.0_cal_North_betagated.root"); // modify
+	sprintf(filename, "%s%s", pathname, "run0334_LEGe_241Am_Z7117_ChamberCenter_window1.5us_TrigRise0.064us_TrigGap0.952us_Th350_CFDDelay0.304us_Scale7_for_X_efficiency_cal.root");
 	TFile* fin = new TFile(filename);//after this statement, you can use any ROOT command1 for this rootfile
 	cout << filename << endl;
 
 	for (i = ID1; i <= ID2; i++)//which detector no need to change
 	{
 		//sprintf(histo_name, "%s", "hnorth_e_pure"); // modify
-		sprintf(histo_name, "%s", "hnorth_e_purebetagated"); // modify
+		sprintf(histo_name, "%s", "hlege_e"); // modify
 		histo[i] = (TH1D*)fin->Get(histo_name); //Get spectrum
 		histo[i]->Rebin(1);
 		histo[i]->Sumw2(kFALSE);
@@ -153,7 +155,7 @@ void peakfit_gausnerfcpol1_band_pxct() // get histogram and EMG fit one peak
 
 	for (i = ID1; i <= ID2; i++) // no need to change
 	{
-		for (ii = 32; ii <= 32; ii++)// modify which peak in one detector =0<=13
+		for (ii = 4; ii <= 4; ii++)// modify which peak in one detector =0<=13
 		{
 			sprintf(hfit_name, "%s%d%s%d", histo_name, i, "_peak", ii);
 			canvaspeak[i][ii] = new TCanvas(hfit_name, hfit_name, 1400, 740);//½¨Á¢»­²¼
@@ -241,6 +243,7 @@ void peakfit_gausnerfcpol1_band_pxct() // get histogram and EMG fit one peak
 			if (ii == 32) { gaplow = 4.0; gaphigh = 4.0; Eg = 1332.501; } //60Co 1332.501 XtRa
 			if (ii == 33) { gaplow = 4.3; gaphigh = 4.3; Eg = 2505.692; } //60Co sum peak XtRa
 			if (ii == 34) { gaplow = 2.8; gaphigh = 2.8; Eg = 661.657; } //137Cs 662 South
+			if (ii == 35) { gaplow = 0.4; gaphigh = 0.38; Eg = 15.876; } //241Am 15.9 LEGe
 
 			histomin = histo[i]->GetXaxis()->GetXmin();
 			histomax = histo[i]->GetXaxis()->GetXmax();
@@ -289,9 +292,9 @@ void peakfit_gausnerfcpol1_band_pxct() // get histogram and EMG fit one peak
 			fEMG[ii]->SetParameters(aguess, bguess, peaky[ii], 0.2, sigmaguess, peakx[ii]);//initial value [0]-A, [1]-B, [2]-N, [3]-¦Ó, [4]-¦Ò, [5]-¦Ì
 			// 			fEMG[ii]->SetParLimits(0,-500,500);//Bkg A
 			// 			fEMG[ii]->SetParLimits(1,-50000,300000);//Bkg B
-			fEMG[ii]->SetParLimits(2, 1.5e2, 3e6);//Constant,min,max
-			fEMG[ii]->SetParLimits(3, 0.04, 1.1);//Tau
-			fEMG[ii]->SetParLimits(4, 0.2, 1.1);//Sigma
+			fEMG[ii]->SetParLimits(2, 1e2, 3e6);//Constant,min,max
+			fEMG[ii]->SetParLimits(3, 0.01, 0.1);//Tau
+			fEMG[ii]->SetParLimits(4, 0.1, 0.25);//Sigma
 			fEMG[ii]->SetParLimits(5, peakx[ii] - gaplow / 3, peakx[ii] + gaphigh / 2);//Mean
 			//fEMG[ii]->SetParLimits(5, 1298.8, 1299.9);//Mean
 			fEMG[ii]->SetParNames("BkgA", "BkgB", "Const*bin", "Tau", "Sigma", "Mean");

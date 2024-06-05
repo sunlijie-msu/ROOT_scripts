@@ -39,10 +39,11 @@
 #include "stdio.h"
 #include "TLegend.h"
 using namespace std;
-void peakfit_6gausnpol1() // get histogram and Gausn fit one peak
+void peakfit_6gausnpol1_pxct_lege() // get histogram and Gausn fit some peaks
 {
-	//TFile* _file0 = TFile::Open("F:/e21010/pxct/run0010_16_LEGe_152Eu_inChamber_vacuum_window0.5us_CFDdelay_adjusted_for_LEGe_efficiency_1440min_cal.root");
-	TFile* _file0 = TFile::Open("F:/e21010/pxct/run0228_0229_0230_LEGe_XtRa_MSD26_152Eu_Z2707_inChamber_vacuum_XtRa_12mm_away_window1us_XtRaCFDdelay_0.2us_for_efficiency_cal.root");
+	//TFile* _file0 = TFile::Open("F:/e21010/pxct/run0228_0229_0230_LEGe_XtRa_MSD26_152Eu_Z2707_inChamber_vacuum_XtRa_12mm_away_window1us_XtRaCFDdelay_0.2us_for_efficiency_cal.root");
+	TFile* _file0 = TFile::Open("F:/e21010/pxct/run0334_LEGe_241Am_Z7117_ChamberCenter_window1.5us_TrigRise0.064us_TrigGap0.952us_Th350_CFDDelay0.304us_Scale7_for_X_efficiency_cal.root");
+	double fitrange_min = 15.2, fitrange_max = 18.5;
 	TH1D* histo = (TH1D*)_file0->Get("hlege_e");
 	TCanvas* canvaspeak = new TCanvas("LEGe", "LEGe", 1400, 553);//
 	canvaspeak->cd();//
@@ -72,16 +73,16 @@ void peakfit_6gausnpol1() // get histogram and Gausn fit one peak
 	histo->GetXaxis()->SetTitleSize(0.07);
 	histo->GetYaxis()->SetTitleSize(0.07);
 	histo->GetYaxis()->SetTickLength(0.02);
-	histo->GetXaxis()->SetRangeUser(4, 8.3);
+	histo->GetXaxis()->SetRangeUser(fitrange_min, fitrange_max);
 	histo->GetYaxis()->SetNdivisions(505);
 	//histo->GetYaxis()->SetRangeUser(1,20000);
 	histo->Draw("hist");
 
 	// Define gtotal with the combined functions
-	TF1* gtotal = new TF1("gtotal", "pol1(0) + gausn(2) + gausn(5) + gausn(8) + gausn(11) + gausn(14) + gausn(17)", 0, 10);
-	gtotal->SetNpx(5000);
+	TF1* gtotal = new TF1("gtotal", "pol1(0) + gausn(2) + gausn(5) + gausn(8) + gausn(11) + gausn(14) + gausn(17)", 0, 100);
+	gtotal->SetNpx(20000);
 	// Create an array to hold the parameters
-	double params[] = { 2000, -1, 900, 4.93, 0.12, 15000, 5.58, 0.12, 14000, 6.17, 0.12, 4000, 6.58, 0.12, 3000, 7.10, 0.12, 200, 7.5, 0.12 };
+	double params[] = { 100, 2, 300, 15.861, 0.12, 2000, 16.794, 0.12, 100, 17.061, 0.12, 4000, 17.501, 0.12, 30000, 17.751, 0.12, 200, 17.992, 0.12 };
 
 	// Set the parameters for gtotal using the array
 	gtotal->SetParameters(params);
@@ -107,15 +108,22 @@ void peakfit_6gausnpol1() // get histogram and Gausn fit one peak
 	gtotal->SetParName(17, "Const6*bin");
 	gtotal->SetParName(18, "Mean6");
 	gtotal->SetParName(19, "Sigma6");
-	gtotal->SetParLimits(4, 0.1, 0.15);//Sigma_1
-	gtotal->SetParLimits(15, 7.10, 7.15);//Mean_5
-	gtotal->SetParLimits(16, 0.1, 0.2);//Sigma_5
+	//gtotal->SetParLimits(4, 0.1, 0.18);//Sigma_1
+	gtotal->SetParLimits(8, 1, 1e5);//Constant_3
+	
+	gtotal->SetLineColor(2);
 	// Perform the fit
-	histo->Fit("gtotal", "MLE", "", 4, 8.3);
-	histo->Fit("gtotal", "MLE", "", 4, 8.3);
-	histo->Fit("gtotal", "MLE", "", 4, 8.3);
+	histo->Fit("gtotal", "MLE", "", fitrange_min, fitrange_max);
+	histo->Fit("gtotal", "MLE", "", fitrange_min, fitrange_max);
+	histo->Fit("gtotal", "MLE", "", fitrange_min, fitrange_max);
 	gtotal->Draw("same");
-
+	// print all parameters names values with errors
+	for (int i = 0; i < gtotal->GetNpar(); i++)
+	{
+		cout << "Par" << i << " " << gtotal->GetParName(i) << "	" << gtotal->GetParameter(i) << "	" << gtotal->GetParError(i) << endl;
+	}
+	cout << "Chi2/NDF	" << gtotal->GetChisquare() / gtotal->GetNDF() << endl;
+	cout << "Prob	" << gtotal->GetProb() << endl;
 	double binwidth = histo->GetBinWidth(1);
 	cout << "binwidth = " << binwidth << endl;
 }

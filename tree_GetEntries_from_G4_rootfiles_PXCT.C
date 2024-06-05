@@ -50,7 +50,7 @@ using namespace std;
 void tree_GetEntries_from_G4_rootfiles_PXCT()//get BinContent and BinError from histograms for Surmise data.csv
 {
 	//vector<double> Eg_values = { 1, 2, 3, 4, 5, 5.6, 6, 6.2, 7, 7.2, 8, 8.6, 9, 10, 11, 11.1, 11.2, 11.5, 12, 13, 14, 15, 16, 17, 18, 19, 20, 25, 30, 35, 40, 45, 50 }; // 152Eu simulation points
-	vector<double> Eg_values = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 30, 35, 40, 45, 50 }; // 241Am simulation points
+	vector<double> Eg_values = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 11.1, 11.2, 11.5, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 30, 35, 40, 45, 50 }; // 241Am simulation points
 	vector<double> Eg_thresholds(Eg_values.size());
 
 	for (size_t i = 0; i < Eg_values.size(); ++i)
