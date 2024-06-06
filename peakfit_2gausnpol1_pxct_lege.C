@@ -44,7 +44,7 @@ void peakfit_2gausnpol1_pxct_lege() // get histogram and Gausn fit some peaks
 	TFile* _file0 = TFile::Open("F:/e21010/pxct/run0228_0229_0230_LEGe_XtRa_MSD26_152Eu_Z2707_inChamber_vacuum_XtRa_12mm_away_window1us_XtRaCFDdelay_0.2us_for_efficiency_cal.root");
 	//TFile* _file0 = TFile::Open("F:/e21010/pxct/run0334_LEGe_241Am_Z7117_ChamberCenter_window1.5us_TrigRise0.064us_TrigGap0.952us_Th350_CFDDelay0.304us_Scale7_for_X_efficiency_cal.root");
 	//double fitrange_min = 44.6, fitrange_max = 46.05;
-	double fitrange_min = 46.1, fitrange_max = 47.2;
+	double fitrange_min = 46.1, fitrange_max = 47.3;
 	TH1D* histo = (TH1D*)_file0->Get("hlege_e");
 	TCanvas* canvaspeak = new TCanvas("LEGe", "LEGe", 1400, 553);//
 	canvaspeak->cd();//
@@ -101,6 +101,8 @@ void peakfit_2gausnpol1_pxct_lege() // get histogram and Gausn fit some peaks
 	gtotal->SetParLimits(3, 46.3, 46.6);//Mean_1
  	gtotal->SetParLimits(4, 0.1, 0.20);//Sigma_1
 	gtotal->SetParLimits(7, 0.1, 0.20);//Sigma_2
+	gtotal->SetParLimits(5, 1, 100000);//Const2*bin
+	gtotal->SetParLimits(6, 46.6, 46.8);//Mean_2
 	// Perform the fit
 	histo->Fit("gtotal", "MLE", "", fitrange_min, fitrange_max);
 	histo->Fit("gtotal", "MLE", "", fitrange_min, fitrange_max);
