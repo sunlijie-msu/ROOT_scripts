@@ -127,9 +127,9 @@ void peakcali_sqrt_band_pxct_FWHM()//fit 12 X-ray/Gamma ray peaks' FWHM values m
 		// 		pol2->SetNpx(40000);
 		// 		pol2->SetParNames("p0", "p1", "p2");//y=p0+p1*x+p2*x^2
 		// sqrt(wd^2+we^2)
-		TF1* fwhm_func = new TF1("fwhm_func", "sqrt(pow((2 * sqrt(2 * log(2) * [0] * x * 3)), 2) + pow([1], 2))", 0, 200);
+		TF1* fwhm_func = new TF1("fwhm_func", "sqrt(pow((2 * sqrt(2 * log(2) * [0] * x * 0.003)), 2) + pow([1], 2))", 0, 200);
 		fwhm_func->SetParameter(0, 0.1); // Initial guess for Fano factor F
-		fwhm_func->SetParameter(1, 0.2); // Initial guess for electronics effect we
+		fwhm_func->SetParameter(1, 0.2); // Initial guess for electronics effect We
 
 		//graph[i]->Fit("pol1");//pol1 can be used directly without TF1 constructor in CINT
 		TFitResultPtr Fit_result_pointer = graph[i]->Fit("fwhm_func", "MS");
