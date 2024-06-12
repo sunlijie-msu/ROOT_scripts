@@ -49,7 +49,7 @@
 using namespace std;
 void tree_GetEntries_from_G4_rootfiles_PXCT()//get BinContent and BinError from histograms for Surmise data.csv
 {
-	vector<double> Eg_values = { 3, 4, 5, 6, 7, 8, 8.6, 9, 10, 11, 11.1, 11.2, 11.5, 12, 13, 14, 15, 16, 17, 18, 19, 20, 25, 26, 27, 30, 35, 40 }; // 152Eu simulation points
+	vector<double> Eg_values = { 3, 4, 5, 6, 7, 8, 8.6, 9, 10, 11, 11.1, 11.2, 11.5, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 30, 35, 40 }; // 152Eu simulation points
 	//vector<double> Eg_values = { 3, 4, 5, 6, 7, 8, 8.6, 9, 10, 11, 11.1, 11.2, 11.5, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 30}; // 241Am simulation points
 	vector<double> Eg_thresholds(Eg_values.size());
 
@@ -105,11 +105,5 @@ F:/out/ExG4_152Eu_7umWindow_LowEnergy_17keV_all.root
 F:/out/ExG4_152Eu_7umWindow_LowEnergy_18keV_all.root
 F:/out/ExG4_152Eu_7umWindow_LowEnergy_19keV_all.root
 F:/out/ExG4_152Eu_7umWindow_LowEnergy_20keV_all.root
-F:/out/ExG4_152Eu_7umWindow_LowEnergy_25keV_all.root
-F:/out/ExG4_152Eu_7umWindow_LowEnergy_26keV_all.root
-F:/out/ExG4_152Eu_7umWindow_LowEnergy_27keV_all.root
-F:/out/ExG4_152Eu_7umWindow_LowEnergy_30keV_all.root
-F:/out/ExG4_152Eu_7umWindow_LowEnergy_35keV_all.root
-F:/out/ExG4_152Eu_7umWindow_LowEnergy_40keV_all.root
 root [1]
 */
