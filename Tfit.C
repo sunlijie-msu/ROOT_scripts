@@ -430,6 +430,7 @@ ESi3b->Draw("sames");
 ESi3b->Draw("e1");//with error bars
 ESi3b->DrawNormalized(¡±same¡±, 200);//ESi3b->DrawNormalized(¡±option_t¡±, norm);
 h1->Rebin(5); //merges 5 bins in one in h1
+h2->Rebin2D(5,5); //merges 5x5 bins in one in h2
 TH1F *h2=h1->Rebin(5,"h2");// creat a new histogram h2 for merging h1
 
 TH1F *ESi0A3Atot = new TH1F("ESi0A3Atot","ESi0A3Atot",230,300,7200);//ESi0+3A
@@ -598,6 +599,16 @@ gStyle->SetPalette(51);
 gStyle->SetLineWidth(2); // set the width of the axis lines, not frame lines
 TColor::InvertPalette();
 Posterior->Update();
+gStyle->SetPalette(kRainbow);
+TPaletteAxis* palette = (TPaletteAxis*)hmsd_pid->GetListOfFunctions()->FindObject("palette");
+palette->SetTitleFont(132);
+palette->SetTitleSize(0.06);
+palette->SetLabelFont(132);
+palette->SetLabelSize(0.06);
+palette->SetLabelOffset(0.002);
+palette->SetLineWidth(3);
+palette->SetX1NDC(0.88);
+palette->SetX2NDC(0.91);
 
 
 TCanvas* canvaspeak = new TCanvas("LEGe", "LEGe", 1400, 540);//½¨Á¢»­²¼

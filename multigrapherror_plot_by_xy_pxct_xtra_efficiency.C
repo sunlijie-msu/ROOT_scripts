@@ -352,7 +352,7 @@ void multigrapherror_plot_by_xy_pxct_xtra_efficiency() // reading x and y values
 	multigraph->GetYaxis()->SetTitleSize(0.10);
 	multigraph->GetXaxis()->SetLabelSize(0.10);
 	multigraph->GetXaxis()->SetTitleSize(0.10);
-	multigraph->GetYaxis()->SetTickLength(0.02);
+	multigraph->GetYaxis()->SetTickLength(0.008);
 	multigraph->GetYaxis()->SetNdivisions(505);
 	multigraph->GetXaxis()->SetTitleOffset(1.05);
 	multigraph->GetYaxis()->SetTitleOffset(0.613);
@@ -394,8 +394,8 @@ void multigrapherror_plot_by_xy_pxct_xtra_efficiency() // reading x and y values
 	graph_residual[0]->GetYaxis()->SetTitleSize(0.385);
 	graph_residual[0]->GetXaxis()->SetLabelSize(0.07);
 	graph_residual[0]->GetXaxis()->SetTitleSize(0.08);
-	graph_residual[0]->GetXaxis()->SetTickLength(0.14);
-	graph_residual[0]->GetYaxis()->SetTickLength(0.010);
+	graph_residual[0]->GetXaxis()->SetTickLength(0.1);
+	graph_residual[0]->GetYaxis()->SetTickLength(0.005);
 	graph_residual[0]->GetXaxis()->SetTitleOffset(1.05);
 	graph_residual[0]->GetYaxis()->SetTitleOffset(0.162);
 	graph_residual[0]->GetYaxis()->SetNdivisions(105);
@@ -418,8 +418,8 @@ void multigrapherror_plot_by_xy_pxct_xtra_efficiency() // reading x and y values
 	graph_residual[1]->GetYaxis()->SetTitleSize(0.22);
 	graph_residual[1]->GetXaxis()->SetLabelSize(0.24);
 	graph_residual[1]->GetXaxis()->SetTitleSize(0.24);
-	graph_residual[1]->GetYaxis()->SetTickLength(0.02);
-	graph_residual[1]->GetXaxis()->SetTickLength(0.07);
+	graph_residual[1]->GetXaxis()->SetTickLength(0.05);
+	graph_residual[1]->GetYaxis()->SetTickLength(0.01);
 	graph_residual[1]->GetXaxis()->SetTitleOffset(1.00);
 	graph_residual[1]->GetYaxis()->SetTitleOffset(0.29);
 	graph_residual[1]->GetYaxis()->SetNdivisions(105);
