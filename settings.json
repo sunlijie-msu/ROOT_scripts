@@ -1,0 +1,42 @@
+{
+    "editor.minimap.enabled": true,
+    "editor.minimap.showSlider": "always",
+    "editor.minimap.maxColumn": 120,
+    "editor.minimap.scale": 1,
+    "editor.minimap.size": "proportional",
+    "editor.minimap.side": "right",
+    "editor.minimap.autohide": false,
+    "editor.fontFamily": "Times New Roman, Consolas, 'Courier New', monospace",
+    "editor.fontSize": 16,
+    "editor.wordWrap": "on",
+    "python.defaultInterpreterPath": "C:\\Users\\sun\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
+    "files.autoSave": "afterDelay",
+    "python.experiments.optInto": [
+        "pythonTerminalEnvVarActivation"
+    ],
+    "python.pythonPath": "C:\\Users\\sun\\anaconda3\\envs\\pytorch_env\\python.exe",
+    "python.terminal.activateEnvInCurrentTerminal": true,
+    "python.terminal.activateEnvironment": true,
+    "terminal.integrated.fontFamily": "Consolas, 'Courier New', monospace",
+    "terminal.integrated.fontSize": 14,
+    "notebook.lineNumbers": "on",
+    "notebook.editorOptionsCustomizations": {
+        "minimap": {
+            "enabled": true,
+            "showSlider": "always",
+            "renderCharacters": true,
+            "maxColumn": 120,
+            "scale": 1,
+            "size": "proportional",
+            "side": "right",
+            "autohide": false
+        }
+    },
+    "editor.minimap.renderCharacters": false,
+    "terminal.integrated.enableMultiLinePasteWarning": false,
+    "interactiveWindow.executeWithShiftEnter": true,
+    "window.restoreWindows": "none",
+    "settingsSync.ignoredExtensions": [
+        
+    ]
+}
