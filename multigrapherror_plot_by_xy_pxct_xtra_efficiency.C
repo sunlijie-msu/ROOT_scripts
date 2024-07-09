@@ -112,7 +112,7 @@ void multigrapherror_plot_by_xy_pxct_xtra_efficiency() // reading x and y values
 	int colors[] = { kRed + 2, kBlue + 2, kRed - 9, kAzure - 9, kBlack, kGreen + 1, kViolet + 1, kOrange + 7, kMagenta, kCyan + 1, kYellow + 1, kSpring + 7 };
 	int styles[] = { 24, 20, 24, 25, 22, 23, 26, 27, 28, 29 };
 	TF1* logpol6 = new TF1("logpol6", "exp([0]+[1]*log(x)+[2]*pow(log(x),2)+[3]*pow(log(x),3)+[4]*pow(log(x),4)+[5]*pow(log(x),5)+[6]*pow(log(x),6))", 0, 8000);
-	logpol6->SetNpx(80000);
+	logpol6->SetNpx(240000);
 	logpol6->SetParNames("p0", "p1", "p2", "p3", "p4", "p5", "p6");//y=exp(p0+p1*lnx+p2*(lnx)^2+...
 	logpol6->SetLineWidth(2);
 
@@ -216,7 +216,7 @@ void multigrapherror_plot_by_xy_pxct_xtra_efficiency() // reading x and y values
 
 		// Uncertainty Band
 		sprintf(detectorname, "%s%s", "h_confidence_interval_", detector_name[i_detector].c_str());
-		h_confidence_interval[i_detector] = new TH1D(detectorname, detectorname, 80000, 0, 8000);//Create a histogram to hold the confidence intervals
+		h_confidence_interval[i_detector] = new TH1D(detectorname, detectorname, 240000, 0, 8000);//Create a histogram to hold the confidence intervals
 		TVirtualFitter* fitter = TVirtualFitter::GetFitter();//The method TVirtualFitter::GetFitter())->Get the parameters of your fitting function after having it fitted to an histogram.
 		fitter->GetConfidenceIntervals(h_confidence_interval[i_detector], 0.683);//By default the intervals are inflated using the chi2/ndf value of the fit if a chi2 fit is performed
 		//confidence interval for the colored band: 1¦Ò confidence interval: P=0.683, 1¦Ò confidence interval: P=0.95, 3¦Ò confidence interval: P=0.997
