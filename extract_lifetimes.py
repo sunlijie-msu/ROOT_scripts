@@ -4,11 +4,11 @@ import numpy as np
 import sys
 
 particle_type = 'proton' #proton or alpha
-particle_E = 2218
+particle_E = 3500
 particle_dE = 500#particle_E*0.01 #gate for deviation from center of energy peak
 
 
-file_path = r'F:\e21010\pxct\Adams_5days_9000pps.root'
+file_path = r'/mnt/simulations/pxct/lijie/Adams_5days_9000pps.root'
 file = ROOT.TFile.Open(file_path, "READ")
 tree = file.Get("tree")
 
@@ -182,12 +182,13 @@ radiative_transition_prob = {'NiKL':.12106+.236419,\
 vacancies_filled_before_cpe = [actual_counts[first_peak][0]/radiative_transition_prob[first_peak], actual_counts[first_peak][1]/radiative_transition_prob[first_peak]]
 vacancies_filled_before_cpe[1] = (vacancies_filled_before_cpe[1]**2 + vacancies_filled_before_cpe[0])**0.5 #sqrtN uncertainty for number of events which occur during experiment
 print('K-shell vacancies filled prior to charged particle emmission: %f+/-%f'%tuple(vacancies_filled_before_cpe))
-vacancies_filled_after_cpe = [actual_counts[second_peak][0]/radiative_transition_prob[second_peak], actual_counts[second_peak][1]/radiative_transition_prob[second_peak]]
-vacancies_filled_after_cpe[1] = (vacancies_filled_after_cpe[1]**2 + vacancies_filled_after_cpe[0])**0.5 #sqrtN uncertainty for number of events which occur during experiment
+vacancies_filled_after_cpe = [1.065*actual_counts[second_peak][0]/radiative_transition_prob[second_peak], actual_counts[second_peak][1]/radiative_transition_prob[second_peak]]
+vacancies_filled_after_cpe[1] = 1.065*(vacancies_filled_after_cpe[1]**2 + vacancies_filled_after_cpe[0])**0.5 #sqrtN uncertainty for number of events which occur during experiment
 print('K-shell vacancies filled after charged particle emmission: %f+/-%f'%tuple(vacancies_filled_after_cpe))
 lifetime = (vacancies_filled_before_cpe[0]/vacancies_filled_after_cpe[0]*kshell_lifetime, \
-            vacancies_filled_before_cpe[0]/vacancies_filled_after_cpe[0]*kshell_lifetime*\
+            1.15*vacancies_filled_before_cpe[0]/vacancies_filled_after_cpe[0]*kshell_lifetime*\
                 ((vacancies_filled_before_cpe[1]/vacancies_filled_before_cpe[0])**2 + (vacancies_filled_after_cpe[1]/vacancies_filled_after_cpe[0])**2)**0.5)
 print('lifetime = %e+/-%e s'%lifetime)
-
+# Zn peak has higher efficiency 1.065 than Cu peak.
+# kshell_lifetime has uncertainty of 15% from EADL
 ROOT.gApplication.Run()
