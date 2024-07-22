@@ -46,8 +46,8 @@ void peakfit_2gausnpol1_pxct_lege_ZnCu_KLXray() // get histogram and Gausn fit s
 	//TFile* _file0 = TFile::Open("F:/e21010/pxct/run0334_LEGe_241Am_Z7117_ChamberCenter_window1.5us_TrigRise0.064us_TrigGap0.952us_Th350_CFDDelay0.304us_Scale7_for_X_efficiency_cal.root");
 	//double fitrange_min = 44.6, fitrange_max = 46.05;
 	double fitrange_min = 7.4, fitrange_max = 9.1;
-	TH1D* histo = new TH1D("histo", "histo", 1000, 0, 50);
-
+	TH1D* histo = new TH1D("histo", "histo", 1000, 0, 50); // bin width = 50/1000 = 0.05 keV
+	double binwidth = histo->GetBinWidth(1);
 	TCanvas* canvaspeak = new TCanvas("LEGe", "LEGe", 1400, 500);
 	canvaspeak->cd();
 	canvaspeak->SetTopMargin(0.035);
@@ -57,7 +57,9 @@ void peakfit_2gausnpol1_pxct_lege_ZnCu_KLXray() // get histogram and Gausn fit s
 	canvaspeak->SetFrameLineWidth(3);
 	gStyle->SetFrameLineWidth(3);
 
-	tree->Draw("LEGe_e>>histo", "LEGe_e>0.11&&LEGe_e<50&&MSD12_e>121&&MSD12_e<853&&(MSD12_e+MSD26_e)>1500&&(MSD12_e+MSD26_e)<2500", "");
+	tree->Draw("LEGe_e>>histo", "LEGe_e>0.11&&LEGe_e<50&&MSD12_e>30&&MSD12_e<1000&&(MSD12_e+MSD26_e)>30&&(MSD12_e+MSD26_e)<8000", ""); // All proton
+
+	//tree->Draw("LEGe_e>>histo", "LEGe_e>0.11&&LEGe_e<50&&MSD12_e>1200&&MSD12_e<4000&&(MSD12_e+MSD26_e)>1200&&(MSD12_e+MSD26_e)<8000", ""); // All alpha
 
 	histo->SetLineWidth(2);
 	histo->Rebin(1);
@@ -84,6 +86,7 @@ void peakfit_2gausnpol1_pxct_lege_ZnCu_KLXray() // get histogram and Gausn fit s
 	histo->GetYaxis()->SetNdivisions(505);
 	histo->SetBinErrorOption(TH1::kPoisson);
 	histo->Draw("e");
+	canvaspeak->SaveAs("F:/e21010/pxct/60Ga_Geant4_px_spec.png");
 
 	// Define gtotal with the combined functions
 	TF1* gtotal = new TF1("gtotal", "pol1(0) + gausn(2) + gausn(5)", fitrange_min, fitrange_max);
@@ -115,55 +118,68 @@ void peakfit_2gausnpol1_pxct_lege_ZnCu_KLXray() // get histogram and Gausn fit s
 	histo->Fit("gtotal", "MLE", "", fitrange_min, fitrange_max);
 	gtotal->SetLineWidth(3);
 	gtotal->Draw("same");
-	canvaspeak->SaveAs("F:/e21010/pxct/60Ga_Geant4_px_spec.png");
+	//canvaspeak->SaveAs("F:/e21010/pxct/60Ga_Geant4_px_spec_fit.eps");
 
 	// print all parameters names values with errors
 	for (int i = 0; i < gtotal->GetNpar(); i++)
 	{
 		cout << "Par" << i << " " << gtotal->GetParName(i) << "	" << gtotal->GetParameter(i) << "	" << gtotal->GetParError(i) << endl;
 	}
-	cout << "Chi2/NDF	" << gtotal->GetChisquare() / gtotal->GetNDF() << endl;
+	double Chi2_Inflated = sqrt(gtotal->GetChisquare() / gtotal->GetNDF());
+	cout << "Chi2/NDF	" << pow(Chi2_Inflated,2) << endl;
 	cout << "Prob	" << gtotal->GetProb() << endl;
-	double binwidth = histo->GetBinWidth(1);
 	cout << "binwidth	" << binwidth << endl;
-	cout << "Cu counts	" << gtotal->GetParameter(2) / binwidth << "	" << gtotal->GetParError(2) / binwidth * sqrt(gtotal->GetChisquare() / gtotal->GetNDF()) << endl;
-	cout << "Zn counts	" << gtotal->GetParameter(5) / binwidth << "	" << gtotal->GetParError(5) / binwidth * sqrt(gtotal->GetChisquare() / gtotal->GetNDF()) << endl;
 
-	// Define the constants and parameters
-	double Ratio_Ka_Emission_Zn_Cu = 1.0707;
-	double Ratio_Detection_Efficiency_Zn_Cu = 1.0541;
-	double lifetime_Zn_K_vacancy = 0.422; // in fs
 
-	// Retrieve the peak counts and uncertainties from the fit
+	if (Chi2_Inflated < 1.0)
+	{
+		Chi2_Inflated = 1.0;
+	}
+	// Extract the peak counts and uncertainties from the fit
 	double Cu_Ka_counts = gtotal->GetParameter(2) / binwidth;
 	double Zn_Ka_counts = gtotal->GetParameter(5) / binwidth;
-	double uncertainty_Cu_Ka_counts = (gtotal->GetParError(2) / binwidth) * sqrt(gtotal->GetChisquare() / gtotal->GetNDF());
-	double uncertainty_Zn_Ka_counts = (gtotal->GetParError(5) / binwidth) * sqrt(gtotal->GetChisquare() / gtotal->GetNDF());
+	double Cu_Ka_counts_Uncertainty = (gtotal->GetParError(2) / binwidth) * Chi2_Inflated;
+	double Zn_Ka_counts_Uncertainty = (gtotal->GetParError(5) / binwidth) * Chi2_Inflated;
+
+	cout << "Cu_Ka_counts	" << Cu_Ka_counts << "	" << Cu_Ka_counts_Uncertainty << endl;
+	cout << "Zn_Ka_counts	" << Zn_Ka_counts << "	" << Zn_Ka_counts_Uncertainty << endl;
+
+	// Define the atomic parameters
+	double Ratio_Ka_Emission_ZnCu = 1.0707;
+	double Ratio_Ka_Emission_ZnCu_Uncertainty = Ratio_Ka_Emission_ZnCu * 0.15;
+	double Ratio_Detection_Efficiency_ZnCu = 1.0541;
+	double Ratio_Detection_Efficiency_ZnCu_Uncertainty = Ratio_Detection_Efficiency_ZnCu * 0.10;
+	double Lifetime_Zn_K_shell_vacancy = 0.422; // in fs
+	double Lifetime_Zn_K_shell_vacancy_Uncertainty = Lifetime_Zn_K_shell_vacancy * 0.15; // in fs
 
 	// Calculate the real peak counts
-	double real_Cu_Ka_counts = Cu_Ka_counts * Ratio_Ka_Emission_Zn_Cu * Ratio_Detection_Efficiency_Zn_Cu;
-	double real_Zn_Ka_counts = Zn_Ka_counts;
+	double Real_Cu_Ka_counts = Cu_Ka_counts * Ratio_Ka_Emission_ZnCu * Ratio_Detection_Efficiency_ZnCu;
+	double Real_Zn_Ka_counts = Zn_Ka_counts;
 
 	// Propagate the uncertainties for the real peak counts
-	double uncertainty_real_Cu_Ka_counts = uncertainty_Cu_Ka_counts * Ratio_Ka_Emission_Zn_Cu * Ratio_Detection_Efficiency_Zn_Cu;
-
-	double uncertainty_real_Zn_Ka_counts = uncertainty_Zn_Ka_counts;
+	double Real_Cu_Ka_counts_Uncertainty = sqrt(
+		pow(Cu_Ka_counts_Uncertainty / Cu_Ka_counts, 2) +
+		pow(Ratio_Ka_Emission_ZnCu_Uncertainty / Ratio_Ka_Emission_ZnCu, 2) +
+		pow(Ratio_Detection_Efficiency_ZnCu_Uncertainty / Ratio_Detection_Efficiency_ZnCu, 2)) * Real_Cu_Ka_counts;
+	double Real_Zn_Ka_counts_Uncertainty = Zn_Ka_counts_Uncertainty;
 
 	// Calculate the ratio and its uncertainty
-	double Ratio_Zn_Cu = real_Zn_Ka_counts / real_Cu_Ka_counts;
-	double uncertainty_Ratio_Zn_Cu = Ratio_Zn_Cu * sqrt(
-		pow(uncertainty_real_Zn_Ka_counts / real_Zn_Ka_counts, 2) +
-		pow(uncertainty_real_Cu_Ka_counts / real_Cu_Ka_counts, 2));
+	double Ratio_Zn_Cu = Real_Zn_Ka_counts / Real_Cu_Ka_counts;
+	double Ratio_Zn_Cu_Uncertainty = sqrt(
+		pow(Real_Zn_Ka_counts_Uncertainty / Real_Zn_Ka_counts, 2) +
+		pow(Real_Cu_Ka_counts_Uncertainty / Real_Cu_Ka_counts, 2)) * Ratio_Zn_Cu;
 
 	// Calculate the lifetime of the proton emitting state and its uncertainty
-	double Lifetime_proton_emitting_state = Ratio_Zn_Cu * lifetime_Zn_K_vacancy;
-	double Uncertainty_lifetime_proton_emitting_state = Lifetime_proton_emitting_state * (uncertainty_Ratio_Zn_Cu / Ratio_Zn_Cu);
+	double Lifetime_proton_emitting_state = Ratio_Zn_Cu * Lifetime_Zn_K_shell_vacancy;
+	double Lifetime_proton_emitting_state_Uncertainty = sqrt(
+		pow(Ratio_Zn_Cu_Uncertainty / Ratio_Zn_Cu, 2) +
+		pow(Lifetime_Zn_K_shell_vacancy_Uncertainty / Lifetime_Zn_K_shell_vacancy, 2)) * Lifetime_proton_emitting_state;
 	
 	// Output the results
-	cout << "Real Cu Ka peak counts: " << real_Cu_Ka_counts << "	" << uncertainty_real_Cu_Ka_counts << endl;
-	cout << "Real Zn Ka peak counts: " << real_Zn_Ka_counts << "	" << uncertainty_real_Zn_Ka_counts << endl;
-	cout << "Ratio: " << Ratio_Zn_Cu << "	" << uncertainty_Ratio_Zn_Cu << endl;
-	cout << "Lifetime of proton emitting state: " << Lifetime_proton_emitting_state << "	" << Uncertainty_lifetime_proton_emitting_state << " fs" << endl;
+	cout << "Real_Cu_Ka_counts	" << Real_Cu_Ka_counts << "	" << Real_Cu_Ka_counts_Uncertainty << endl;
+	cout << "Real_Zn_Ka_counts	" << Real_Zn_Ka_counts << "	" << Real_Zn_Ka_counts_Uncertainty << endl;
+	cout << "Ratio_Zn_Cu	" << Ratio_Zn_Cu << "	" << Ratio_Zn_Cu_Uncertainty << endl;
+	cout << "Lifetime_proton_emitting_state	" << Lifetime_proton_emitting_state << "	" << Lifetime_proton_emitting_state_Uncertainty << endl;
 
 }
 	
