@@ -39,7 +39,7 @@
 #include "stdio.h"
 #include "TLegend.h"
 using namespace std;
-void peakfit_2gausnpol1_pxct_lege_ZnCu_KLXray() // get histogram and Gausn fit some peaks
+void peakfit_2gausnpol1_pxct_lege_ZnCu_KXray() // get histogram and Gausn fit some peaks
 {
 	TFile* _file0 = TFile::Open("F:/e21010/pxct/Adams_5days_9000pps.root");
 	TTree* tree = (TTree*)_file0->Get("tree");
@@ -48,12 +48,12 @@ void peakfit_2gausnpol1_pxct_lege_ZnCu_KLXray() // get histogram and Gausn fit s
 	double fitrange_min = 7.4, fitrange_max = 9.1;
 	TH1D* histo = new TH1D("histo", "histo", 1000, 0, 50); // bin width = 50/1000 = 0.05 keV
 	double binwidth = histo->GetBinWidth(1);
-	TCanvas* canvaspeak = new TCanvas("LEGe", "LEGe", 1400, 500);
+	TCanvas* canvaspeak = new TCanvas("LEGe", "LEGe", 1300, 700);
 	canvaspeak->cd();
 	canvaspeak->SetTopMargin(0.035);
 	canvaspeak->SetRightMargin(0.03);
-	canvaspeak->SetLeftMargin(0.09);
-	canvaspeak->SetBottomMargin(0.19);
+	canvaspeak->SetLeftMargin(0.12);
+	canvaspeak->SetBottomMargin(0.20);
 	canvaspeak->SetFrameLineWidth(3);
 	gStyle->SetFrameLineWidth(3);
 
@@ -76,8 +76,8 @@ void peakfit_2gausnpol1_pxct_lege_ZnCu_KLXray() // get histogram and Gausn fit s
 	histo->GetYaxis()->SetLabelSize(0.07);
 	histo->GetXaxis()->SetTitleFont(132);
 	histo->GetYaxis()->SetTitleFont(132);
-	histo->GetXaxis()->SetTitleOffset(1.1);
-	histo->GetYaxis()->SetTitleOffset(0.55);
+	histo->GetXaxis()->SetTitleOffset(1.2);
+	histo->GetYaxis()->SetTitleOffset(0.7);
 	histo->GetXaxis()->SetTitleSize(0.08);
 	histo->GetYaxis()->SetTitleSize(0.08);
 	histo->GetYaxis()->SetTickLength(0.015);
@@ -86,7 +86,24 @@ void peakfit_2gausnpol1_pxct_lege_ZnCu_KLXray() // get histogram and Gausn fit s
 	histo->GetYaxis()->SetNdivisions(505);
 	histo->SetBinErrorOption(TH1::kPoisson);
 	histo->Draw("e");
-	canvaspeak->SaveAs("F:/e21010/pxct/60Ga_Geant4_px_spec.png");
+
+	TPaveText* textgaus = new TPaveText(0.54, 0.88, 0.60, 0.95, "brNDC");//left, down, right, up
+	textgaus->SetBorderSize(0);
+	textgaus->SetFillColor(0);
+	textgaus->SetTextAlign(12);
+	textgaus->SetTextFont(132);
+	textgaus->SetTextSize(0.08);
+	//text->SetTextColor(2);
+	textgaus->AddText("Cu");
+	textgaus->Draw();
+	textgaus = new TPaveText(0.65, 0.52, 0.71, 0.59, "brNDC");//left, down, right, up
+	textgaus->SetBorderSize(0);
+	textgaus->SetFillColor(0);
+	textgaus->SetTextAlign(12);
+	textgaus->SetTextFont(132);
+	textgaus->SetTextSize(0.08);
+	textgaus->AddText("Zn");
+	textgaus->Draw();
 
 	// Define gtotal with the combined functions
 	TF1* gtotal = new TF1("gtotal", "pol1(0) + gausn(2) + gausn(5)", fitrange_min, fitrange_max);
@@ -107,7 +124,7 @@ void peakfit_2gausnpol1_pxct_lege_ZnCu_KLXray() // get histogram and Gausn fit s
 	gtotal->SetParName(6, "Mean2");
 	gtotal->SetParName(7, "Sigma2");
 	gtotal->SetParLimits(2, 0.1, 20);//Const1*bin
-	gtotal->SetParLimits(3, 7.9, 8.15);//Mean_1
+	gtotal->SetParLimits(3, 7.9, 8.1);//Mean_1
  	gtotal->SetParLimits(4, 0.100, 0.106);//Sigma_1
 	gtotal->SetParLimits(5, 0.1, 20);//Const2*bin
 	gtotal->SetParLimits(6, 8.5, 8.7);//Mean_2
@@ -118,7 +135,7 @@ void peakfit_2gausnpol1_pxct_lege_ZnCu_KLXray() // get histogram and Gausn fit s
 	histo->Fit("gtotal", "MLE", "", fitrange_min, fitrange_max);
 	gtotal->SetLineWidth(3);
 	gtotal->Draw("same");
-	//canvaspeak->SaveAs("F:/e21010/pxct/60Ga_Geant4_px_spec_fit.eps");
+	canvaspeak->SaveAs("F:/e21010/pxct/Fig_PXCT_60Ga_Geant4_px_Fit.eps");
 
 	// print all parameters names values with errors
 	for (int i = 0; i < gtotal->GetNpar(); i++)
@@ -145,12 +162,12 @@ void peakfit_2gausnpol1_pxct_lege_ZnCu_KLXray() // get histogram and Gausn fit s
 	cout << "Zn_Ka_counts	" << Zn_Ka_counts << "	" << Zn_Ka_counts_Uncertainty << endl;
 
 	// Define the atomic parameters
-	double Ratio_Ka_Emission_ZnCu = 1.0707;
-	double Ratio_Ka_Emission_ZnCu_Uncertainty = Ratio_Ka_Emission_ZnCu * 0.15;
-	double Ratio_Detection_Efficiency_ZnCu = 1.0541;
+	double Ratio_Ka_Emission_ZnCu = 1.0715;
+	double Ratio_Ka_Emission_ZnCu_Uncertainty = Ratio_Ka_Emission_ZnCu * 0.10;
+	double Ratio_Detection_Efficiency_ZnCu = 1.0458;
 	double Ratio_Detection_Efficiency_ZnCu_Uncertainty = Ratio_Detection_Efficiency_ZnCu * 0.10;
-	double Lifetime_Zn_K_shell_vacancy = 0.422; // in fs
-	double Lifetime_Zn_K_shell_vacancy_Uncertainty = Lifetime_Zn_K_shell_vacancy * 0.15; // in fs
+	double Lifetime_Zn_K_shell_vacancy = 0.406; // in fs
+	double Lifetime_Zn_K_shell_vacancy_Uncertainty = Lifetime_Zn_K_shell_vacancy * 0.25; // in fs
 
 	// Calculate the real peak counts
 	double Real_Cu_Ka_counts = Cu_Ka_counts * Ratio_Ka_Emission_ZnCu * Ratio_Detection_Efficiency_ZnCu;
