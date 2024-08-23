@@ -57,7 +57,7 @@ void peakfit_2gausnpol1_pxct_lege_ZnCu_KXray() // get histogram and Gausn fit so
 	canvaspeak->SetFrameLineWidth(3);
 	gStyle->SetFrameLineWidth(3);
 
-	tree->Draw("LEGe_e>>histo", "LEGe_e>0.11&&LEGe_e<50&&MSD12_e>30&&MSD12_e<1000&&(MSD12_e+MSD26_e)>30&&(MSD12_e+MSD26_e)<8000", ""); // All proton
+	tree->Draw("LEGe_e>>histo", "LEGe_e>0.11&&LEGe_e<50&&MSD12_e>30&&MSD12_e<1000&&(MSD12_e+MSD26_e)>30&&(MSD12_e+MSD26_e)<2000", ""); // All proton
 
 	//tree->Draw("LEGe_e>>histo", "LEGe_e>0.11&&LEGe_e<50&&MSD12_e>1200&&MSD12_e<4000&&(MSD12_e+MSD26_e)>1200&&(MSD12_e+MSD26_e)<8000", ""); // All alpha
 
@@ -163,9 +163,9 @@ void peakfit_2gausnpol1_pxct_lege_ZnCu_KXray() // get histogram and Gausn fit so
 
 	// Define the atomic parameters
 	double Ratio_Ka_Emission_ZnCu = 1.0715;
-	double Ratio_Ka_Emission_ZnCu_Uncertainty = Ratio_Ka_Emission_ZnCu * 0.10;
+	double Ratio_Ka_Emission_ZnCu_Uncertainty = Ratio_Ka_Emission_ZnCu * 0.0000010;
 	double Ratio_Detection_Efficiency_ZnCu = 1.0458;
-	double Ratio_Detection_Efficiency_ZnCu_Uncertainty = Ratio_Detection_Efficiency_ZnCu * 0.10;
+	double Ratio_Detection_Efficiency_ZnCu_Uncertainty = Ratio_Detection_Efficiency_ZnCu * 0.00000010;
 	double Lifetime_Zn_K_shell_vacancy = 0.406; // in fs
 	double Lifetime_Zn_K_shell_vacancy_Uncertainty = Lifetime_Zn_K_shell_vacancy * 0.25; // in fs
 
