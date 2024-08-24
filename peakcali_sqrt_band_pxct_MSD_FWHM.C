@@ -39,17 +39,17 @@
 #include "stdio.h"
 #include "TLegend.h"
 using namespace std;
-void peakcali_sqrt_band_pxct_FWHM()//fit 12 X-ray/Gamma ray peaks' FWHM values measured by LEGe detector with sqrt function with a credible interval band
+void peakcali_sqrt_band_pxct_MSD_FWHM()//fit 1 alpha peak' FWHM values measured by MSD detector with sqrt function with a credible interval band
 {
-	const int ID1 = 0;// i=ID1//which detector
-	const int ID2 = 0;// i<=ID2// modify which detector
+	const int ID1 = 2;// i=ID1//which detector
+	const int ID2 = 2;// i<=ID2// modify which detector
 	int i, ii;
 	char paraprint[100], graph_name[200], hcali_name[200];
 	TCanvas* canvascali[ID2 + 1];
 	TGraph* graph[ID2 + 1];
 	TGraph* graph_residual[ID2 + 1];//creat graphs
 	TH1D* h_confidence_interval[ID2 + 1];
-	const int num_datapoints = 12;//search peak numbers, modify
+	const int num_datapoints = 3;//search peak numbers, modify
 	Double_t x_value[ID2 + 1][num_datapoints], x_error[ID2 + 1][num_datapoints];
 	Double_t y_value[ID2 + 1][num_datapoints], y_error[ID2 + 1][num_datapoints];
 	Double_t residual[ID2 + 1][num_datapoints], residual_err[ID2 + 1][num_datapoints];
@@ -65,14 +65,15 @@ void peakcali_sqrt_band_pxct_FWHM()//fit 12 X-ray/Gamma ray peaks' FWHM values m
 	sprintf(pathname, "%s", "F:/e21010/pxct/");
 	for (i = ID1; i <= ID2; i++)
 	{
-		sprintf(filename, "%s%s%d%s", pathname, "y_values_LEGe", i, ".dat");
+		sprintf(filename, "%s%s%d%s", pathname, "y_values_MSD", i, ".dat");
 		ifstream infile_y_values(filename, ios::in);
-		sprintf(filename, "%s%s%d%s", pathname, "x_values_LEGe", i, ".dat");
+		sprintf(filename, "%s%s%d%s", pathname, "x_values_MSD", i, ".dat");
 		ifstream infile_x_values(filename, ios::in);
 		for (ii = 0; ii < num_datapoints; ii++)
 		{
 			infile_x_values >> x_value[i][ii] >> x_error[i][ii];
 			infile_y_values >> y_value[i][ii] >> y_error[i][ii];
+			y_value[i][ii] = y_value[i][ii] * 4;
 			x_error[i][ii] = x_error[i][ii] * 1; y_error[i][ii] = y_error[i][ii] * 1;
 			cout << "LEGe" << i << '	' << ii << '	' << x_value[i][ii] << '	' << x_error[i][ii] << '	' << y_value[i][ii] << '	' << y_error[i][ii] << endl;
 		}
@@ -83,7 +84,7 @@ void peakcali_sqrt_band_pxct_FWHM()//fit 12 X-ray/Gamma ray peaks' FWHM values m
 
 	for (i = ID1; i <= ID2; i++) // no need to modify
 	{
-		sprintf(hcali_name, "%s%d", "FWHM_calibration_LEGe", i);
+		sprintf(hcali_name, "%s%d", "FWHM_calibration_MSD", i);
 		canvascali[i] = new TCanvas(hcali_name, hcali_name, 1000, 700);
 		canvascali[i]->cd();//进入画布
 		TPad* pad1 = new TPad("pad1", "The pad 70% of the height", 0.0, 0.3, 1.0, 1.0);// Double_t xlow, Double_t ylow, Double_t xup, Double_t yup,
@@ -118,7 +119,7 @@ void peakcali_sqrt_band_pxct_FWHM()//fit 12 X-ray/Gamma ray peaks' FWHM values m
 		//graph[i]->GetYaxis()->SetTitleSize(0.05);
 		graph[i]->GetXaxis()->SetTitleOffset(1.2);
 		graph[i]->GetYaxis()->SetTitleOffset(1.0);
-		graph[i]->GetXaxis()->SetRangeUser(0, 200);
+		graph[i]->GetXaxis()->SetRangeUser(0, 6000);
 		graph[i]->SetMarkerStyle(21);
 		graph[i]->SetMarkerSize(0.5);
 		graph[i]->SetMarkerColor(1);
@@ -127,9 +128,10 @@ void peakcali_sqrt_band_pxct_FWHM()//fit 12 X-ray/Gamma ray peaks' FWHM values m
 		// 		pol2->SetNpx(40000);
 		// 		pol2->SetParNames("p0", "p1", "p2");//y=p0+p1*x+p2*x^2
 		// sqrt(wd^2+we^2)
-		TF1* fwhm_func = new TF1("fwhm_func", "sqrt(4 * (2 * log(2) * [0] * x * 0.003) + pow([1], 2))", 0, 6000);//FWHM=sqrt(4*(2*ln2*F*E*0.00361)+We^2)
-		fwhm_func->SetParameter(0, 0.1); // Initial guess for Fano factor F
-		fwhm_func->SetParameter(1, 0.2); // Initial guess for electronics effect We
+		TF1* fwhm_func = new TF1("fwhm_func", "sqrt(4 * (2 * log(2) * [0] * x * 0.00361) + pow([1], 2))", 0, 6000);
+		fwhm_func->SetParameter(0, 10); // Initial guess for Fano factor F
+		fwhm_func->SetParameter(1, 1.7); // Initial guess for electronics effect We
+		// The average energy required to create an electron - hole pair in silicon is 3.61 eV at 300 K, and 2.98 eV at 77 K in germanium.This energy is a material property of the semiconductor and depends on the photon energy.
 
 		//graph[i]->Fit("pol1");//pol1 can be used directly without TF1 constructor in CINT
 		TFitResultPtr Fit_result_pointer = graph[i]->Fit("fwhm_func", "MS");
@@ -141,7 +143,7 @@ void peakcali_sqrt_band_pxct_FWHM()//fit 12 X-ray/Gamma ray peaks' FWHM values m
 
 		// Uncertainty Band
 		sprintf(filename, "%s%s%d", "h_confidence_interval", "_", i);
-		h_confidence_interval[i] = new TH1D(filename, filename, 20000, 0, 200);//Create a histogram to hold the confidence intervals
+		h_confidence_interval[i] = new TH1D(filename, filename, 12000, 0, 6000);//Create a histogram to hold the confidence intervals
 		TVirtualFitter* fitter = TVirtualFitter::GetFitter();//The method TVirtualFitter::GetFitter())->Get the parameters of your fitting function after having it fitted to an histogram.
 		fitter->GetConfidenceIntervals(h_confidence_interval[i], 0.95);//By default the intervals are inflated using the chi2/ndf value of the fit if a chi2 fit is performed
 		//confidence interval for the colored band: 1σ confidence interval: P=0.683, 1σ confidence interval: P=0.95, 3σ confidence interval: P=0.997
@@ -219,7 +221,7 @@ void peakcali_sqrt_band_pxct_FWHM()//fit 12 X-ray/Gamma ray peaks' FWHM values m
 		graph_residual[i]->GetYaxis()->SetTitleFont(132);//轴名字体
 		//graph_residual[i]->GetYaxis()->SetLabelSize(0.05);//坐标字号
 		//graph_residual[i]->GetYaxis()->SetTitleSize(0.05);//轴名字号
-		graph_residual[i]->GetXaxis()->SetRangeUser(0, 3700);
+		graph_residual[i]->GetXaxis()->SetRangeUser(0, 6000);
 		graph_residual[i]->GetXaxis()->SetTitleOffset(1.3);
 		graph_residual[i]->GetYaxis()->SetTitleOffset(0.4);
 		graph_residual[i]->GetXaxis()->SetTitleSize(0.08);
@@ -242,6 +244,9 @@ void peakcali_sqrt_band_pxct_FWHM()//fit 12 X-ray/Gamma ray peaks' FWHM values m
 		sprintf(filename, "%s%s%s", pathname, hcali_name, ".png");
 		canvascali[i]->SaveAs(filename);
 		outfile << "G" << i << "	y=p2*x^2+p1*x+p0	p2=	" << setprecision(8) << par[i][2] << "	+/-	" << par_err[i][2] << "	p1 = " << setprecision(8) << par[i][1] << " + / -" << par_err[i][1] << "	p0 = " << par[i][0] << " + / -" << par_err[i][0] << "	Chi2 = " << parChi[i] << "	ndf = " << parNDF[i] << "	p - value = " << p_value[i] << endl;
+
+		pad1->RedrawAxis();
+		pad2->RedrawAxis();
 
 	}//for (i=0;i<ID;i++)
 }//peakcali main
