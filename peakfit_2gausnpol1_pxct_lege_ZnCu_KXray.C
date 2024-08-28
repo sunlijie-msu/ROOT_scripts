@@ -41,23 +41,23 @@
 using namespace std;
 void peakfit_2gausnpol1_pxct_lege_ZnCu_KXray() // get histogram and Gausn fit some peaks
 {
-	TFile* _file0 = TFile::Open("F:/e21010/pxct/Adams_5days_9000pps.root");
+	TFile* _file0 = TFile::Open("F:/e21010/pxct/ExG4_60Ga_all.root");
 	TTree* tree = (TTree*)_file0->Get("tree");
 	//TFile* _file0 = TFile::Open("F:/e21010/pxct/run0334_LEGe_241Am_Z7117_ChamberCenter_window1.5us_TrigRise0.064us_TrigGap0.952us_Th350_CFDDelay0.304us_Scale7_for_X_efficiency_cal.root");
 	//double fitrange_min = 44.6, fitrange_max = 46.05;
-	double fitrange_min = 7.4, fitrange_max = 9.1;
+	double fitrange_min = 7.3, fitrange_max = 9.3;
 	TH1D* histo = new TH1D("histo", "histo", 1000, 0, 50); // bin width = 50/1000 = 0.05 keV
 	double binwidth = histo->GetBinWidth(1);
 	TCanvas* canvaspeak = new TCanvas("LEGe", "LEGe", 1300, 700);
 	canvaspeak->cd();
 	canvaspeak->SetTopMargin(0.035);
-	canvaspeak->SetRightMargin(0.03);
-	canvaspeak->SetLeftMargin(0.12);
+	canvaspeak->SetRightMargin(0.04);
+	canvaspeak->SetLeftMargin(0.14);
 	canvaspeak->SetBottomMargin(0.20);
 	canvaspeak->SetFrameLineWidth(3);
 	gStyle->SetFrameLineWidth(3);
 
-	tree->Draw("LEGe_e>>histo", "LEGe_e>0.11&&LEGe_e<50&&MSD12_e>30&&MSD12_e<1000&&(MSD12_e+MSD26_e)>30&&(MSD12_e+MSD26_e)<2000", ""); // All proton
+	tree->Draw("LEGe_e>>histo", "LEGe_e>0.11&&LEGe_e<50&&MSD12_e>30&&MSD12_e<1000&&(MSD12_e+MSD26_e)>4000&&(MSD12_e+MSD26_e)<6000", ""); // All proton
 
 	//tree->Draw("LEGe_e>>histo", "LEGe_e>0.11&&LEGe_e<50&&MSD12_e>1200&&MSD12_e<4000&&(MSD12_e+MSD26_e)>1200&&(MSD12_e+MSD26_e)<8000", ""); // All alpha
 
@@ -77,17 +77,18 @@ void peakfit_2gausnpol1_pxct_lege_ZnCu_KXray() // get histogram and Gausn fit so
 	histo->GetXaxis()->SetTitleFont(132);
 	histo->GetYaxis()->SetTitleFont(132);
 	histo->GetXaxis()->SetTitleOffset(1.2);
-	histo->GetYaxis()->SetTitleOffset(0.7);
+	histo->GetYaxis()->SetTitleOffset(0.9);
 	histo->GetXaxis()->SetTitleSize(0.08);
 	histo->GetYaxis()->SetTitleSize(0.08);
 	histo->GetYaxis()->SetTickLength(0.015);
 	histo->GetXaxis()->SetRangeUser(6, 10);
-	//histo->GetYaxis()->SetRangeUser(0,4);
+	int ymax = histo->GetMaximum();
+	//histo->GetYaxis()->SetRangeUser(0, ymax * 1.24);
 	histo->GetYaxis()->SetNdivisions(505);
 	histo->SetBinErrorOption(TH1::kPoisson);
 	histo->Draw("e");
 
-	TPaveText* textgaus = new TPaveText(0.54, 0.88, 0.60, 0.95, "brNDC");//left, down, right, up
+	TPaveText* textgaus = new TPaveText(0.52, 0.88, 0.58, 0.95, "brNDC");//left, down, right, up
 	textgaus->SetBorderSize(0);
 	textgaus->SetFillColor(0);
 	textgaus->SetTextAlign(12);
@@ -123,19 +124,20 @@ void peakfit_2gausnpol1_pxct_lege_ZnCu_KXray() // get histogram and Gausn fit so
 	gtotal->SetParName(5, "Const2*bin");
 	gtotal->SetParName(6, "Mean2");
 	gtotal->SetParName(7, "Sigma2");
-	gtotal->SetParLimits(2, 0.1, 20);//Const1*bin
+	gtotal->SetParLimits(2, 0.1, 90);//Const1*bin
 	gtotal->SetParLimits(3, 7.9, 8.1);//Mean_1
- 	gtotal->SetParLimits(4, 0.100, 0.106);//Sigma_1
-	gtotal->SetParLimits(5, 0.1, 20);//Const2*bin
+ 	gtotal->SetParLimits(4, 0.103, 0.112);//Sigma_1
+	gtotal->SetParLimits(5, 0.1, 90);//Const2*bin
 	gtotal->SetParLimits(6, 8.5, 8.7);//Mean_2
-	gtotal->SetParLimits(7, 0.100, 0.106);//Sigma_2
+	gtotal->SetParLimits(7, 0.103, 0.119);//Sigma_2
 	// Perform the fit
 	histo->Fit("gtotal", "MLE", "", fitrange_min, fitrange_max);
 	histo->Fit("gtotal", "MLE", "", fitrange_min, fitrange_max);
 	histo->Fit("gtotal", "MLE", "", fitrange_min, fitrange_max);
 	gtotal->SetLineWidth(3);
 	gtotal->Draw("same");
-	canvaspeak->SaveAs("F:/e21010/pxct/Fig_PXCT_60Ga_Geant4_px_Fit.eps");
+	//canvaspeak->SaveAs("F:/e21010/pxct/Fig_PXCT_60Ga_Geant4_Total_PX_Fit.eps");
+	//canvaspeak->SaveAs("F:/e21010/pxct/Fig_PXCT_60Ga_Geant4_Total_PX_Fit.png");
 
 	// print all parameters names values with errors
 	for (int i = 0; i < gtotal->GetNpar(); i++)
