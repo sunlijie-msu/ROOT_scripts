@@ -57,7 +57,7 @@ void peakfit_2gausnpol1_pxct_lege_ZnCu_KXray() // get histogram and Gausn fit so
 	canvaspeak->SetFrameLineWidth(3);
 	gStyle->SetFrameLineWidth(3);
 
-	tree->Draw("LEGe_e>>histo", "LEGe_e>0.11&&LEGe_e<50&&MSD12_e>30&&MSD12_e<1000&&(MSD12_e+MSD26_e)>4000&&(MSD12_e+MSD26_e)<6000", ""); // All proton
+	tree->Draw("LEGe_e>>histo", "LEGe_e>0.11&&LEGe_e<50&&MSD12_e>30&&MSD12_e<1000&&(MSD12_e+MSD26_e)>30&&(MSD12_e+MSD26_e)<9000", ""); // All proton
 
 	//tree->Draw("LEGe_e>>histo", "LEGe_e>0.11&&LEGe_e<50&&MSD12_e>1200&&MSD12_e<4000&&(MSD12_e+MSD26_e)>1200&&(MSD12_e+MSD26_e)<8000", ""); // All alpha
 
@@ -169,7 +169,7 @@ void peakfit_2gausnpol1_pxct_lege_ZnCu_KXray() // get histogram and Gausn fit so
 	double Ratio_Detection_Efficiency_ZnCu = 1.0458;
 	double Ratio_Detection_Efficiency_ZnCu_Uncertainty = Ratio_Detection_Efficiency_ZnCu * 0.00000010;
 	double Lifetime_Zn_K_shell_vacancy = 0.406; // in fs
-	double Lifetime_Zn_K_shell_vacancy_Uncertainty = Lifetime_Zn_K_shell_vacancy * 0.25; // in fs
+	double Lifetime_Zn_K_shell_vacancy_Uncertainty = Lifetime_Zn_K_shell_vacancy * 0.000000025; // in fs
 
 	// Calculate the real peak counts
 	double Real_Cu_Ka_counts = Cu_Ka_counts * Ratio_Ka_Emission_ZnCu * Ratio_Detection_Efficiency_ZnCu;
@@ -183,21 +183,21 @@ void peakfit_2gausnpol1_pxct_lege_ZnCu_KXray() // get histogram and Gausn fit so
 	double Real_Zn_Ka_counts_Uncertainty = Zn_Ka_counts_Uncertainty;
 
 	// Calculate the ratio and its uncertainty
-	double Ratio_Zn_Cu = Real_Zn_Ka_counts / Real_Cu_Ka_counts;
-	double Ratio_Zn_Cu_Uncertainty = sqrt(
-		pow(Real_Zn_Ka_counts_Uncertainty / Real_Zn_Ka_counts, 2) +
-		pow(Real_Cu_Ka_counts_Uncertainty / Real_Cu_Ka_counts, 2)) * Ratio_Zn_Cu;
+	double Ratio_Cu_Zn = Real_Cu_Ka_counts / Real_Zn_Ka_counts;
+	double Ratio_Cu_Zn_Uncertainty = sqrt(
+		pow(Real_Cu_Ka_counts_Uncertainty / Real_Cu_Ka_counts, 2) +
+		pow(Real_Zn_Ka_counts_Uncertainty / Real_Zn_Ka_counts, 2)) * Ratio_Cu_Zn;
 
 	// Calculate the lifetime of the proton emitting state and its uncertainty
-	double Lifetime_proton_emitting_state = Ratio_Zn_Cu * Lifetime_Zn_K_shell_vacancy;
+	double Lifetime_proton_emitting_state = Lifetime_Zn_K_shell_vacancy / Ratio_Cu_Zn;
 	double Lifetime_proton_emitting_state_Uncertainty = sqrt(
-		pow(Ratio_Zn_Cu_Uncertainty / Ratio_Zn_Cu, 2) +
+		pow(Ratio_Cu_Zn_Uncertainty / Ratio_Cu_Zn, 2) +
 		pow(Lifetime_Zn_K_shell_vacancy_Uncertainty / Lifetime_Zn_K_shell_vacancy, 2)) * Lifetime_proton_emitting_state;
 	
 	// Output the results
 	cout << "Real_Cu_Ka_counts	" << Real_Cu_Ka_counts << "	" << Real_Cu_Ka_counts_Uncertainty << endl;
 	cout << "Real_Zn_Ka_counts	" << Real_Zn_Ka_counts << "	" << Real_Zn_Ka_counts_Uncertainty << endl;
-	cout << "Ratio_Zn_Cu	" << Ratio_Zn_Cu << "	" << Ratio_Zn_Cu_Uncertainty << endl;
+	cout << "Ratio_Zn_Cu	" << Ratio_Cu_Zn << "	" << Ratio_Cu_Zn_Uncertainty << endl;
 	cout << "Lifetime_proton_emitting_state	" << Lifetime_proton_emitting_state << "	" << Lifetime_proton_emitting_state_Uncertainty << endl;
 
 }
