@@ -41,7 +41,7 @@
 using namespace std;
 void peakfit_2gausnpol1_pxct_lege_ZnCu_KXray() // get histogram and Gausn fit some peaks
 {
-	TFile* _file0 = TFile::Open("F:/e21010/pxct/ExG4_60Ga_all.root");
+	TFile* _file0 = TFile::Open("F:/e21010/pxct/ExG4_60Ga_20days_9000pps.root");
 	TTree* tree = (TTree*)_file0->Get("tree");
 	//TFile* _file0 = TFile::Open("F:/e21010/pxct/run0334_LEGe_241Am_Z7117_ChamberCenter_window1.5us_TrigRise0.064us_TrigGap0.952us_Th350_CFDDelay0.304us_Scale7_for_X_efficiency_cal.root");
 	//double fitrange_min = 44.6, fitrange_max = 46.05;
@@ -57,7 +57,7 @@ void peakfit_2gausnpol1_pxct_lege_ZnCu_KXray() // get histogram and Gausn fit so
 	canvaspeak->SetFrameLineWidth(3);
 	gStyle->SetFrameLineWidth(3);
 
-	tree->Draw("LEGe_e>>histo", "LEGe_e>0.11&&LEGe_e<50&&MSD12_e>30&&MSD12_e<1000&&(MSD12_e+MSD26_e)>30&&(MSD12_e+MSD26_e)<9000", ""); // All proton
+	tree->Draw("LEGe_e>>histo", "LEGe_e>0.11&&LEGe_e<50&&MSD12_e>30&&MSD12_e<1000&&(MSD12_e+MSD26_e)>30&&(MSD12_e+MSD26_e)<1000", ""); // All proton
 
 	//tree->Draw("LEGe_e>>histo", "LEGe_e>0.11&&LEGe_e<50&&MSD12_e>1200&&MSD12_e<4000&&(MSD12_e+MSD26_e)>1200&&(MSD12_e+MSD26_e)<8000", ""); // All alpha
 
@@ -155,50 +155,52 @@ void peakfit_2gausnpol1_pxct_lege_ZnCu_KXray() // get histogram and Gausn fit so
 		Chi2_Inflated = 1.0;
 	}
 	// Extract the peak counts and uncertainties from the fit
-	double Cu_Ka_counts = gtotal->GetParameter(2) / binwidth;
-	double Zn_Ka_counts = gtotal->GetParameter(5) / binwidth;
-	double Cu_Ka_counts_Uncertainty = (gtotal->GetParError(2) / binwidth) * Chi2_Inflated;
-	double Zn_Ka_counts_Uncertainty = (gtotal->GetParError(5) / binwidth) * Chi2_Inflated;
+	double Cu_counts = gtotal->GetParameter(2) / binwidth;
+	double Zn_counts = gtotal->GetParameter(5) / binwidth;
+	double Cu_counts_Uncertainty = (gtotal->GetParError(2) / binwidth) * Chi2_Inflated;
+	double Zn_counts_Uncertainty = (gtotal->GetParError(5) / binwidth) * Chi2_Inflated;
 
-	cout << "Cu_Ka_counts	" << Cu_Ka_counts << "	" << Cu_Ka_counts_Uncertainty << endl;
-	cout << "Zn_Ka_counts	" << Zn_Ka_counts << "	" << Zn_Ka_counts_Uncertainty << endl;
+	cout << "Cu_counts\t" << Cu_counts << "\t" << Cu_counts_Uncertainty << endl;
+	cout << "Zn_counts\t" << Zn_counts << "\t" << Zn_counts_Uncertainty << endl;
 
 	// Define the atomic parameters
-	double Ratio_Ka_Emission_ZnCu = 1.0715;
-	double Ratio_Ka_Emission_ZnCu_Uncertainty = Ratio_Ka_Emission_ZnCu * 0.0000010;
-	double Ratio_Detection_Efficiency_ZnCu = 1.0458;
-	double Ratio_Detection_Efficiency_ZnCu_Uncertainty = Ratio_Detection_Efficiency_ZnCu * 0.00000010;
+	double Ratio_Ka_Emission_CuZn = 1.0715;
+	double Ratio_Ka_Emission_CuZn_Uncertainty = Ratio_Ka_Emission_CuZn * 0.0000010;
+	double Ratio_Detection_Efficiency_CuZn = 1.0458;
+	double Ratio_Detection_Efficiency_CuZn_Uncertainty = Ratio_Detection_Efficiency_CuZn * 0.0000010;
 	double Lifetime_Zn_K_shell_vacancy = 0.406; // in fs
-	double Lifetime_Zn_K_shell_vacancy_Uncertainty = Lifetime_Zn_K_shell_vacancy * 0.000000025; // in fs
+	double Lifetime_Zn_K_shell_vacancy_Uncertainty = Lifetime_Zn_K_shell_vacancy * 0.0000025; // in fs
 
 	// Calculate the real peak counts
-	double Real_Cu_Ka_counts = Cu_Ka_counts * Ratio_Ka_Emission_ZnCu * Ratio_Detection_Efficiency_ZnCu;
-	double Real_Zn_Ka_counts = Zn_Ka_counts;
+	double Real_Cu_counts = Cu_counts * Ratio_Ka_Emission_CuZn * Ratio_Detection_Efficiency_CuZn;
+	double Real_Zn_counts = Zn_counts;
 
 	// Propagate the uncertainties for the real peak counts
-	double Real_Cu_Ka_counts_Uncertainty = sqrt(
-		pow(Cu_Ka_counts_Uncertainty / Cu_Ka_counts, 2) +
-		pow(Ratio_Ka_Emission_ZnCu_Uncertainty / Ratio_Ka_Emission_ZnCu, 2) +
-		pow(Ratio_Detection_Efficiency_ZnCu_Uncertainty / Ratio_Detection_Efficiency_ZnCu, 2)) * Real_Cu_Ka_counts;
-	double Real_Zn_Ka_counts_Uncertainty = Zn_Ka_counts_Uncertainty;
+	double Real_Cu_counts_Uncertainty = sqrt(
+		pow(Cu_counts_Uncertainty / Cu_counts, 2) +
+		pow(Ratio_Ka_Emission_CuZn_Uncertainty / Ratio_Ka_Emission_CuZn, 2) +
+		pow(Ratio_Detection_Efficiency_CuZn_Uncertainty / Ratio_Detection_Efficiency_CuZn, 2)
+	) * Real_Cu_counts;
+	double Real_Zn_counts_Uncertainty = Zn_counts_Uncertainty;
 
 	// Calculate the ratio and its uncertainty
-	double Ratio_Cu_Zn = Real_Cu_Ka_counts / Real_Zn_Ka_counts;
+	double Ratio_Cu_Zn = Real_Cu_counts / Real_Zn_counts;
 	double Ratio_Cu_Zn_Uncertainty = sqrt(
-		pow(Real_Cu_Ka_counts_Uncertainty / Real_Cu_Ka_counts, 2) +
-		pow(Real_Zn_Ka_counts_Uncertainty / Real_Zn_Ka_counts, 2)) * Ratio_Cu_Zn;
+		pow(Real_Cu_counts_Uncertainty / Real_Cu_counts, 2) +
+		pow(Real_Zn_counts_Uncertainty / Real_Zn_counts, 2)
+	) * Ratio_Cu_Zn;
 
-	// Calculate the lifetime of the proton emitting state and its uncertainty
+	// Calculate the lifetime of the proton-emitting state and its uncertainty
 	double Lifetime_proton_emitting_state = Lifetime_Zn_K_shell_vacancy / Ratio_Cu_Zn;
 	double Lifetime_proton_emitting_state_Uncertainty = sqrt(
 		pow(Ratio_Cu_Zn_Uncertainty / Ratio_Cu_Zn, 2) +
-		pow(Lifetime_Zn_K_shell_vacancy_Uncertainty / Lifetime_Zn_K_shell_vacancy, 2)) * Lifetime_proton_emitting_state;
-	
-	// Output the results
-	cout << "Real_Cu_Ka_counts	" << Real_Cu_Ka_counts << "	" << Real_Cu_Ka_counts_Uncertainty << endl;
-	cout << "Real_Zn_Ka_counts	" << Real_Zn_Ka_counts << "	" << Real_Zn_Ka_counts_Uncertainty << endl;
-	cout << "Ratio_Zn_Cu	" << Ratio_Cu_Zn << "	" << Ratio_Cu_Zn_Uncertainty << endl;
-	cout << "Lifetime_proton_emitting_state	" << Lifetime_proton_emitting_state << "	" << Lifetime_proton_emitting_state_Uncertainty << endl;
+		pow(Lifetime_Zn_K_shell_vacancy_Uncertainty / Lifetime_Zn_K_shell_vacancy, 2)
+	) * Lifetime_proton_emitting_state;
 
+	// Output the results
+	cout << "Real_Cu_counts\t" << Real_Cu_counts << "\t" << Real_Cu_counts_Uncertainty << endl;
+	cout << "Real_Zn_counts\t" << Real_Zn_counts << "\t" << Real_Zn_counts_Uncertainty << endl;
+	cout << "Ratio_Cu_Zn\t" << Ratio_Cu_Zn << "\t" << Ratio_Cu_Zn_Uncertainty << endl;
+	cout << "Lifetime_proton_emitting_state\t" << Lifetime_proton_emitting_state << "\t" << Lifetime_proton_emitting_state_Uncertainty << endl;
 }
 	
