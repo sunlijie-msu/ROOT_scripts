@@ -336,7 +336,13 @@ T888->SetScanField(0);//dump numbers before <CR>, 0 means all numbers
 T888->Scan("E","E>500&&E<6000&&T<54000"); >ca37.log//dump contents
 T888->Scan("SCA[0]:SCA[1]",""); >si.log
 T999->Scan("mul:FE:id", "", "", 1, 283)//只输出第283个event开始1个event的mul,FE,id
+TH1D* h1 = new TH1D("h1", "h1", 100, 0, 100);
 h1->SetBinErrorOption(TH1::kPoisson);
+h1->SetBinContent(1, 2.55)
+h1->GetBinErrorUp(1)
+h1->GetBinErrorLow(1)
+//h1->SetBinError(1, 3)
+
 h1->Print("all"); >si.log//dump contents. This command doesn't work for new version ROOT
 // use this instead:
 void print_histogram() {
@@ -537,6 +543,14 @@ TH1F *hT=(TH1F*)Td60->Clone("hT");//clone any histogram
 TH1F*hT=new TH1F(*Td60);//copy any histogram
 hT->Add(hT,Td300);//note that the bins should be same
 hT->Draw();
+
+TH1D* hclone = (TH1D*)hnorth_e->Clone("hclone");//clone any histogram
+h807->Draw("same");
+
+TH1D* hsubtraction = new TH1D(*hnorth_e);//copy any histogram
+hsubtraction->Add(h3, hclone, 1, -1);
+hsubtraction->Draw("same");
+
 // Create a new histogram based on the binning of an existing histogram
 const Int_t numBins = hnorth_e->GetNbinsX();
 const Double_t xMin = hnorth_e->GetXaxis()->GetXmin();

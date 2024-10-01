@@ -55,7 +55,7 @@ void tree_GetEntries_pxct_lege_ZnCu_KXray() // tree GetEntries for PXCT LEGe Zn 
 	// Define Ep distribution flexibly
 	vector<double> Ep;
 	vector<double> DEp;
-	double Ep_start = 600;
+	double Ep_start = 750;
 	double Ep_end = 8000;
 	double val = Ep_start;
 
@@ -64,19 +64,19 @@ void tree_GetEntries_pxct_lege_ZnCu_KXray() // tree GetEntries for PXCT LEGe Zn 
 		double Ep_step;
 
 		// Adjust Ep_step based on current Ep value
-		if (val < 1100)
+		if (val >= 700 && val < 1200)
 		{
-			Ep_step = 700; // Larger step when Ep is small
+			Ep_step = 500; // Larger step when Ep is small
 		}
-		else if (val >= 1200 && val <= 2000)
+		else if (val >= 1200 && val <= 4000)
 		{
 			Ep_step = 200; // Smaller step
 		}
-		else if (val > 2000 && val <= 4000)
+		else if (val > 4000 && val <= 7000)
 		{
-			Ep_step = 400;
+			Ep_step = 300;
 		}
-		else if (val > 4000)
+		else if (val > 7000)
 		{
 			Ep_step = 1000;
 		}
@@ -102,13 +102,13 @@ void tree_GetEntries_pxct_lege_ZnCu_KXray() // tree GetEntries for PXCT LEGe Zn 
 		double Ep_max = Ep[i] + DEp[i];
 
 		// Conditions
-		TString condition_Cu = Form("LEGe_e > 7.6 && LEGe_e < 8.3 && MSD12_e > 30 && MSD12_e < 1000 && "
+		TString condition_Cu = Form("LEGe_e > 7.6 && LEGe_e < 8.3 && MSD12_e > 10 && MSD12_e < 1000 && "
 			"(MSD12_e + MSD26_e) > %f && (MSD12_e + MSD26_e) < %f", Ep_min, Ep_max);
-		TString condition_Zn = Form("LEGe_e > 8.3 && LEGe_e < 9.0 && MSD12_e > 30 && MSD12_e < 1000 && "
+		TString condition_Zn = Form("LEGe_e > 8.3 && LEGe_e < 9.0 && MSD12_e > 10 && MSD12_e < 1000 && "
 			"(MSD12_e + MSD26_e) > %f && (MSD12_e + MSD26_e) < %f", Ep_min, Ep_max);
-		TString condition_bg_left = Form("LEGe_e > 5.0 && LEGe_e < 7.0 && MSD12_e > 30 && MSD12_e < 1000 && "
+		TString condition_bg_left = Form("LEGe_e > 4.0 && LEGe_e < 7.0 && MSD12_e > 10 && MSD12_e < 1000 && "
 			"(MSD12_e + MSD26_e) > %f && (MSD12_e + MSD26_e) < %f", Ep_min, Ep_max);
-		TString condition_bg_right = Form("LEGe_e > 10.0 && LEGe_e < 12.0 && MSD12_e > 30 && MSD12_e < 1000 && "
+		TString condition_bg_right = Form("LEGe_e > 9.5 && LEGe_e < 12.5 && MSD12_e > 10 && MSD12_e < 1000 && "
 			"(MSD12_e + MSD26_e) > %f && (MSD12_e + MSD26_e) < %f", Ep_min, Ep_max);
 
 		// Counts
@@ -116,9 +116,15 @@ void tree_GetEntries_pxct_lege_ZnCu_KXray() // tree GetEntries for PXCT LEGe Zn 
 		double Zn_counts_integral = tree->GetEntries(condition_Zn);
 		double bg_left_counts = tree->GetEntries(condition_bg_left);
 		double bg_right_counts = tree->GetEntries(condition_bg_right);
-		double background_counts = (bg_left_counts + bg_right_counts) / 4.0 * 0.7;
+		double background_counts = (bg_left_counts + bg_right_counts) / 6.0 * 0.7;
 		if (background_counts <= 0) background_counts = 0.001;
 		double background_uncertainty = sqrt(background_counts);
+
+		// Output
+		cout << "Ep_min\t" << Ep_min << "\tEp_max\t" << Ep_max << "\t";
+		cout << "Cu_counts_integral\t" << Cu_counts_integral << "\tZn_counts_integral\t" << Zn_counts_integral << "\t";
+		cout << "bg_left_counts\t" << bg_left_counts << "\tbg_right_counts\t" << bg_right_counts << "\t";
+		cout << "background_counts\t" << background_counts << "\tbackground_uncertainty\t" << background_uncertainty << "\t";
 
 		// Subtract background
 		Cu_counts[i] = Cu_counts_integral - background_counts;
@@ -147,7 +153,6 @@ void tree_GetEntries_pxct_lege_ZnCu_KXray() // tree GetEntries for PXCT LEGe Zn 
 
 
 		// Output
-		cout << "Ep\t" << Ep[i] << "\t";
 		cout << "Cu_counts\t" << Cu_counts[i] << "\t" << Cu_counts_Uncertainty[i] << "\t";
 		cout << "Zn_counts\t" << Zn_counts[i] << "\t" << Zn_counts_Uncertainty[i] << "\t";
 		cout << "Real_Cu_counts\t" << Real_Cu_counts[i] << "\t" << Real_Cu_counts_Uncertainty[i] << "\t";
