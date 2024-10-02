@@ -46,16 +46,16 @@ void tree_GetEntries_pxct_lege_ZnCu_KXray() // tree GetEntries for PXCT LEGe Zn 
 
 	// Define atomic parameters
 	double Ratio_Ka_Emission_CuZn = 1.0715;
-	double Ratio_Ka_Emission_CuZn_Uncertainty = Ratio_Ka_Emission_CuZn * 0.0000010;
+	double Ratio_Ka_Emission_CuZn_Uncertainty = Ratio_Ka_Emission_CuZn * 1e-10;
 	double Ratio_Detection_Efficiency_CuZn = 1.0458;
-	double Ratio_Detection_Efficiency_CuZn_Uncertainty = Ratio_Detection_Efficiency_CuZn * 0.0000010;
+	double Ratio_Detection_Efficiency_CuZn_Uncertainty = Ratio_Detection_Efficiency_CuZn * 1e-10;
 	double Lifetime_Zn_K_shell_vacancy = 0.406; // in fs
-	double Lifetime_Zn_K_shell_vacancy_Uncertainty = Lifetime_Zn_K_shell_vacancy * 0.0000025; // in fs
+	double Lifetime_Zn_K_shell_vacancy_Uncertainty = Lifetime_Zn_K_shell_vacancy * 2.5e-10; // in fs
 
 	// Define Ep distribution flexibly
 	vector<double> Ep;
 	vector<double> DEp;
-	double Ep_start = 750;
+	double Ep_start = 6600;
 	double Ep_end = 8000;
 	double val = Ep_start;
 
@@ -64,21 +64,17 @@ void tree_GetEntries_pxct_lege_ZnCu_KXray() // tree GetEntries for PXCT LEGe Zn 
 		double Ep_step;
 
 		// Adjust Ep_step based on current Ep value
-		if (val >= 700 && val < 1200)
+		if (val >= 700 && val < 950)
 		{
-			Ep_step = 500; // Larger step when Ep is small
+			Ep_step = 600; // Larger step when Ep is small
 		}
-		else if (val >= 1200 && val <= 4000)
+		else if (val >= 950 && val <= 6000)
 		{
-			Ep_step = 200; // Smaller step
+			Ep_step = 400; // Smaller step
 		}
-		else if (val > 4000 && val <= 7000)
+		else if (val > 6000 && val <= 9000)
 		{
-			Ep_step = 300;
-		}
-		else if (val > 7000)
-		{
-			Ep_step = 1000;
+			Ep_step = 600;
 		}
 
 		Ep.push_back(val);
@@ -95,6 +91,18 @@ void tree_GetEntries_pxct_lege_ZnCu_KXray() // tree GetEntries for PXCT LEGe Zn 
 	vector<double> Real_Zn_counts(N), Real_Zn_counts_Uncertainty(N);
 	vector<double> Ratio_Cu_Zn(N), Ratio_Cu_Zn_Uncertainty(N);
 	vector<double> Lifetime_proton_emitting_state(N), Lifetime_proton_emitting_state_Uncertainty(N);
+
+	cout << "Ep_min\tEp_max\t"
+		<< "Cu_counts_integral\tZn_counts_integral\t"
+		<< "bg_left_counts\tbg_right_counts\t"
+		<< "background_counts\tbackground_uncertainty\t"
+		<< "Cu_counts\tCu_counts_Uncertainty\t"
+		<< "Zn_counts\tZn_counts_Uncertainty\t"
+		<< "Real_Cu_counts\tReal_Cu_counts_Uncertainty\t"
+		<< "Real_Zn_counts\tReal_Zn_counts_Uncertainty\t"
+		<< "Ratio_Cu_Zn\tRatio_Cu_Zn_Uncertainty\t"
+		<< "Lifetime_proton_emitting_state\tLifetime_proton_emitting_state_Uncertainty"
+		<< "\n";
 
 	for (size_t i = 0; i < N; ++i)
 	{
@@ -117,23 +125,22 @@ void tree_GetEntries_pxct_lege_ZnCu_KXray() // tree GetEntries for PXCT LEGe Zn 
 		double bg_left_counts = tree->GetEntries(condition_bg_left);
 		double bg_right_counts = tree->GetEntries(condition_bg_right);
 		double background_counts = (bg_left_counts + bg_right_counts) / 6.0 * 0.7;
-		if (background_counts <= 0) background_counts = 0.001;
+		if (background_counts <= 0) background_counts = 1e-10;
 		double background_uncertainty = sqrt(background_counts);
 
-		// Output
-		cout << "Ep_min\t" << Ep_min << "\tEp_max\t" << Ep_max << "\t";
-		cout << "Cu_counts_integral\t" << Cu_counts_integral << "\tZn_counts_integral\t" << Zn_counts_integral << "\t";
-		cout << "bg_left_counts\t" << bg_left_counts << "\tbg_right_counts\t" << bg_right_counts << "\t";
-		cout << "background_counts\t" << background_counts << "\tbackground_uncertainty\t" << background_uncertainty << "\t";
+		cout << Ep_min << "\t" << Ep_max << "\t"
+			<< Cu_counts_integral << "\t" << Zn_counts_integral << "\t"
+			<< bg_left_counts << "\t" << bg_right_counts << "\t"
+			<< background_counts << "\t" << background_uncertainty << "\t";
 
 		// Subtract background
 		Cu_counts[i] = Cu_counts_integral - background_counts;
-		if (Cu_counts[i] <= 0) Cu_counts[i] = 0.001;
-		Cu_counts_Uncertainty[i] = sqrt(Cu_counts_integral) + background_uncertainty;
+		if (Cu_counts[i] <= 0) Cu_counts[i] = 1e-10;
+		Cu_counts_Uncertainty[i] = sqrt(pow(sqrt(Cu_counts_integral), 2) + pow(background_uncertainty, 2));
 
 		Zn_counts[i] = Zn_counts_integral - background_counts;
-		if (Zn_counts[i] <= 0) Zn_counts[i] = 0.001;
-		Zn_counts_Uncertainty[i] = sqrt(Zn_counts_integral) + background_uncertainty;
+		if (Zn_counts[i] <= 0) Zn_counts[i] = 1e-10;
+		Zn_counts_Uncertainty[i] = sqrt(pow(sqrt(Zn_counts_integral), 2) + pow(background_uncertainty, 2));
 
 		// Real counts
 		Real_Cu_counts[i] = Cu_counts[i] * Ratio_Ka_Emission_CuZn * Ratio_Detection_Efficiency_CuZn;
@@ -153,12 +160,13 @@ void tree_GetEntries_pxct_lege_ZnCu_KXray() // tree GetEntries for PXCT LEGe Zn 
 
 
 		// Output
-		cout << "Cu_counts\t" << Cu_counts[i] << "\t" << Cu_counts_Uncertainty[i] << "\t";
-		cout << "Zn_counts\t" << Zn_counts[i] << "\t" << Zn_counts_Uncertainty[i] << "\t";
-		cout << "Real_Cu_counts\t" << Real_Cu_counts[i] << "\t" << Real_Cu_counts_Uncertainty[i] << "\t";
-		cout << "Real_Zn_counts\t" << Real_Zn_counts[i] << "\t" << Real_Zn_counts_Uncertainty[i] << "\t";
-		cout << "Ratio_Cu_Zn\t" << Ratio_Cu_Zn[i] << "\t" << Ratio_Cu_Zn_Uncertainty[i] << "\t";
-		cout << "Lifetime_proton_emitting_state\t" << Lifetime_proton_emitting_state[i] << "\t" << Lifetime_proton_emitting_state_Uncertainty[i] << endl;
+		cout << Cu_counts[i] << "\t" << Cu_counts_Uncertainty[i] << "\t"
+			   << Zn_counts[i] << "\t" << Zn_counts_Uncertainty[i] << "\t"
+			   << Real_Cu_counts[i] << "\t" << Real_Cu_counts_Uncertainty[i] << "\t"
+			   << Real_Zn_counts[i] << "\t" << Real_Zn_counts_Uncertainty[i] << "\t"
+			   << Ratio_Cu_Zn[i] << "\t" << Ratio_Cu_Zn_Uncertainty[i] << "\t"
+			   << Lifetime_proton_emitting_state[i] << "\t" << Lifetime_proton_emitting_state_Uncertainty[i]
+			   << "\n";
 	}
 
 	TCanvas* canvaspeak = new TCanvas("RX", "RX", 1300, 700);
