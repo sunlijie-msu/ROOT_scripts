@@ -5,7 +5,7 @@ from matplotlib.ticker import LogFormatter
 # Data as a multiline string
 data = """
 Ep	Ratio_Cu_Zn_min	Ratio_Cu_Zn_max	Lifetime_min	Lifetime_max
-800	1.0423E-17	1.6097E-01	2.5223E+00	3.8954E+16
+825	1.0528E-17	1.4634E-01	2.7743E+00	3.8564E+16
 1300	6.0027E-02	2.8241E-01	1.4376E+00	6.7636E+00
 1700	3.0179E-01	8.4569E-01	4.8008E-01	1.3453E+00
 2100	1.6290E+00	2.5605E+00	1.5856E-01	2.4924E-01
@@ -146,6 +146,7 @@ ax2.set_ylabel('Lifetime (fs)', color=color, fontsize=60, labelpad=30)
 ax1.grid(which='major', linestyle='--', linewidth=1)
 # ax1.grid(which='minor', linestyle='--', linewidth=1)
 
+plt.show()
 # Save the figure
-plt.savefig(r'D:\X\out\Bayesian_VS\Fig_PXCT_60Ga_Xratio.png')
-plt.savefig(r'D:\X\out\Bayesian_VS\Fig_PXCT_60Ga_Xratio.eps')
+# plt.savefig(r'F:\e21010\pxct\Fig_PXCT_60Ga_Xratio.png')
+# plt.savefig(r'F:\e21010\pxct\Fig_PXCT_60Ga_Xratio.eps')

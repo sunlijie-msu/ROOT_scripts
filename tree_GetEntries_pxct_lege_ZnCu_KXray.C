@@ -39,10 +39,32 @@
 #include "stdio.h"
 #include "TLegend.h"
 using namespace std;
+// Define the passProtonCut function globally
+bool passProtonCut(double x, double y) {
+	static TCutG* ProtonCut = nullptr;
+	if (!ProtonCut) {
+		TFile* f = TFile::Open("F:/e21010/pxct/ProtonCut.root");
+		if (!f || f->IsZombie()) {
+			std::cerr << "Error: Cannot open ProtonCut.root" << std::endl;
+			return false;
+		}
+		ProtonCut = (TCutG*)f->Get("ProtonCut");
+		if (!ProtonCut) {
+			std::cerr << "Error: Cannot retrieve ProtonCut from ProtonCut.root" << std::endl;
+			f->Close();
+			return false;
+		}
+	}
+	return ProtonCut->IsInside(x, y);
+}
+
 void tree_GetEntries_pxct_lege_ZnCu_KXray() // tree GetEntries for PXCT LEGe Zn Cu K X-ray Ratio Plot
 {
 	TFile* _file0 = TFile::Open("F:/e21010/pxct/ExG4_60Ga_20days_9000pps.root");
 	TTree* tree = (TTree*)_file0->Get("tree");
+
+	// Define the alias 'passCut' using the global function
+	tree->SetAlias("passCut", "passProtonCut(MSD26_e, MSD12_e)");
 
 	// Define atomic parameters
 	double Ratio_Ka_Emission_CuZn = 1.0715;
@@ -55,7 +77,7 @@ void tree_GetEntries_pxct_lege_ZnCu_KXray() // tree GetEntries for PXCT LEGe Zn 
 	// Define Ep distribution flexibly
 	vector<double> Ep;
 	vector<double> DEp;
-	double Ep_start = 6600;
+	double Ep_start = 800;
 	double Ep_end = 8000;
 	double val = Ep_start;
 
@@ -64,7 +86,7 @@ void tree_GetEntries_pxct_lege_ZnCu_KXray() // tree GetEntries for PXCT LEGe Zn 
 		double Ep_step;
 
 		// Adjust Ep_step based on current Ep value
-		if (val >= 700 && val < 950)
+		if (val >= 800 && val < 950)
 		{
 			Ep_step = 600; // Larger step when Ep is small
 		}
@@ -109,15 +131,16 @@ void tree_GetEntries_pxct_lege_ZnCu_KXray() // tree GetEntries for PXCT LEGe Zn 
 		double Ep_min = Ep[i] - DEp[i];
 		double Ep_max = Ep[i] + DEp[i];
 
-		// Conditions
+		// Conditions with ProtonCut
 		TString condition_Cu = Form("LEGe_e > 7.6 && LEGe_e < 8.3 && MSD12_e > 10 && MSD12_e < 1000 && "
-			"(MSD12_e + MSD26_e) > %f && (MSD12_e + MSD26_e) < %f", Ep_min, Ep_max);
+			"(MSD12_e + MSD26_e) > %f && (MSD12_e + MSD26_e) < %f && passCut", Ep_min, Ep_max);
 		TString condition_Zn = Form("LEGe_e > 8.3 && LEGe_e < 9.0 && MSD12_e > 10 && MSD12_e < 1000 && "
-			"(MSD12_e + MSD26_e) > %f && (MSD12_e + MSD26_e) < %f", Ep_min, Ep_max);
+			"(MSD12_e + MSD26_e) > %f && (MSD12_e + MSD26_e) < %f && passCut", Ep_min, Ep_max);
 		TString condition_bg_left = Form("LEGe_e > 4.0 && LEGe_e < 7.0 && MSD12_e > 10 && MSD12_e < 1000 && "
-			"(MSD12_e + MSD26_e) > %f && (MSD12_e + MSD26_e) < %f", Ep_min, Ep_max);
+			"(MSD12_e + MSD26_e) > %f && (MSD12_e + MSD26_e) < %f && passCut", Ep_min, Ep_max);
 		TString condition_bg_right = Form("LEGe_e > 9.5 && LEGe_e < 12.5 && MSD12_e > 10 && MSD12_e < 1000 && "
-			"(MSD12_e + MSD26_e) > %f && (MSD12_e + MSD26_e) < %f", Ep_min, Ep_max);
+			"(MSD12_e + MSD26_e) > %f && (MSD12_e + MSD26_e) < %f && passCut", Ep_min, Ep_max);
+
 
 		// Counts
 		double Cu_counts_integral = tree->GetEntries(condition_Cu);
