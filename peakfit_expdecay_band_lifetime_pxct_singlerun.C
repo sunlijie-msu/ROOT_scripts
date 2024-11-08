@@ -176,8 +176,7 @@ void peakfit_expdecay_band_lifetime_pxct_singlerun() // get histogram and expone
 			//peakx[ii] = histo[i]->GetBinCenter(histo[i]->GetMaximumBin());
 			//cout << "	MaxX = " << peakx[ii] << "	MaxY = " << peaky[ii] << endl;
 
-			histomin = histo[i]->GetXaxis()->GetXmin();
-			histomax = histo[i]->GetXaxis()->GetXmax();
+			histomax = histo[i]->GetMaximum();
 			histoNbins = histo[i]->GetNbinsX();
 			fitrange_min = bin_start_low + ii * 20; fitrange_max = bin_start_low+680; // modify // 10*T1/2 = 10*68 = 680
 			
