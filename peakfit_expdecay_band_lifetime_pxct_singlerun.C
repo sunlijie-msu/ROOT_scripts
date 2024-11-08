@@ -84,8 +84,8 @@ void peakfit_expdecay_band_lifetime_pxct_singlerun() // get histogram and expone
 	int Which_MSD;
 	if (Which_Dataset == 1)
 	{
-		Which_MSD = 12; // Modify: 12 for MSD12; 26 for MSD26;
-		Ea_central = 5421; // 5421 for MSDtotal, based on LISE++ calculation
+		Which_MSD = 26; // Modify: 12 for MSD12; 26 for MSD26;
+		Ea_central = 5418; // 5421 for MSDtotal, based on LISE++ calculation
 		if (Which_MSD == 12)	bin_start_low = 230; // Don't change
 		if (Which_MSD == 26)	bin_start_low = 210; // Don't change
 		Ea_gate_start = 80; // 3; 3 means +/-3 keV = 6 keV; 20 means +/-20 keV = 40 keV, which is good for MSD26
@@ -107,7 +107,7 @@ void peakfit_expdecay_band_lifetime_pxct_singlerun() // get histogram and expone
 		//if (Which_Dataset == 1) sprintf(filename, "%s%s%04d%s%04d%s", pathname, "timing_msdtotal_e_", msd_e_cut_low, "_", msd_e_cut_high, "_msdtotal_tootoot");
 		//if (Which_Dataset == 2) sprintf(filename, "%s%s%04d%s%04d%s", pathname, "timing_msd26_e_", msd_e_cut_low, "_", msd_e_cut_high, "_msd26_t.root");
 		//if (Which_Dataset == 1) sprintf(filename, "%s%s", pathname, "run0079_LEGe_MSD_241Am_inChamber_window1.5us_CFDdelay_adjusted_cal_5400_5560_forPRC.root");
-		if (Which_Dataset == 1) sprintf(filename, "%s%s", pathname, "run0330_0331_0332_LEGe_MSD_241Am_Z7117_ChamberCenter_window1.5us_TrigRise0.064_0.016_0.016us_TrigGap0.952_1.000_1.000us_Th350_2700_1000_CFDDelay0.304us_Scale7_cal.root");
+		if (Which_Dataset == 1) sprintf(filename, "%s%s", pathname, "run0330_0332_LEGe_MSD_241Am_Z7117_ChamberCenter_window1.5us_TrigRise0.064_0.016_0.016us_TrigGap0.952_1.000_1.000us_Th350_2700_1000_CFDDelay0.304us_Scale7_0000_cal.root");
 		fin = new TFile(filename);//after this statement, you can use any ROOT command1 for this rootfile
 		cout << filename << endl;
 		//sprintf(histo_name, "%s%d%s", "htiming_lege_msd", Which_MSD, "_bin1ns");
@@ -133,13 +133,13 @@ void peakfit_expdecay_band_lifetime_pxct_singlerun() // get histogram and expone
 			// Set margins for pad1
 			pad1->SetTopMargin(0.04);  // relative to pad1 height
 			pad1->SetBottomMargin(0.05); // no bottom margin
-			pad1->SetLeftMargin(0.12);  // relative to pad1 width
+			pad1->SetLeftMargin(0.13);  // relative to pad1 width
 			pad1->SetRightMargin(0.02); // relative to pad1 width
 
 			// Set margins for pad2
-			pad2->SetTopMargin(0.05);    // no top margin
+			pad2->SetTopMargin(0.02);    // no top margin
 			pad2->SetBottomMargin(0.4); // relative to pad2 height
-			pad2->SetLeftMargin(0.12);    // relative to pad2 width
+			pad2->SetLeftMargin(0.13);    // relative to pad2 width
 			pad2->SetRightMargin(0.02);   // relative to pad2 width
 
 			pad1->Draw();
@@ -160,12 +160,12 @@ void peakfit_expdecay_band_lifetime_pxct_singlerun() // get histogram and expone
 			histo[i]->GetXaxis()->SetTitleFont(132);//ÖáÃû×ÖÌå
 			histo[i]->GetYaxis()->SetTitleFont(132);//ÖáÃû×ÖÌå
 			histo[i]->GetXaxis()->SetTitleOffset(1.0);//ÖáÃûÆ«ÒÆ
-			histo[i]->GetYaxis()->SetTitleOffset(0.45);//ÖáÃûÆ«ÒÆ
+			histo[i]->GetYaxis()->SetTitleOffset(0.48);//ÖáÃûÆ«ÒÆ
 			histo[i]->GetXaxis()->SetTitleSize(0.135);
 			histo[i]->GetYaxis()->SetTitleSize(0.135);
 			histo[i]->GetYaxis()->SetNdivisions(505);
 			histo[i]->GetYaxis()->SetTickLength(0.010);
-			//histo[i]->GetYaxis()->SetRangeUser(0.25, 400);
+			histo[i]->GetYaxis()->SetRangeUser(0.7, 1e7);
 			histo[i]->SetLineWidth(1);
 			histo[i]->SetStats(0);
 			histo[i]->Draw("e");
@@ -180,11 +180,9 @@ void peakfit_expdecay_band_lifetime_pxct_singlerun() // get histogram and expone
 			histomax = histo[i]->GetXaxis()->GetXmax();
 			histoNbins = histo[i]->GetNbinsX();
 			fitrange_min = bin_start_low + ii * 20; fitrange_max = bin_start_low+680; // modify // 10*T1/2 = 10*68 = 680
-			//fitrange_min = 0 + ii * 20; fitrange_max = 1420; // Fake test
-
-			// cout << histomin << "	" << histomax << "	" << histoNbins << endl;
+			
 			histo[i]->GetXaxis()->SetRangeUser(fitrange_min, fitrange_max);//zoom the axis
-			//cout<<"************"<<peakx[ii]<<"	"<<peaky[ii]<<endl;
+			histo[i]->GetYaxis()->SetRangeUser(0.7, histomax * 2);//zoom the axis
 
 			minbin = histo[i]->FindBin(fitrange_min);
 			maxbin = histo[i]->FindBin(fitrange_max);
@@ -260,8 +258,8 @@ void peakfit_expdecay_band_lifetime_pxct_singlerun() // get histogram and expone
 			// 			p2[ii]->SetLineColor(4);
 			//b[ii]->SetParameters(par[ii][0], par[ii][1]);//set parameters for drawing bkg
 			//b[ii]->SetLineColor(8);
-			fEMG[ii]->SetLineWidth(3);
-			fEMG[ii]->SetLineColor(kOrange+7);
+			fEMG[ii]->SetLineWidth(2);
+			fEMG[ii]->SetLineColor(kGreen);
 			// The confidence band is not always properly displayed.
 
 			// Uncertainty Band
@@ -273,7 +271,7 @@ void peakfit_expdecay_band_lifetime_pxct_singlerun() // get histogram and expone
 			//h_confidence_interval will contain the CL result that you can draw on top of your fitted graph.
 			//where h_confidence_interval will hold the errors and could superimpose it on the same canvas where you plot central values.
 			h_confidence_interval[i][ii]->SetStats(kFALSE);
-			h_confidence_interval[i][ii]->SetFillColor(kOrange - 9);
+			h_confidence_interval[i][ii]->SetFillColor(kGreen - 7);
 			histo[i]->SetLineColor(kBlack);
 			histo[i]->SetMarkerColor(kBlack);
 			h_confidence_interval[i][ii]->Draw("e3 same"); // plot the uncertainty band
@@ -339,7 +337,7 @@ void peakfit_expdecay_band_lifetime_pxct_singlerun() // get histogram and expone
 			textgaus->AddText(paraprint);
 			sprintf(paraprint, "NDF%d=%.1f", ii, parNDF[ii]);
 			textgaus->AddText(paraprint);
-			sprintf(paraprint, "p-val=%.2f", p_value[ii]);
+			sprintf(paraprint, "p-val=%.3f", p_value[ii]);
 			textgaus->AddText(paraprint);
 			textgaus->Draw();
 
@@ -372,7 +370,7 @@ void peakfit_expdecay_band_lifetime_pxct_singlerun() // get histogram and expone
 			graph_residual[i]->GetXaxis()->SetTitleFont(132);//ÖáÃû×ÖÌå
 			graph_residual[i]->GetYaxis()->SetTitleFont(132);//ÖáÃû×ÖÌå
 			graph_residual[i]->GetXaxis()->SetTitleOffset(1.11);//ÖáÃûÆ«ÒÆ
-			graph_residual[i]->GetYaxis()->SetTitleOffset(0.35);//ÖáÃûÆ«ÒÆ
+			graph_residual[i]->GetYaxis()->SetTitleOffset(0.37);//ÖáÃûÆ«ÒÆ
 			graph_residual[i]->GetXaxis()->SetTitleSize(0.18);
 			graph_residual[i]->GetYaxis()->SetTitleSize(0.18);
 			graph_residual[i]->GetYaxis()->SetNdivisions(105);
@@ -391,11 +389,11 @@ void peakfit_expdecay_band_lifetime_pxct_singlerun() // get histogram and expone
 			pad2->cd();
 			graph_residual[i]->Draw("APZ");//"A": Axis are drawn around the graph, "P": The current marker is plotted at each point, "Z": Do not draw small horizontal and vertical lines the end of the error bars. Without "Z", the default is to draw these.
 			TLine* T1 = new TLine(fitrange_min, 0, fitrange_max, 0);
-			T1->SetLineColor(kOrange+7);
-			T1->SetLineWidth(3);
+			T1->SetLineColor(kGreen);
+			T1->SetLineWidth(2);
 			T1->Draw("R");//"R" means the line is drawn with the current line attributes
 
-			pad1->SetLogy(0); // residuals are wrong if logy is turn on earlier
+			pad1->SetLogy(1); // residuals are wrong if logy is turn on earlier
 			sprintf(filename, "%s%s%s%s", pathname, "png/", hfit_name, ".png");
 			canvaspeak[i][ii]->SaveAs(filename);
 
