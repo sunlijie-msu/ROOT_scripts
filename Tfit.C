@@ -143,7 +143,7 @@ total->SetNpx(2000);
 total->DrawDerivative();
 total->Derivative(3483.789815422,0,0.001);//Returns the first derivative of the function at point x. x,params=0, eps=0.001 should be fine
 total->GetMaximum();//Returns the maximum value of the function.
-total->GetMaximumX();//Returns the X value corresponding to the maximum value of the function.
+total->GetMaximumX();//Returns the X value corresponding to the maximum value of the function. Does not work for a histogram.
 total->GetMinimum();//Returns the minimum value of the function.
 total->GetMinimumX();//Returns the X value corresponding to the minimum value of the function.
 

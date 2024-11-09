@@ -39,7 +39,7 @@
 #include "stdio.h"
 #include "TLegend.h"
 using namespace std;
-void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // get histogram and exponential fit a time histogram
+void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd26_bin1ns from many in Run3_timing_msdtotal_e_5358_5478_msdtotal_t.root files and fit exponential decay. Fit results are output to peakpara.dat -> PXCT.xlsx
 // Upstream code: analysis_chain_pxct_241Am_237Np_timing
 { 
 	double binwidth = 1;
@@ -108,7 +108,7 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // get histogram and expo
 		Ea_central = 5418; // 5418 for MSDtotal, based on LISE++ calculation
 		if (Which_MSD == 12)	bin_start_low = 230; // Don't change
 		if (Which_MSD == 26)	bin_start_low = 210; // Don't change
-		Ea_gate_start = 4; // 3; 3 means +/-3 keV = 6 keV; 20 means +/-20 keV = 40 keV, which is good for MSD26
+		Ea_gate_start = 60; // 3; 3 means +/-3 keV = 6 keV; 20 means +/-20 keV = 40 keV, which is good for MSD26
 		Ea_gate_end = 60; // 30; Keep end - start <= 4, due to Windows OS limitation
 	}
 

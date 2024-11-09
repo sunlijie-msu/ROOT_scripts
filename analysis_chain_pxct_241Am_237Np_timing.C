@@ -33,7 +33,9 @@
 #include "TPaletteAxis.h"
 using namespace std;
 //在包含C++头文件时一般不用后缀。如果用户自己编写头文件，可以用.h为后缀。
-void analysis_chain_pxct_241Am_237Np_timing()// chain pxct 237Np 59-keV lifetime measurement runs, old tree is split_tree and new tree is tree2. tree2 is empty. Generates many timing_msdtotal_e_5361_5481_msdtotal_t.root files, each with 4 htiming_lege_msd26_bin ns histograms corresponding to a different α gate 5361_5481. Afterwards, use peakfit_expdecay_band_lifetime_pxct.C to do fit these htiming spec.
+void analysis_chain_pxct_241Am_237Np_timing()// chain pxct 237Np 59-keV lifetime measurement runs, old tree is split_tree and new tree is tree2. tree2 is empty. generates many Run1_timing_msdtotal_e_5361_5481_msdtotal_t.root files corresponding to α gates, each contains a htiming_lege_msd12 and 1 htiming_lege_msd26 gated by the α energy gate. Bin counts are also output to timing_msdtotal_e_5361_5481_msd26_t_bin1ns.csv files for later emcee fit.
+// Upstream code: /user/pxct/readout/rootfile/run0079_0091_ddas2root.C
+// Downstream code: peakfit_expdecay_band_lifetime_pxct_241Am_237Np.C
 {
 	time_t start, tim;
 	struct tm* at;
