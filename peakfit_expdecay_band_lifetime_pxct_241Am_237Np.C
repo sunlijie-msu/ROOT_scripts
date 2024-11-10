@@ -39,7 +39,7 @@
 #include "stdio.h"
 #include "TLegend.h"
 using namespace std;
-void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd26_bin1ns from many in Run3_timing_msdtotal_e_5358_5478_msdtotal_t.root files and fit exponential decay. Fit results are output to peakpara.dat -> PXCT.xlsx
+void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd26_bin1ns from many Run3_timing_msdtotal_e_5358_5478_msdtotal_t.root files and fit exponential decay. Fit results are output to F:\e21010\pxct\peakpara.dat -> PXCT.xlsx
 // Upstream code: analysis_chain_pxct_241Am_237Np_timing
 { 
 	double binwidth = 1;
@@ -70,6 +70,7 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 	char pathname[500];
 	char filename[500];
 	char txtfilename[500];
+	char msdname[500];
 	sprintf(pathname, "%s", "F:/e21010/pxct/");
 	// 	sprintf(filename, "%s%s", pathname, "lower_bounds.dat");
 	// 	ifstream infilelowerbounds(filename, ios::in);
@@ -84,7 +85,9 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 	int Ea_central = 0, msd_e_cut_low = 0, msd_e_cut_high = 0, Ea_gate_start = 0, Ea_gate_end = 0;
 	int bin_start_low = 0; // placeholder
 	int bin_start_high = 1420; // placeholder
-	int Which_Dataset = 3; // Modify: 1 for MSDtotal; 2 for MSD26;
+	int colors[4] = { kBlack, kRed, kAzure, kGreen };
+	int colorsband[4] = { kGray + 1, kRed - 9, kAzure - 9, kGreen - 9 };
+	int Which_Dataset = 2; // Modify: 1 for MSDtotal; 2 for MSD26;
 	int Which_MSD;
 	if (Which_Dataset == 1)
 	{
@@ -92,15 +95,18 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 		Ea_central = 5418; // 5418 for MSDtotal, based on LISE++ calculation
 		if (Which_MSD == 12)	bin_start_low = 240; // Don't change
 		if (Which_MSD == 26)	bin_start_low = 160; // Don't change
-		Ea_gate_start = 4; // 3; 3 means +/-3 keV = 6 keV; 20 means +/-20 keV = 40 keV, which is good for MSD26
-		Ea_gate_end = 60; // 30; Keep end - start <= 4, due to Windows OS limitation
+		Ea_gate_start = 4; // 3; 3 means +/-3 keV = 6 keV; 20 means +/-20 keV = 40 keV
+		Ea_gate_end = 60; // 30;
+		sprintf(msdname, "%s", "msdtotal");
 	}
 	if (Which_Dataset == 2)
 	{
 		Which_MSD = 26; // 26 for MSD26;
 		Ea_central = 5479; // 5479 for MSD26; 5421 for MSDtotal, based on LISE++ calculation
-		Ea_gate_start = 20; // 3; 3 means +/-3 keV = 6 keV; 20 means +/-20 keV = 40 keV, which is good for MSD26
-		Ea_gate_end = 20; // 30; Keep end - start <= 4, due to Windows OS limitation
+		if (Which_MSD == 26)	bin_start_low = 160; // Don't change
+		Ea_gate_start = 4; // 3; 3 means +/-3 keV = 6 keV; 20 means +/-20 keV = 40 keV
+		Ea_gate_end = 60; // 30;
+		sprintf(msdname, "%s", "msd26");
 	}
 	if (Which_Dataset == 3)
 	{
@@ -108,8 +114,9 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 		Ea_central = 5418; // 5418 for MSDtotal, based on LISE++ calculation
 		if (Which_MSD == 12)	bin_start_low = 230; // Don't change
 		if (Which_MSD == 26)	bin_start_low = 210; // Don't change
-		Ea_gate_start = 60; // 3; 3 means +/-3 keV = 6 keV; 20 means +/-20 keV = 40 keV, which is good for MSD26
-		Ea_gate_end = 60; // 30; Keep end - start <= 4, due to Windows OS limitation
+		Ea_gate_start = 4; // 3; 3 means +/-3 keV = 6 keV; 20 means +/-20 keV = 40 keV
+		Ea_gate_end = 60; // 30;
+		sprintf(msdname, "%s", "msdtotal");
 	}
 
 	for (i = Ea_gate_start; i <= Ea_gate_end; i+=2) // read in many root files with different Ea gates
@@ -117,7 +124,7 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 		//if (i >= 96 && i <= 99) continue;
 		msd_e_cut_low = Ea_central - i;
 		msd_e_cut_high = Ea_central + i;
-		sprintf(filename, "%s%s%d%s%d%s%d%s%d%s", pathname, "237Np_Run", Which_Dataset, "/Run", Which_Dataset, "_timing_msdtotal_e_", msd_e_cut_low, "_", msd_e_cut_high, "_msdtotal_t.root");
+		sprintf(filename, "%s%s%d%s%d%s%s%s%d%s%d%s%s%s", pathname, "237Np_Run", Which_Dataset, "/Run", Which_Dataset, "_timing_", msdname, "_e_", msd_e_cut_low, "_", msd_e_cut_high, "_", msdname, "_t.root");
 
 		//sprintf(filename, "%s%s", pathname, "Fake_decay_2e5.root"); // Fake test
 		fin = new TFile(filename);//after this statement, you can use any ROOT command1 for this rootfile
@@ -227,7 +234,7 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 			// 			p[ii]=new TF1("p","[0]*x+[1]-[0]*x-[1]+sqrt(3.141592654/2)*[2]/[3]*[4]*exp(0.5*([4]*[4]/([3]*[3]))+(x-[5])/[3])*ROOT::Math::erfc(1/sqrt(2)*([4]/[3]+(x-[5])/[4]))",histomin, histomax);//pure peak
 			// 			b[ii]=new TF1("b","[0]*x+[1]",histomin, histomax);//pure bkg
 			fEMG[ii]->SetNpx(histoNbins * 10);
-			fEMG[ii]->SetLineColor(kGreen);
+			fEMG[ii]->SetLineColor(colors[Which_Dataset]);
 			//g[ii]->SetNpx(histoNbins * 10);
 			//p[ii]->SetNpx(histoNbins * 10);
 			// 			p2[ii]->SetNpx(histoNbins);
@@ -236,9 +243,9 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 			int Total_decays_guess = 2000 * i;
 			fEMG[ii]->SetParameters(1e6, 67.8, 1);//initial value
 			//fEMG[ii]->SetParameters(2e6, 68, 2);//initial value Fake test
-			fEMG[ii]->SetParLimits(0, 1e5, 10e6);//N
+			fEMG[ii]->SetParLimits(0, 1e4, 10e6);//N
 			fEMG[ii]->SetParLimits(1, 40, 140);//T
-			fEMG[ii]->SetParLimits(2, 0, 15);//B
+			fEMG[ii]->SetParLimits(2, 0, 10);//B
 			// 			fEMG[ii]->SetParLimits(3, 80, 120);//Tau
 			// 			fEMG[ii]->SetParLimits(4, 10, 120);//Sigma
 			// 			fEMG[ii]->SetParLimits(5, peakx[ii] - gaplow / 4, peakx[ii] + gaphigh / 2);//Mean
@@ -281,7 +288,7 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 			//h_confidence_interval will contain the CL result that you can draw on top of your fitted graph.
 			//where h_confidence_interval will hold the errors and could superimpose it on the same canvas where you plot central values.
 			h_confidence_interval[i][ii]->SetStats(kFALSE);
-			h_confidence_interval[i][ii]->SetFillColor(kGreen - 9);
+			h_confidence_interval[i][ii]->SetFillColor(colorsband[Which_Dataset]);
 			histo[i]->SetLineColor(kBlack);
 			histo[i]->SetMarkerColor(kBlack);
 			h_confidence_interval[i][ii]->Draw("e3 same"); // plot the uncertainty band
@@ -399,12 +406,12 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 			pad2->cd();
 			graph_residual[i]->Draw("APZ");//"A": Axis are drawn around the graph, "P": The current marker is plotted at each point, "Z": Do not draw small horizontal and vertical lines the end of the error bars. Without "Z", the default is to draw these.
 			TLine* T1 = new TLine(fitrange_min, 0, fitrange_max, 0);
-			T1->SetLineColor(kGreen);
+			T1->SetLineColor(colors[Which_Dataset]);
 			T1->SetLineWidth(2);
 			T1->Draw("R");//"R" means the line is drawn with the current line attributes
 
 			pad1->SetLogy(1); // residuals are wrong if logy is turn on earlier
-			sprintf(filename, "%s%s%d%s%s%s", pathname, "237Np_png/Run", Which_Dataset, "_", hfit_name, ".png");
+			sprintf(filename, "%s%s%d%s%s%s", pathname, "237Np_Output_png/Run", Which_Dataset, "_", hfit_name, ".png");
 			canvaspeak[i][ii]->SaveAs(filename);
 
 		}//for(ii=0;ii<peaknum;ii++)
