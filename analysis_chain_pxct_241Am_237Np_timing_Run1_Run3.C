@@ -33,7 +33,7 @@
 #include "TPaletteAxis.h"
 using namespace std;
 //在包含C++头文件时一般不用后缀。如果用户自己编写头文件，可以用.h为后缀。
-void analysis_chain_pxct_241Am_237Np_timing_Run1_Run3()// chain pxct 237Np 59-keV lifetime measurement runs, old tree is split_tree and new tree is tree2. tree2 is empty. generates many Run1_timing_msdtotal_e_5361_5481_msdtotal_t.root files corresponding to α gates, each contains a htiming_lege_msd12 and 1 htiming_lege_msd26 gated by the α energy gate. Bin counts are also output to timing_msdtotal_e_5361_5481_msd26_t_bin1ns.csv files for later emcee fit.
+void analysis_chain_pxct_241Am_237Np_timing_Run1_Run3()// chain pxct 237Np 59-keV lifetime measurement runs, old tree is tree and new tree is tree2. tree2 is empty. generates many Run1_timing_msdtotal_e_5361_5481_msdtotal_t.root files corresponding to α gates, each contains a htiming_lege_msd12 and 1 htiming_lege_msd26 gated by the α energy gate. Bin counts are also output to timing_msdtotal_e_5361_5481_msd26_t_bin1ns.csv files for later emcee fit.
 // Upstream code: /user/pxct/readout/rootfile/run0079_0091_ddas2root.C
 // Downstream code: peakfit_expdecay_band_lifetime_pxct_241Am_237Np.C
 {
@@ -125,7 +125,7 @@ void analysis_chain_pxct_241Am_237Np_timing_Run1_Run3()// chain pxct 237Np 59-ke
 	int Ea_central = 0, msd_e_cut_low = 0, msd_e_cut_high = 0, Ea_gate_start = 0, Ea_gate_end = 0;
 	
 	Ea_central = 5418;
-	Ea_gate_start = 11;
+	Ea_gate_start = 60;
 	Ea_gate_end = 60; // 58 Ea gate choices for MSD12+MSD26 runs
 
 	//Ea_central = 5479;
@@ -136,6 +136,8 @@ void analysis_chain_pxct_241Am_237Np_timing_Run1_Run3()// chain pxct 237Np 59-ke
 	{
 		msd_e_cut_low = Ea_central - ianaroot;
 		msd_e_cut_high = Ea_central + ianaroot;
+		msd_e_cut_low = 5290;
+		msd_e_cut_high = 5500;
 		cout << "msd_e_cut_low = " << msd_e_cut_low << "	msd_e_cut_high = " << msd_e_cut_high << endl;
 		sprintf(anarootname, "%s%s%d%s%d%s%d%s", pathname, "Run", Which_Dataset, "_timing_msdtotal_e_", msd_e_cut_low, "_", msd_e_cut_high, "_msdtotal_t.root");//output root modify
 

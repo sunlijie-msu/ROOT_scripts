@@ -641,7 +641,14 @@ canvaspeak->SetBottomMargin(0.13);
 hTauOmegaGamma->GetXaxis()->SetTitle("#it{#tau} (fs)");//斜体 Italic
 hTauOmegaGamma->SetContour(100);
 hlege_e->GetXaxis()->SetTitle("Energy (keV)");//轴名
-hlege_e->GetYaxis()->SetTitle("Counts per 7 eV");//轴名
+//hlege_e->GetYaxis()->SetTitle("Counts per 7 eV");//轴名
+
+double binwidth;
+binwidth = hlege_e->GetBinWidth(1);
+char tempname[300];
+sprintf(tempname, "%s%.0f%s", "Counts per ", binwidth * 1000, " eV");
+hlege_e->GetYaxis()->SetTitle(tempname); // flexible bin width
+
 hlege_e->GetXaxis()->CenterTitle();//居中
 hlege_e->GetYaxis()->CenterTitle();//居中
 hlege_e->GetXaxis()->SetLabelFont(132);//坐标字体

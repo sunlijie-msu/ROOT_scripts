@@ -191,7 +191,7 @@ void peakfit_gausnerfcpol1_band_doublepeak_pxct() // get histogram and EMG fit t
 			histo[i]->SetTitle("");//图名
 			histo[i]->GetXaxis()->SetTitle("Energy (keV)");//轴名
 			sprintf(tempname, "%s%.0f%s", "Counts per ", binwidth * 1000, " eV");
-			histo[i]->GetYaxis()->SetTitle(tempname);
+			histo[i]->GetYaxis()->SetTitle(tempname); // flexible bin width
 			histo[i]->GetXaxis()->CenterTitle();//居中
 			histo[i]->GetYaxis()->CenterTitle();//居中
 			histo[i]->GetXaxis()->SetLabelFont(132);//坐标字体

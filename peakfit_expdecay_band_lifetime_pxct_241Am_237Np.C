@@ -41,7 +41,7 @@
 using namespace std;
 void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd26_bin1ns from many Run3_timing_msdtotal_e_5358_5478_msdtotal_t.root files and fit exponential decay. Fit results are output to F:\e21010\pxct\peakpara.dat -> PXCT.xlsx
 // Upstream code: analysis_chain_pxct_241Am_237Np_timing
-{ 
+{
 	double binwidth = 1;
 	double fitrange_min = 0, fitrange_max = 0;
 	double histomin = 0, histomax = 0, histoNbins = 0;
@@ -87,16 +87,16 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 	int bin_start_high = 1420; // placeholder
 	int colors[4] = { kBlack, kRed, kAzure, kGreen };
 	int colorsband[4] = { kGray + 1, kRed - 9, kAzure - 9, kGreen - 9 };
-	int Which_Dataset = 2; // Modify: 1 for MSDtotal; 2 for MSD26;
+	int Which_Dataset = 3; // Modify: 1 for MSDtotal; 2 for MSD26;
 	int Which_MSD;
 	if (Which_Dataset == 1)
 	{
-		Which_MSD = 26; // Modify: 12 for MSD12; 26 for MSD26;
+		Which_MSD = 12; // Modify: 12 for MSD12; 26 for MSD26;
 		Ea_central = 5418; // 5418 for MSDtotal, based on LISE++ calculation
 		if (Which_MSD == 12)	bin_start_low = 240; // Don't change
 		if (Which_MSD == 26)	bin_start_low = 160; // Don't change
-		Ea_gate_start = 4; // 3; 3 means +/-3 keV = 6 keV; 20 means +/-20 keV = 40 keV
-		Ea_gate_end = 60; // 30;
+		Ea_gate_start = 60; // Modify: Default 4; 4 means +/-4 keV = 8 keV wide; 20 means +/-20 keV = 40 keV wide
+		Ea_gate_end = 60; // Modify: Default 60;
 		sprintf(msdname, "%s", "msdtotal");
 	}
 	if (Which_Dataset == 2)
@@ -104,22 +104,22 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 		Which_MSD = 26; // 26 for MSD26;
 		Ea_central = 5479; // 5479 for MSD26; 5421 for MSDtotal, based on LISE++ calculation
 		if (Which_MSD == 26)	bin_start_low = 160; // Don't change
-		Ea_gate_start = 4; // 3; 3 means +/-3 keV = 6 keV; 20 means +/-20 keV = 40 keV
-		Ea_gate_end = 60; // 30;
+		Ea_gate_start = 20; // Modify: Default 4; 4 means +/-4 keV = 8 keV wide; 20 means +/-20 keV = 40 keV wide
+		Ea_gate_end = 20; // Modify: Default 60;
 		sprintf(msdname, "%s", "msd26");
 	}
 	if (Which_Dataset == 3)
 	{
-		Which_MSD = 12; // Modify: 12 for MSD12; 26 for MSD26;
+		Which_MSD = 26; // Modify: 12 for MSD12; 26 for MSD26;
 		Ea_central = 5418; // 5418 for MSDtotal, based on LISE++ calculation
 		if (Which_MSD == 12)	bin_start_low = 230; // Don't change
 		if (Which_MSD == 26)	bin_start_low = 210; // Don't change
-		Ea_gate_start = 4; // 3; 3 means +/-3 keV = 6 keV; 20 means +/-20 keV = 40 keV
-		Ea_gate_end = 60; // 30;
+		Ea_gate_start = 60; // Modify: Default 4; 4 means +/-4 keV = 8 keV wide; 20 means +/-20 keV = 40 keV wide
+		Ea_gate_end = 60; // Modify: Default 60;
 		sprintf(msdname, "%s", "msdtotal");
 	}
 
-	for (i = Ea_gate_start; i <= Ea_gate_end; i+=2) // read in many root files with different Ea gates
+	for (i = Ea_gate_start; i <= Ea_gate_end; i += 2) // read in many root files with different Ea gates. If Ea_gate_start = Ea_gate_end, only one Ea gate is read in for a single fit.
 	{
 		//if (i >= 96 && i <= 99) continue;
 		msd_e_cut_low = Ea_central - i;
@@ -135,7 +135,7 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 		histo[i]->Rebin(1);
 		histo[i]->Sumw2(kFALSE);
 		histo[i]->SetBinErrorOption(TH1::kPoisson);
-		for (ii = 0; ii <= 0; ii++) // modify: ii <=39, fit one histogram with many different fit start points = ii * 20 + bin_start_low
+		for (ii = 0; ii <= 0; ii++) // Not necessary modify: ii <=39, fit one histogram with many different fit start points = ii * 20 + bin_start_low
 		{
 			sprintf(hfit_name, "%s%s%d%s%d%s%d", histo_name, "_Ea", msd_e_cut_low, "_", msd_e_cut_high, "_Fitrange", ii);
 			canvaspeak[i][ii] = new TCanvas(hfit_name, hfit_name, 1300, 700);//½¨Á¢»­²¼
@@ -150,12 +150,12 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 
 			// Set margins for pad1
 			pad1->SetTopMargin(0.04);  // relative to pad1 height
-			pad1->SetBottomMargin(0.05); // no bottom margin
+			pad1->SetBottomMargin(0.05); // relative to pad1 height
 			pad1->SetLeftMargin(0.13);  // relative to pad1 width
 			pad1->SetRightMargin(0.02); // relative to pad1 width
 
 			// Set margins for pad2
-			pad2->SetTopMargin(0.04);    // no top margin
+			pad2->SetTopMargin(0.04);    // relative to pad2 height
 			pad2->SetBottomMargin(0.4); // relative to pad2 height
 			pad2->SetLeftMargin(0.13);    // relative to pad2 width
 			pad2->SetRightMargin(0.02);   // relative to pad2 width
@@ -174,10 +174,10 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 			histo[i]->GetYaxis()->SetLabelFont(132);//×ø±ê×ÖÌå
 			histo[i]->GetXaxis()->SetLabelSize(0.135);
 			histo[i]->GetYaxis()->SetLabelSize(0.135);
-			histo[i]->GetXaxis()->SetLabelOffset(1.0);//ÖáÃûÆ«ÒÆ
+			histo[i]->GetXaxis()->SetLabelOffset(0.07);//×ø±êÆ«ÒÆ
+			histo[i]->GetXaxis()->SetTitleOffset(1.0);//ÖáÃûÆ«ÒÆ
 			histo[i]->GetXaxis()->SetTitleFont(132);//ÖáÃû×ÖÌå
 			histo[i]->GetYaxis()->SetTitleFont(132);//ÖáÃû×ÖÌå
-			histo[i]->GetXaxis()->SetTitleOffset(1.0);//ÖáÃûÆ«ÒÆ
 			histo[i]->GetYaxis()->SetTitleOffset(0.48);//ÖáÃûÆ«ÒÆ
 			histo[i]->GetXaxis()->SetTitleSize(0.135);
 			histo[i]->GetYaxis()->SetTitleSize(0.135);
@@ -196,10 +196,10 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 
 			histomax = histo[i]->GetMaximum();
 			histoNbins = histo[i]->GetNbinsX();
-			fitrange_min = bin_start_low + ii * 20; fitrange_max = bin_start_low + 680; // modify // 10*T1/2 = 10*68 = 680
+			fitrange_min = bin_start_low + ii * 20; fitrange_max = bin_start_low + 680; // Not necessary modify // 10*T1/2 = 10*68 = 680
 
 			histo[i]->GetXaxis()->SetRangeUser(fitrange_min, fitrange_max);//zoom the axis
-			histo[i]->GetYaxis()->SetRangeUser(0.7, 7e3);//zoom the axis
+			histo[i]->GetYaxis()->SetRangeUser(0.7, histomax*1.3);//zoom the axis
 
 			minbin = histo[i]->FindBin(fitrange_min);
 			maxbin = histo[i]->FindBin(fitrange_max);
@@ -243,7 +243,7 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 			int Total_decays_guess = 2000 * i;
 			fEMG[ii]->SetParameters(1e6, 67.8, 1);//initial value
 			//fEMG[ii]->SetParameters(2e6, 68, 2);//initial value Fake test
-			fEMG[ii]->SetParLimits(0, 1e4, 10e6);//N
+			fEMG[ii]->SetParLimits(0, 1e5, 10e6);//N
 			fEMG[ii]->SetParLimits(1, 40, 140);//T
 			fEMG[ii]->SetParLimits(2, 0, 10);//B
 			// 			fEMG[ii]->SetParLimits(3, 80, 120);//Tau
@@ -276,7 +276,7 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 			// 			p2[ii]->SetLineColor(4);
 			//b[ii]->SetParameters(par[ii][0], par[ii][1]);//set parameters for drawing bkg
 			//b[ii]->SetLineColor(8);
-			fEMG[ii]->SetLineWidth(1);
+			fEMG[ii]->SetLineWidth(2);
 			// The confidence band is not always properly displayed.
 
 			// Uncertainty Band
@@ -318,9 +318,12 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 			//FWHM[ii] = par[ii][4] / par[ii][5] * 2.355 * Eg;
 			//FWHM_err[ii] = 2.355 * Eg * sqrt(Usigma_Usigma / (par[ii][5] * par[ii][5]) + Umean_Umean * (-par[ii][4] / par[ii][5] / par[ii][5]) * (-par[ii][4] / par[ii][5] / par[ii][5]) + 2 * rou_Usigma_Umean / par[ii][5] * (-par[ii][4] / par[ii][5] / par[ii][5]));
 
-// 			inflation_factor = sqrt(parChi[ii] / parNDF[ii]);
-// 			if (inflation_factor < 1)
-// 			inflation_factor = 1;
+ 			inflation_factor = sqrt(parChi[ii] / parNDF[ii]);
+ 			if (inflation_factor < 1)
+ 			inflation_factor = 1;
+			par_err[ii][0] = par_err[ii][0] * inflation_factor;
+			par_err[ii][1] = par_err[ii][1] * inflation_factor;
+			par_err[ii][2] = par_err[ii][2] * inflation_factor;
 // 			constant[ii] = par[ii][2]; constant_err[ii] = par_err[ii][2] * inflation_factor;
 // 			tau[ii] = par[ii][3]; tau_err[ii] = par_err[ii][3] * inflation_factor;
 // 			sig[ii] = par[ii][4]; sig_err[ii] = par_err[ii][4] * inflation_factor;
@@ -356,7 +359,7 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 			textgaus->AddText(paraprint);
 			sprintf(paraprint, "p-val=%.3f", p_value[ii]);
 			textgaus->AddText(paraprint);
-			textgaus->Draw();
+			//textgaus->Draw();
 
 			// for residuals plot
 			double x_values[fit_Nbins], y_values[fit_Nbins], y_fit_values[fit_Nbins], y_residuals[fit_Nbins], x_errors[fit_Nbins], y_errors[fit_Nbins];
@@ -411,7 +414,8 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 			T1->Draw("R");//"R" means the line is drawn with the current line attributes
 
 			pad1->SetLogy(1); // residuals are wrong if logy is turn on earlier
-			sprintf(filename, "%s%s%d%s%s%s", pathname, "237Np_Output_png/Run", Which_Dataset, "_", hfit_name, ".png");
+			//sprintf(filename, "%s%s%d%s%s%s", pathname, "237Np_Output_png/Run", Which_Dataset, "_", hfit_name, ".png");
+			sprintf(filename, "%s%s%d%s%s%s", pathname, "237Np_Output_png/Run", Which_Dataset, "_", hfit_name, ".eps");
 			canvaspeak[i][ii]->SaveAs(filename);
 
 		}//for(ii=0;ii<peaknum;ii++)

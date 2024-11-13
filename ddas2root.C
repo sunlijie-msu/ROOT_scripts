@@ -5,7 +5,7 @@
  *
  * Created : May , 2017.   Author: Moshe Friedman.  Contact: Friedmam@nscl.msu.edu
  * Update: May 5 , 2018.   Author: David Perez Loureiro.  Contact: dperezlo@utk.edu
- * Last update: Jan 15, 2024. Author: Lijie Sun. Contact: sunli@frib.msu.edu
+ * Last update: Nov 7, 2024. Author: Lijie Sun. Contact: sunli@frib.msu.edu
  *
  * This program will convert DDAS ROOT files from the original form to a more simple form independent of the DDAS software package.
  * Currently, only energies for (up to) 16 channels are saved in coincidence, and histograms are produced.
@@ -271,7 +271,15 @@ void ddas2root()
 	if (runnumber == 328)	sprintf(filename, "%s", "run0328_LEGe_MSD_241Am_Z7117_ChamberCenter_window1us_TrigRise0.064_0.016_0.016us_TrigGap0.952_1.000_1.000us_Th350_2700_1000_CFDDelay0.104us_Scale7");
 	if (runnumber == 329)	sprintf(filename, "%s", "run0329_LEGe_MSD_241Am_Z7117_ChamberCenter_window1us_TrigRise0.064_0.016_0.016us_TrigGap0.952_1.000_1.000us_Th350_2700_1000_CFDDelay0.504us_Scale7");
 	if (runnumber == 330)	sprintf(filename, "%s", "run0330_LEGe_MSD_241Am_Z7117_ChamberCenter_window1.5us_TrigRise0.064_0.016_0.016us_TrigGap0.952_1.000_1.000us_Th350_2700_1000_CFDDelay0.304us_Scale7");
-
+	if (runnumber == 331)	sprintf(filename, "%s", "run0331_LEGe_MSD_241Am_Z7117_ChamberCenter_window1.5us_TrigRise0.064_0.016_0.016us_TrigGap0.952_1.000_1.000us_Th350_2700_1000_CFDDelay0.304us_Scale7");
+	if (runnumber == 332)	sprintf(filename, "%s", "run0332_LEGe_MSD_241Am_Z7117_ChamberCenter_window1.5us_TrigRise0.064_0.016_0.016us_TrigGap0.952_1.000_1.000us_Th350_2700_1000_CFDDelay0.304us_Scale7");
+	if (runnumber == 333)	sprintf(filename, "%s", "run0333_LEGe_241Am_Z7117_ChamberCenter_window1.5us_TrigRise0.064us_TrigGap0.952us_Th350_CFDDelay0.304us_Scale7");
+	if (runnumber == 334)	sprintf(filename, "%s", "run0334_LEGe_241Am_Z7117_ChamberCenter_window1.5us_TrigRise0.064us_TrigGap0.952us_Th350_CFDDelay0.304us_Scale7_for_X_efficiency");
+	if (runnumber == 335)	sprintf(filename, "%s", "run0335_LEGe_MSD_137Cs_M4038_facingMSD_inChamber_vacuum_window1us");
+	if (runnumber == 336)	sprintf(filename, "%s", "run0336_LEGe_MSD_137Cs_M4038_facingMSD_inChamber_vacuum_window1us_TriseTgap_adjusted");
+	if (runnumber == 337)	sprintf(filename, "%s", "run0337_LEGe_MSD26_137Cs_M4038_facingMSD26_inChamber_vacuum_window1us");
+	if (runnumber == 338)	sprintf(filename, "%s", "run0338_LEGe_MSD26_137Cs_M4038_facingMSD26_inChamber_vacuum_window1us");
+	
 	if (runnumber == 304)	sprintf(filename, "%s", "run0304_Pulser_Ch0_100kHz_10nsWindow");
 	if (runnumber == 305)	sprintf(filename, "%s", "run0305_Pulser_Ch0_100kHz_1000nsWindow");
 	if (runnumber == 306)	sprintf(filename, "%s", "run0306_Pulser_Ch0_100kHz_10000nsWindow");
@@ -340,8 +348,8 @@ void ddas2root()
 	TTree* tree = new TTree("tree", "tree");
 
 	// If you have closed these channels in CSRA, please comment out the corresponding tree->branch lines. No other changes are needed.
-	tree->Branch("lege_e", &lege_e, "lege_e/D");
-	tree->Branch("lege_t", &lege_t, "lege_t/D");
+	//tree->Branch("lege_e", &lege_e, "lege_e/D");
+	//tree->Branch("lege_t", &lege_t, "lege_t/D");
 	//tree->Branch("lege_tled", &lege_tled, "lege_tled/D");
 	//tree->Branch("north_e", &north_e, "north_e/D");
 	//tree->Branch("north_t", &north_t, "north_t/D");
@@ -349,11 +357,11 @@ void ddas2root()
 	//tree->Branch("south_e", &south_e, "south_e/D");
 	//tree->Branch("south_t", &south_t, "south_t/D");
 	//tree->Branch("south_tled", &south_tled, "south_tled/D");
-  	tree->Branch("msd12_e", &msd12_e, "msd12_e/D");
-  	tree->Branch("msd12_t", &msd12_t, "msd12_t/D");
+  	//tree->Branch("msd12_e", &msd12_e, "msd12_e/D");
+  	//tree->Branch("msd12_t", &msd12_t, "msd12_t/D");
 	//tree->Branch("msd12_tled", &msd12_tled, "msd12_tled/D"); // likely useless
-  	tree->Branch("msd26_e", &msd26_e, "msd26_e/D");
-  	tree->Branch("msd26_t", &msd26_t, "msd26_t/D");
+  	//tree->Branch("msd26_e", &msd26_e, "msd26_e/D");
+  	//tree->Branch("msd26_t", &msd26_t, "msd26_t/D");
 	//tree->Branch("msd26_tled", &msd26_tled, "msd26_tled/D"); // likely useless
 
 // 	tree->Branch("lege_e_low", &lege_e_low, "lege_e_low/D");
@@ -388,8 +396,8 @@ void ddas2root()
 	// 	if (runnumber == 152)	hlege_e = new TH1D("hlege_e", "hlege_e", 60000, -0.0001420032512, 436.2768890605690); // 60000 channels, 7.3 eV per channel
 	//	if (runnumber == 241)	hlege_e = new TH1D("hlege_e", "hlege_e", 60000, 0.0541091878755, 435.4667414524260); // 60000 channels, 7.3 eV per channel
 	//hlege_e = new TH1D("hlege_e", "hlege_e", 60000, 0.0541091878755, 435.4667414524260); // 60000 channels, 7.3 eV per channel
-	hlege_e = new TH1D("hlege_e", "hlege_e", 60000, -0.0540888491631, 435.8137733893930); // 60000 channels, 7.3 eV per channel run0060
-	//hlege_e = new TH1D("hlege_e", "hlege_e", 60000, 0.7583911439124, 1679.872782287820); // 60000 channels, 28 eV per channel run0216 60Co
+	//hlege_e = new TH1D("hlege_e", "hlege_e", 60000, -0.0540888491631, 435.8137733893930); // 60000 channels, 7.3 eV per channel run0060
+	hlege_e = new TH1D("hlege_e", "hlege_e", 60000, 0.7583911439124, 1679.872782287820); // 60000 channels, 28 eV per channel run0216 60Co
 	// hnorth_e = new TH1D("hnorth_e", "hnorth_e", 60000, -0.1774488889544, 2286.04224413527); // 60000 channels, 38 eV per channel from Excel calibration
 	hnorth_e = new TH1D("hnorth_e", "hnorth_e", 60000, -0.1943988436200, 2285.29642151811); // 60000 channels, 38 eV per channel from Excel calibration 1/11/2024 run97-98
 	//hnorth_e = new TH1D("hnorth_e", "hnorth_e", 60000, -1.1199018269051, 8815.85740025835); // 60000 channels, 147 eV per channel from Excel calibration run0216 60Co 2/25/2024
@@ -397,7 +405,8 @@ void ddas2root()
 	hsouth_e = new TH1D("hsouth_e", "hsouth_e", 60000, -0.1195774566938, 2274.16156253889); // 60000 channels, 38 eV per channel from Excel calibration 1/11/2024 run97-98
 	//hsouth_e = new TH1D("hsouth_e", "hsouth_e", 60000, -0.6039596145015, 8770.24505369435); // 60000 channels, 146 eV per channel from Excel calibration run0216 60Co 2/25/2024
 	hmsd12_e = new TH1D("hmsd12_e", "hmsd12_e", 60000, 0, 7941.93363844394); // 60000 channels, 512 eV per channel
-	hmsd26_e = new TH1D("hmsd26_e", "hmsd26_e", 60000, -0.0016133749182, 6931.63915798418); // 60000 channels, 115 eV per channel from Excel calibration 1/18/2024 run 100
+	//hmsd26_e = new TH1D("hmsd26_e", "hmsd26_e", 60000, -0.0016133749182, 6931.63915798418); // 60000 channels, 115 eV per channel from Excel calibration 1/18/2024 run 100
+	hmsd26_e = new TH1D("hmsd26_e", "hmsd26_e", 60000, 0, 7874.6844); // 60000 channels, 130 eV per channel run 200
 	hmsdtotal_e = new TH1D("hmsdtotal_e", "hmsdtotal_e", 6900, 0, 6900); // 6900 channels, 1000 eV per channel
 	hmsd12_e1keVbin = new TH1D("hmsd12_e1keVbin", "hmsd12_e1keVbin", 7942, 0, 7942); // 7942 channels, 1 keV per channel
 	hmsd26_e1keVbin = new TH1D("hmsd26_e1keVbin", "hmsd26_e1keVbin", 6935, 0, 6935); // 6935 channels, 1 keV per channel
@@ -448,8 +457,8 @@ void ddas2root()
 			{
 				//lege_e = pChan[j]->GetEnergy();
 				//lege_e = pChan[j]->GetEnergy() * 0.0072712838511 - 0.0001420032512;
-				lege_e = pChan[j]->GetEnergy() * 0.0072644643706 - 0.054088849163; // based on run0060 Gain 4.0
-				//lege_e = pChan[j]->GetEnergy() * 0.0279852398524 - 0.758391143912; // based on run0216 Gain 1.0
+				//lege_e = pChan[j]->GetEnergy() * 0.0072644643706 - 0.054088849163; // based on run0060 Gain 4.0
+				lege_e = pChan[j]->GetEnergy() * 0.0279852398524 - 0.758391143912; // based on run0216 Gain 1.0
 				hlege_e->Fill(lege_e);
 				lege_t = pChan[j]->GetTime() + timestampshift;
 				//lege_tled = pChan[j]->GetCoarseTime() + timestampshift;
@@ -460,47 +469,48 @@ void ddas2root()
  			//	//hnorth_e_low->Fill(north_e_low);
  			//	north_t_low = pChan[j]->GetTime() + timestampshift;
  			//}
-// 			if (pChan[j]->GetChannelID() == 3)
-// 			{
-// 				//north_e = pChan[j]->GetEnergy();
-// 				//north_e = pChan[j]->GetEnergy() * 0.0381036615504 - 0.1774488889544; // based on run0060
-// 				north_e = pChan[j]->GetEnergy() * 0.0380915136727 - 0.1943988436200; // based on run0098
-// 				//north_e = pChan[j]->GetEnergy() * 0.1469496217014 - 1.1199018269051; // based on run0216
-// 				hnorth_e->Fill(north_e);
-// 				north_t = pChan[j]->GetTime() + timestampshift;
-// 				//north_tled = pChan[j]->GetCoarseTime() + timestampshift;
-// 			}
+			if (pChan[j]->GetChannelID() == 3)
+			{
+				//north_e = pChan[j]->GetEnergy();
+				//north_e = pChan[j]->GetEnergy() * 0.0381036615504 - 0.1774488889544; // based on run0060
+				north_e = pChan[j]->GetEnergy() * 0.0380915136727 - 0.1943988436200; // based on run0098
+				//north_e = pChan[j]->GetEnergy() * 0.1469496217014 - 1.1199018269051; // based on run0216
+				hnorth_e->Fill(north_e);
+				north_t = pChan[j]->GetTime() + timestampshift;
+				//north_tled = pChan[j]->GetCoarseTime() + timestampshift;
+			}
  			//if (pChan[j]->GetChannelID() == 4)
  			//{
  			//	south_e_low = pChan[j]->GetEnergy();
  			//	//hsouth_e_low->Fill(south_e_low);
  			//	south_t_low = pChan[j]->GetTime() + timestampshift;
  			//}
-// 			if (pChan[j]->GetChannelID() == 5)
-// 			{
-// 				//south_e = pChan[j]->GetEnergy();
-// 				//south_e = pChan[j]->GetEnergy() * 0.0379731589489 - 0.1622624327090; // based on run0060
-// 				south_e = pChan[j]->GetEnergy() * 0.0379046856666 - 0.1195774566938; // based on run0098
-// 				//south_e = pChan[j]->GetEnergy() * 0.1461808168885 - 0.6039596145015; // based on run0216
-// 				hsouth_e->Fill(south_e);
-// 				south_t = pChan[j]->GetTime() + timestampshift;
-// 				//south_tled = pChan[j]->GetCoarseTime() + timestampshift;
-// 			}
-			if (pChan[j]->GetChannelID() == 6)
+			if (pChan[j]->GetChannelID() == 5)
 			{
-				//msd12_e = pChan[j]->GetEnergy();
-				msd12_e = pChan[j]->GetEnergy() * 0.1323655606407 + 0;
-				hmsd12_e->Fill(msd12_e);
-				//hmsd12_e1keVbin->Fill(msd12_e + gRandom->Uniform(-0.5, 0.5));
-				msd12_t = pChan[j]->GetTime() + timestampshift;
-				//msd12_tled = pChan[j]->GetCoarseTime() + timestampshift;
+				//south_e = pChan[j]->GetEnergy();
+				//south_e = pChan[j]->GetEnergy() * 0.0379731589489 - 0.1622624327090; // based on run0060
+				south_e = pChan[j]->GetEnergy() * 0.0379046856666 - 0.1195774566938; // based on run0098
+				//south_e = pChan[j]->GetEnergy() * 0.1461808168885 - 0.6039596145015; // based on run0216
+				hsouth_e->Fill(south_e);
+				south_t = pChan[j]->GetTime() + timestampshift;
+				//south_tled = pChan[j]->GetCoarseTime() + timestampshift;
 			}
+ 			if (pChan[j]->GetChannelID() == 6)
+ 			{
+ 				//msd12_e = pChan[j]->GetEnergy();
+ 				msd12_e = pChan[j]->GetEnergy() * 0.1323655606407 + 0;
+ 				hmsd12_e->Fill(msd12_e);
+ 				//hmsd12_e1keVbin->Fill(msd12_e + gRandom->Uniform(-0.5, 0.5));
+ 				msd12_t = pChan[j]->GetTime() + timestampshift;
+ 				//msd12_tled = pChan[j]->GetCoarseTime() + timestampshift;
+ 			}
 			if (pChan[j]->GetChannelID() == 8)
 			{
 				//msd26_e = pChan[j]->GetEnergy();
 				//msd26_e = pChan[j]->GetEnergy() * 0.1152143446474 + 22.352486402900; // based on 148Gd and 241Am two peaks
-				msd26_e = pChan[j]->GetEnergy() * 0.1155273461893 - 0.001613374918; // based on 241Am two peaks Run 100
-				hmsd26_e->Fill(msd26_e);
+				//msd26_e = pChan[j]->GetEnergy() * 0.1155273461893 - 0.001613374918; // based on 241Am two peaks Run 100
+				msd26_e = pChan[j]->GetEnergy() * 0.13124474; // based on 137Cs internal conversion electronic Run 335
+				hmsd26_e->Fill(msd26_e+gRandom->Uniform(-0.26,0.26));
 				//hmsd26_e1keVbin->Fill(msd26_e + gRandom->Uniform(-0.5, 0.5));
 				msd26_t = pChan[j]->GetTime() + timestampshift;
 				//msd26_tled = pChan[j]->GetCoarseTime() + timestampshift;
@@ -514,12 +524,12 @@ void ddas2root()
 				hmsdtotal_e->Fill(msdtotal_e);
 			}
 
-			//if (runnumber >= 92 && lege_e > 59 && lege_e < 60.1 && msd26_e > 5470 && msd26_e < 5510)
+			//if lege_e > 59.0 && lege_e < 60.1 && msd26_e > 5470 && msd26_e < 5510)
 			//{
 			//	htiming_lege_msd26->Fill(lege_t - msd26_t);
 			//}
 
-			if (lege_e > 58.5 && lege_e < 60.5 && msd12_e>1700 && msd12_e < 2200 && msd26_e>3300 && msd26_e < 3800 && msd12_e + msd26_e > 5400 && msd12_e + msd26_e < 5560)
+			if (lege_e > 59.0 && lege_e < 60.1 && msd12_e>1700 && msd12_e < 2200 && msd26_e>3300 && msd26_e < 3800 && msd12_e + msd26_e > 5400 && msd12_e + msd26_e < 5560)
 			{
 				htiming_lege_msd12->Fill(lege_t - msd12_t);
 				htiming_lege_msd26->Fill(lege_t - msd26_t);
@@ -549,6 +559,12 @@ void ddas2root()
 			speed = (float)i / (float)difftime(tim, start);
 			printf(" %s%ld%s%.1f%s%.0f%s%.0f%s\n", "entry: ", i, " ",100 * (float)i / (float)totalentries, "% done. Speed is ", speed, " e/s. Still need ", float(totalentries - i) / speed, " s.");
 		}
+		//break at
+// 		if (msd26_t >= 21205617870819.0-2e9)
+// 		{
+// 			cout << "break at: " << i << "	" << msd26_t << endl;
+// 			break;
+// 		}
 	} // for (int i = 0; i < totalentries; i++)
 	cout << "Last entry: " << i << endl;
 	fout->Write();
