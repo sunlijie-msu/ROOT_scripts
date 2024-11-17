@@ -55,13 +55,13 @@ void analysis_chain_pxct_241Am_237Np_timing_Run1_Run3()// chain pxct 237Np 59-ke
 	char pathname[500];
 	char filename[500];
 	char txtfilename[500];
-	int runstart, runstop;
+	int runstart = 0, runstop = 0;
 	//	Tstring rootname;
-	cout << "input runstart: Type 0:  ";
-	cin >> runstart;
-	cout << "input runstop: Type 191 for run0092-0095, 0100-0105; Type 0 for run0079-0091 or run0330-0332:  ";
-	cin >> runstop;
-	int Which_Dataset = 1; // Modify: 1 for MSDtotal; 2 for MSD26; 3 for MSDtotal data in May 2024
+// 	cout << "input runstart: Type 0:  ";
+// 	cin >> runstart;
+// 	cout << "input runstop: Type 191 for run0092-0095, 0100-0105; Type 0 for run0079-0091 or run0330-0332:  ";
+// 	cin >> runstop;
+	int Which_Dataset = 3; // Modify: 1 for MSDtotal; 2 for MSD26; 3 for MSDtotal data in May 2024
 	if (Which_Dataset == 1) sprintf(filename, "%s", "run0079_0091_LEGe_MSD_241Am_inChamber_window1.5us_CFDdelay_adjusted"); // input root
 	if (Which_Dataset == 3) sprintf(filename, "%s", "run0330_0332_LEGe_MSD_241Am_Z7117_ChamberCenter_window1.5us_TrigRise0.064_0.016_0.016us_TrigGap0.952_1.000_1.000us_Th350_2700_1000_CFDDelay0.304us_Scale7"); // input root
 	//sprintf(filename, "%s", "run0092_0095_0100_0105_LEGe_MSD26_241Am_inChamber_2mmCollimator_window1.5us_CFDdelay_adjusted"); // input root
@@ -136,8 +136,8 @@ void analysis_chain_pxct_241Am_237Np_timing_Run1_Run3()// chain pxct 237Np 59-ke
 	{
 		msd_e_cut_low = Ea_central - ianaroot;
 		msd_e_cut_high = Ea_central + ianaroot;
-		msd_e_cut_low = 5290;
-		msd_e_cut_high = 5500;
+		msd_e_cut_low = 5390; // for single peak fit
+		msd_e_cut_high = 5520; // for single peak fit
 		cout << "msd_e_cut_low = " << msd_e_cut_low << "	msd_e_cut_high = " << msd_e_cut_high << endl;
 		sprintf(anarootname, "%s%s%d%s%d%s%d%s", pathname, "Run", Which_Dataset, "_timing_msdtotal_e_", msd_e_cut_low, "_", msd_e_cut_high, "_msdtotal_t.root");//output root modify
 

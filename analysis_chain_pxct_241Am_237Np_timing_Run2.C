@@ -133,13 +133,15 @@ void analysis_chain_pxct_241Am_237Np_timing_Run2()
 // 	Ea_gate_end = 60; // Ea gate choices for MSD12+MSD26 runs
 
 	Ea_central = 5479;
-	Ea_gate_start = 4;
+	Ea_gate_start = 60;
 	Ea_gate_end = 60; // Ea gate choices for MSD26 only runs
 	
 	for (int ianaroot = Ea_gate_start; ianaroot <= Ea_gate_end; ianaroot+=1)
 	{
 		msd_e_cut_low = Ea_central - ianaroot;
 		msd_e_cut_high = Ea_central + ianaroot;
+		msd_e_cut_low = 5460; // for single peak fit
+		msd_e_cut_high = 5500; // for single peak fit
 		cout << "msd_e_cut_low = " << msd_e_cut_low << "	msd_e_cut_high = " << msd_e_cut_high << endl;
 		sprintf(anarootname, "%s%s%d%s%d%s%d%s", pathname, "Run", Which_Dataset, "_timing_msd26_e_", msd_e_cut_low, "_", msd_e_cut_high, "_msd26_t.root");//output root modify
 

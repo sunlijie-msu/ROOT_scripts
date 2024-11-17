@@ -39,7 +39,7 @@
 #include "stdio.h"
 #include "TLegend.h"
 using namespace std;
-void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd26_bin1ns from many Run3_timing_msdtotal_e_5358_5478_msdtotal_t.root files and fit exponential decay. Fit results are output to F:\e21010\pxct\peakpara.dat -> PXCT.xlsx
+void peakfit_cascadedecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd26_bin1ns from many Run3_timing_msdtotal_e_5358_5478_msdtotal_t.root files and fit exponential decay. Fit results are output to F:\e21010\pxct\peakpara.dat -> PXCT.xlsx
 // Upstream code: analysis_chain_pxct_241Am_237Np_timing
 {
 	double binwidth = 1;
@@ -117,6 +117,8 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 		if (Which_MSD == 26)	bin_start_low = 210; // Don't change
 		Ea_gate_start = 60; // Modify: Default 4; 4 means +/-4 keV = 8 keV wide; 20 means +/-20 keV = 40 keV wide
 		Ea_gate_end = 60; // Modify: Default 60;
+		msd_e_cut_low = 5290; // for single peak fit
+		msd_e_cut_high = 5520; // for single peak fit
 		sprintf(msdname, "%s", "msdtotal");
 	}
 
@@ -124,10 +126,10 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 	for (i = 0; i <= 0; i ++)
 	{
 		//if (i >= 96 && i <= 99) continue;
-		msd_e_cut_low = Ea_central - i;
-		msd_e_cut_high = Ea_central + i;
-		msd_e_cut_low = 5390; // for single peak fit
-		msd_e_cut_high = 5520; // for single peak fit
+// 		msd_e_cut_low = Ea_central - i;
+// 		msd_e_cut_high = Ea_central + i;
+// 		msd_e_cut_low = 5290; // for single peak fit
+// 		msd_e_cut_high = 5520; // for single peak fit
 		sprintf(filename, "%s%s%d%s%d%s%s%s%d%s%d%s%s%s", pathname, "237Np_Run", Which_Dataset, "/Run", Which_Dataset, "_timing_", msdname, "_e_", msd_e_cut_low, "_", msd_e_cut_high, "_", msdname, "_t.root");
 
 		//sprintf(filename, "%s%s", pathname, "Fake_decay_2e5.root"); // Fake test
@@ -224,7 +226,11 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 			//double bguess = lowcounts - fitrange_min * aguess;
 			//cout << "initial guesses= " << aguess << ",	" << bguess << ",	" << sigmaguess << ",	" << peakx[ii] << ",	" << peaky[ii] << endl;
 			//
-			fEMG[ii] = new TF1("fEMG", "[0]*log(2)/[1]*exp(-x*log(2)/[1])+[2]", histomin, histomax); // Exponential decay (N, T, B)
+			//fEMG[ii] = new TF1("fEMG", "[0]*log(2)/[1]*exp(-x*log(2)/[1])+[2]", histomin, histomax); // Exponential decay (N, T, B)
+			// Create the TF1 object with both decay components: direct ¦Á->59.5 and cascade ¦Á->43.4->59.5
+			fEMG[ii] = new TF1("fEMG", "[0]*log(2)/[1]*exp(-x*log(2)/[1])+[2] + ([4]*[0]*(log(2)/[3])*(log(2)/[1])/((log(2)/[1] - log(2)/[3]))*(exp(-x*(log(2)/[3])) - exp(-x*(log(2)/[1]))))", histomin, histomax);
+			// Exponential decay with a cascade indirect feeding component ([0]-N59, [1]-T59, [2]-B, [3]-T103, [4]-k)
+
 			//fEMG[ii] = new TF1("fEMG", "[0]*0.693147/[1]*exp(x/(-[1]/0.693147))+[2]", histomin, histomax); // exponential decay (N, T, B)
 			//fEMG[ii] = new TF1("fEMG", "[0]*exp(x/(-[1]/0.693147))+[2]", histomin, histomax); // exponential decay (A, T, B)
 			// 			fEMG[ii] = new TF1("fEMG", "[0]*x+[1]+[2]/2/[3]*exp(0.5*([4]*[4]/([3]*[3]))+(x-[5])/[3])*ROOT::Math::erfc(1/sqrt(2)*([4]/[3]+(x-[5])/[4]))", histomin, histomax);// Sun PRC2021 low-energy tail
@@ -246,16 +252,13 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 			//b[ii]->SetNpx(histoNbins * 10);
 			//fEMG[ii]->SetParameters(0.1,15,peaky[ii],10,10,peakx[ii]);//initial value [0]-A, [1]-B, [2]-N, [3]-¦Ó, [4]-¦Ò, [5]-¦Ì
 			int Total_decays_guess = 2000 * i;
-			fEMG[ii]->SetParameters(2e6, 67.8, 1);//initial value
-			//fEMG[ii]->SetParameters(2e6, 68, 2);//initial value Fake test
-			fEMG[ii]->SetParLimits(0, 1e6, 10e6);//N
-			fEMG[ii]->SetParLimits(1, 40, 140);//T
+			fEMG[ii]->SetParameters(2e6, 67.8, 1, 0.08, 0.1542); // initial value [0]-N59, [1]-T59, [2]-B, [3]-T103, [4]-k
+			fEMG[ii]->SetParLimits(0, 0.5e6, 10e6);//N59
+			fEMG[ii]->SetParLimits(1, 40, 140);//T59
 			fEMG[ii]->SetParLimits(2, 0, 10);//B
-			// 			fEMG[ii]->SetParLimits(3, 80, 120);//Tau
-			// 			fEMG[ii]->SetParLimits(4, 10, 120);//Sigma
-			// 			fEMG[ii]->SetParLimits(5, peakx[ii] - gaplow / 4, peakx[ii] + gaphigh / 2);//Mean
-			// 			fEMG[ii]->SetParLimits(5, -100, 200);//Mean
-			fEMG[ii]->SetParNames("Total_decays", "Half_life", "Background");
+			fEMG[ii]->SetParLimits(3, 0.04, 0.12);//T103
+			fEMG[ii]->SetParLimits(4, 0.15, 0.16);//k
+			fEMG[ii]->SetParNames("Total_direct_decays", "Half_life_59", "Background", "Half_life_103", "Ratio_indirect");
 			//fEMG[ii]->SetParNames("BkgA", "BkgB", "Const*bin", "Tau", "Sigma", "Mean");
 			histo[i]->Fit("fEMG", "MLE", "", fitrange_min, fitrange_max);
 			//histo[i]->Fit("fEMG", "MLEN", "", fitrange_min, fitrange_max);
@@ -270,6 +273,8 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 			par_err[ii][0] = fEMG[ii]->GetParError(0);//Obtaining the error of the 1st parameter
 			par_err[ii][1] = fEMG[ii]->GetParError(1);//Obtaining the error of the 2nd parameter
 			par_err[ii][2] = fEMG[ii]->GetParError(2);//Obtaining the error of the 3rd parameter
+			par_err[ii][3] = fEMG[ii]->GetParError(3);//Obtaining the error of the 4th parameter
+			par_err[ii][4] = fEMG[ii]->GetParError(4);//Obtaining the error of the 5th parameter
 			parChi[ii] = fEMG[ii]->GetChisquare();
 			parNDF[ii] = fEMG[ii]->GetNDF();
 			p_value[ii] = fEMG[ii]->GetProb();//This probability is not the ¡°probability that your fit is good.¡± If you did many fake experiments (draw many random samples of data points from the assumed distribution (your fit function)), this is the percentage of experiments that would give ¦Ö2 values ¡Ý to the one you got in this experiment.
@@ -309,11 +314,11 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 			TMatrixD cor = Fit_result_pointer->GetCorrelationMatrix();//parameter correlation coefficients
 			cov.Print();
 			cor.Print();
-			double Utau_Utau = fitter->GetCovarianceMatrixElement(3, 3);//(Utau)^2
-			double Usigma_Usigma = fitter->GetCovarianceMatrixElement(4, 4);//(Usigma)^2
-			double Umean_Umean = fitter->GetCovarianceMatrixElement(5, 5);//(Umean)^2
-			double rou_Utau_Umean = fitter->GetCovarianceMatrixElement(3, 5);//(¦Ñ*Utau*Umean), (3,5) (5,3) doesn't matter.
-			double rou_Usigma_Umean = fitter->GetCovarianceMatrixElement(4, 5);//
+// 			double Utau_Utau = fitter->GetCovarianceMatrixElement(3, 3);//(Utau)^2
+// 			double Usigma_Usigma = fitter->GetCovarianceMatrixElement(4, 4);//(Usigma)^2
+// 			double Umean_Umean = fitter->GetCovarianceMatrixElement(5, 5);//(Umean)^2
+// 			double rou_Utau_Umean = fitter->GetCovarianceMatrixElement(3, 5);//(¦Ñ*Utau*Umean), (3,5) (5,3) doesn't matter.
+// 			double rou_Usigma_Umean = fitter->GetCovarianceMatrixElement(4, 5);//
 			// cout << rou_Usigma_Umean << endl;
 
 // 			peaky[ii] = fEMG[ii]->GetMaximum(fitrange_min, fitrange_max);
@@ -329,6 +334,8 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 			par_err[ii][0] = par_err[ii][0] * inflation_factor;
 			par_err[ii][1] = par_err[ii][1] * inflation_factor;
 			par_err[ii][2] = par_err[ii][2] * inflation_factor;
+			par_err[ii][3] = par_err[ii][3] * inflation_factor;
+			par_err[ii][4] = par_err[ii][4] * inflation_factor;
 // 			constant[ii] = par[ii][2]; constant_err[ii] = par_err[ii][2] * inflation_factor;
 // 			tau[ii] = par[ii][3]; tau_err[ii] = par_err[ii][3] * inflation_factor;
 // 			sig[ii] = par[ii][4]; sig_err[ii] = par_err[ii][4] * inflation_factor;
@@ -344,7 +351,7 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 // 
 // 			outfile << histo_name << i << "	Constant*binsize" << ii << "=	" << constant[ii] << "	+/-	" << constant_err[ii] << "	Mean" << ii << "=	" << mean[ii] << "	+/-	" << mean_err[ii] << "	Maximum" << ii << "=	" << peakx[ii] << "	+/-	" << peakxerr[ii] << "	Sigma" << ii << "=	" << sig[ii] << "	+/-	" << sig_err[ii] << "	Tau" << ii << "=	" << tau[ii] << "	+/-	" << tau_err[ii] << "	A" << ii << "=	" << par[ii][0] << "	+/-	" << par_err[ii][0] << "	B" << ii << "=	" << par[ii][1] << "	+/-	" << par_err[ii][1] << "	Chi2" << ii << "=	" << parChi[ii] << "	NDF" << ii << "=	" << parNDF[ii] << "	Area" << ii << "=	" << par[ii][2] / binwidth << "	FWHM" << ii << "=	" << FWHM[ii] << "	+/-	" << FWHM_err[ii] << endl;
 
-			outfile << std::scientific << std::setprecision(10) << "msd_e_cut_low	" << msd_e_cut_low << "	msd_e_cut_high	" << msd_e_cut_high << "	fitrange_min	" << fitrange_min << "	fitrange_max	" << fitrange_max << "	" << hfit_name << "	Total_decays_" << ii << "=	" << par[ii][0] << "	+/-	" << par_err[ii][0] << "	Half-life_" << ii << "=	" << par[ii][1] << "	+/-	" << par_err[ii][1] << "	Background_" << ii << "=	" << par[ii][2] << "	+/-	" << par_err[ii][2] << "	Chi2_" << ii << "=	" << parChi[ii] << "	NDF_" << ii << "=	" << parNDF[ii] << "	p-val_" << ii << "=	" << p_value[ii] << endl;
+			outfile << std::scientific << std::setprecision(10) << "msd_e_cut_low	" << msd_e_cut_low << "	msd_e_cut_high	" << msd_e_cut_high << "	fitrange_min	" << fitrange_min << "	fitrange_max	" << fitrange_max << "	" << hfit_name << "	Total_direct_decays_" << ii << "=	" << par[ii][0] << "	+/-	" << par_err[ii][0] << "	Half-life_59" << ii << "=	" << par[ii][1] << "	+/-	" << par_err[ii][1] << "	Background_" << ii << "=	" << par[ii][2] << "	+/-	" << par_err[ii][2] << "	Chi2_" << ii << "=	" << parChi[ii] << "	NDF_" << ii << "=	" << parNDF[ii] << "	p-val_" << ii << "=	" << p_value[ii] << "	Half-life_103" << ii << "=	" << par[ii][3] << "	+/-	" << par_err[ii][3] << "	Ratio_indirect_" << ii << "=	" << par[ii][4] << "	+/-	" << par_err[ii][4] << endl;
 
 			TPaveText* textgaus = new TPaveText(0.77, 0.60, 0.975, 0.944, "brNDC");//¼Ó±ê×¢left, down, right, up
 			textgaus->SetBorderSize(1);//±ß¿ò¿í¶È
@@ -357,6 +364,10 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 			sprintf(paraprint, "Half-life%d=%.3f%s%.3f", ii, par[ii][1], "+/-", par_err[ii][1]);
 			textgaus->AddText(paraprint);
 			sprintf(paraprint, "Background%d=%.3f%s%.3f", ii, par[ii][2], "+/-", par_err[ii][2]);
+			textgaus->AddText(paraprint);
+			sprintf(paraprint, "Half-life103%d=%.3f%s%.3f", ii, par[ii][3], "+/-", par_err[ii][3]);
+			textgaus->AddText(paraprint);
+			sprintf(paraprint, "Indirect_feeding%d=%.4f%s%.4f", ii, par[ii][4], "+/-", par_err[ii][4]);
 			textgaus->AddText(paraprint);
 			sprintf(paraprint, "Chisquare%d=%.1f", ii, parChi[ii]);
 			textgaus->AddText(paraprint);
