@@ -87,7 +87,7 @@ void peakfit_cascadedecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_
 	int bin_start_high = 1420; // placeholder
 	int colors[4] = { kBlack, kRed, kAzure, kGreen };
 	int colorsband[4] = { kGray + 1, kRed - 9, kAzure - 9, kGreen - 9 };
-	int Which_Dataset = 3; // Modify: 1 for MSDtotal; 2 for MSD26;
+	int Which_Dataset = 2; // Modify: 1 for MSDtotal; 2 for MSD26;
 	int Which_MSD;
 
 	if (Which_Dataset == 1)
@@ -98,6 +98,8 @@ void peakfit_cascadedecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_
 		if (Which_MSD == 26)	bin_start_low = 160; // Don't change
 		Ea_gate_start = 60; // Modify: Default 4; 4 means +/-4 keV = 8 keV wide; 20 means +/-20 keV = 40 keV wide
 		Ea_gate_end = 60; // Modify: Default 60;
+		msd_e_cut_low = 5290; // Modify: for single peak fit
+		msd_e_cut_high = 5520; // Modify: for single peak fit
 		sprintf(msdname, "%s", "msdtotal");
 	}
 	if (Which_Dataset == 2)
@@ -107,18 +109,20 @@ void peakfit_cascadedecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_
 		if (Which_MSD == 26)	bin_start_low = 160; // Don't change
 		Ea_gate_start = 20; // Modify: Default 4; 4 means +/-4 keV = 8 keV wide; 20 means +/-20 keV = 40 keV wide
 		Ea_gate_end = 20; // Modify: Default 60;
+		msd_e_cut_low = 5415; // Modify: for single peak fit
+		msd_e_cut_high = 5500; // Modify: for single peak fit
 		sprintf(msdname, "%s", "msd26");
 	}
 	if (Which_Dataset == 3)
 	{
-		Which_MSD = 26; // Modify: 12 for MSD12; 26 for MSD26;
+		Which_MSD = 12; // Modify: 12 for MSD12; 26 for MSD26;
 		Ea_central = 5418; // 5418 for MSDtotal, based on LISE++ calculation
 		if (Which_MSD == 12)	bin_start_low = 230; // Don't change
 		if (Which_MSD == 26)	bin_start_low = 210; // Don't change
 		Ea_gate_start = 60; // Modify: Default 4; 4 means +/-4 keV = 8 keV wide; 20 means +/-20 keV = 40 keV wide
 		Ea_gate_end = 60; // Modify: Default 60;
-		msd_e_cut_low = 5290; // for single peak fit
-		msd_e_cut_high = 5520; // for single peak fit
+		msd_e_cut_low = 5290; // Modify: for single peak fit
+		msd_e_cut_high = 5520; // Modify: for single peak fit
 		sprintf(msdname, "%s", "msdtotal");
 	}
 
@@ -255,8 +259,8 @@ void peakfit_cascadedecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_
 			fEMG[ii]->SetParameters(2e6, 67.8, 1, 0.08, 0.1542); // initial value [0]-N59, [1]-T59, [2]-B, [3]-T103, [4]-k
 			fEMG[ii]->SetParLimits(0, 0.5e6, 10e6);//N59
 			fEMG[ii]->SetParLimits(1, 40, 140);//T59
-			fEMG[ii]->SetParLimits(2, 0, 10);//B
-			fEMG[ii]->SetParLimits(3, 0.04, 0.12);//T103
+			fEMG[ii]->SetParLimits(2, 0, 12);//B
+			fEMG[ii]->SetParLimits(3, 0.000, 0.200);//T103
 			fEMG[ii]->SetParLimits(4, 0.15, 0.16);//k
 			fEMG[ii]->SetParNames("Total_direct_decays", "Half_life_59", "Background", "Half_life_103", "Ratio_indirect");
 			//fEMG[ii]->SetParNames("BkgA", "BkgB", "Const*bin", "Tau", "Sigma", "Mean");
@@ -351,9 +355,10 @@ void peakfit_cascadedecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_
 // 
 // 			outfile << histo_name << i << "	Constant*binsize" << ii << "=	" << constant[ii] << "	+/-	" << constant_err[ii] << "	Mean" << ii << "=	" << mean[ii] << "	+/-	" << mean_err[ii] << "	Maximum" << ii << "=	" << peakx[ii] << "	+/-	" << peakxerr[ii] << "	Sigma" << ii << "=	" << sig[ii] << "	+/-	" << sig_err[ii] << "	Tau" << ii << "=	" << tau[ii] << "	+/-	" << tau_err[ii] << "	A" << ii << "=	" << par[ii][0] << "	+/-	" << par_err[ii][0] << "	B" << ii << "=	" << par[ii][1] << "	+/-	" << par_err[ii][1] << "	Chi2" << ii << "=	" << parChi[ii] << "	NDF" << ii << "=	" << parNDF[ii] << "	Area" << ii << "=	" << par[ii][2] / binwidth << "	FWHM" << ii << "=	" << FWHM[ii] << "	+/-	" << FWHM_err[ii] << endl;
 
-			outfile << std::scientific << std::setprecision(10) << "msd_e_cut_low	" << msd_e_cut_low << "	msd_e_cut_high	" << msd_e_cut_high << "	fitrange_min	" << fitrange_min << "	fitrange_max	" << fitrange_max << "	" << hfit_name << "	Total_direct_decays_" << ii << "=	" << par[ii][0] << "	+/-	" << par_err[ii][0] << "	Half-life_59" << ii << "=	" << par[ii][1] << "	+/-	" << par_err[ii][1] << "	Background_" << ii << "=	" << par[ii][2] << "	+/-	" << par_err[ii][2] << "	Chi2_" << ii << "=	" << parChi[ii] << "	NDF_" << ii << "=	" << parNDF[ii] << "	p-val_" << ii << "=	" << p_value[ii] << "	Half-life_103" << ii << "=	" << par[ii][3] << "	+/-	" << par_err[ii][3] << "	Ratio_indirect_" << ii << "=	" << par[ii][4] << "	+/-	" << par_err[ii][4] << endl;
+			outfile << std::scientific << std::setprecision(10) << "msd_e_cut_low	" << msd_e_cut_low << "	msd_e_cut_high	" << msd_e_cut_high << "	fitrange_min	" << fitrange_min << "	fitrange_max	" << fitrange_max << "	" << hfit_name << "	Total_direct_decays_" << ii << "=	" << par[ii][0] << "	+/-	" << par_err[ii][0] << "	Half-life_59" << ii << "=	" << par[ii][1] << "	+/-	" << par_err[ii][1] << "	Background_" << ii << "=	" << par[ii][2] << "	+/-	" << par_err[ii][2] << "	Chi2_" << ii << "=	" << parChi[ii] << "	NDF_" << ii << "=	" << parNDF[ii] << "	p-val_" << ii << "=	" << p_value[ii] << "	Half-life_103" << ii << "=	" << par[ii][3] << "	+/-	" << par_err[ii][3] << "	Indirect_feeding" << ii << "=	" << par[ii][4] << "	+/-	" << par_err[ii][4] << endl;
 
-			TPaveText* textgaus = new TPaveText(0.77, 0.60, 0.975, 0.944, "brNDC");//加标注left, down, right, up
+			TPaveText* textgaus = new TPaveText(0.75, 0.50, 0.975, 0.944, "brNDC");
+			//加标注left, down, right, up
 			textgaus->SetBorderSize(1);//边框宽度
 			textgaus->SetFillColor(0);//填充颜色
 			textgaus->SetTextAlign(12);//align = 10*HorizontalAlign + VerticalAlign, 12 means水平左对齐、垂直居中对齐
