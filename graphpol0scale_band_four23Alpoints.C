@@ -1,6 +1,6 @@
 #include <iostream>
 #include <fstream>
-#include <iomanip.h>
+#include <iomanip>
 #include <math.h>
 #include <time.h>
 #include <map>
@@ -39,7 +39,7 @@
 #include "stdio.h"
 #include "TLegend.h"
 using namespace std;
-void graphpol0scale_band_four23Alpoints()// graph-pol0 fit scale the SeGA efficiency curve (with colored bands) to match the 23Al data points
+void graphpol0scale_band_four23Alpoints()// graph-pol0 fit scale the SeGA efficiency curve (with colored bands) to match the 23Al data points. Itay's PRC paper
 {
 	time_t tim;
 	struct tm *at;
@@ -97,7 +97,7 @@ void graphpol0scale_band_four23Alpoints()// graph-pol0 fit scale the SeGA effici
 
 	double peakmin;
 	double chtemp;
-	double par[nummax][7],parerr[nummax][7]; //for input
+	double par[nummax][8],parerr[nummax][8]; //for input
 
 	//source at 23Al
 	par[0][6]=0.00037519;	parerr[0][6]=0.00000074;
@@ -165,50 +165,60 @@ void graphpol0scale_band_four23Alpoints()// graph-pol0 fit scale the SeGA effici
 // 		if(i==0)peaknum=nummax-4;
 
 
-		//************ sigma fit by linear func *****************************************
+		// ************ sigma fit by linear func *****************************************
 
 		//sprintf(hcali_name,"%s%d","Efficiency of SeGA",i);
 		sprintf(hcali_name,"%s","Efficiency of SeGA");
-		canvascali[i]=new TCanvas(hcali_name,hcali_name,1000,700);//建立画布
+		canvascali[i]=new TCanvas(hcali_name,hcali_name, 1300, 700);//建立画布
 		canvascali[i]->cd();//进入画布
-		TPad *pad1 = new TPad("pad1", "The pad 70% of the height",0.0,0.3,1.0,1.0);// Double_t xlow, Double_t ylow, Double_t xup, Double_t yup,
-		TPad *pad2 = new TPad("pad2", "The pad 30% of the height",0.0,0.0,1.0,0.3);
-		pad1->SetTopMargin(0.04);
-		pad1->SetRightMargin(0.03);
-		pad1->SetLeftMargin(0.08);
-		pad1->SetBottomMargin(0.10);
-		//pad1->SetBorderMode(0);
+		TPad *pad1 = new TPad("pad1", "The pad 70% of the height", 0.0, 0.42, 1.0, 1.0);
+		// xlow, ylow, xup, yup
+		TPad *pad2 = new TPad("pad2", "The pad 30% of the height", 0.0, 0.0, 1.0, 0.42);
 
-		pad2->SetTopMargin(0.01);
-		pad2->SetRightMargin(0.03);
-		pad2->SetLeftMargin(0.08);
-		pad2->SetBottomMargin(0.23);
-		//pad2->SetBorderMode(0);
+		// Set margins for pad1
+		pad1->SetTopMargin(0.05);  // relative to pad1 height
+		pad1->SetBottomMargin(0.05); // relative to pad1 height
+		pad1->SetLeftMargin(0.13);  // relative to pad1 width
+		pad1->SetRightMargin(0.02); // relative to pad1 width
+
+		// Set margins for pad2
+		pad2->SetTopMargin(0.04);    // relative to pad2 height
+		pad2->SetBottomMargin(0.4); // relative to pad2 height
+		pad2->SetLeftMargin(0.13);    // relative to pad2 width
+		pad2->SetRightMargin(0.02);   // relative to pad2 width
 
 		pad1->Draw();
-		pad2->Draw();
 		pad1->cd();
+		pad1->SetFrameLineWidth(3);
 		gStyle->SetOptTitle(0);
 		//canvascali[i]->SetGrid();//显示网格
 		//		graph1[i]=new TGraph(peaknum,energy,eff);//TGraph *gr1=new TGraph(n,x,y);
 		graph1[i]= new TGraphErrors(peaknum,energy[i],eff[i],energyerr[i],efferr[i]);//画error bars TGraph(n,x,y,ex,ey);
 		graph1[i]->SetTitle(hcali_name);
 		graph1[i]->GetXaxis()->SetTitle("E_{#gamma} (keV)");//轴名
-		graph1[i]->GetYaxis()->SetTitle("Relative Efficiency  (arbitrary units)");//轴名
+		graph1[i]->GetYaxis()->SetTitle("Relative Efficiency");//轴名
 		graph1[i]->GetXaxis()->CenterTitle();//居中
 		graph1[i]->GetYaxis()->CenterTitle();//居中
 		graph1[i]->GetXaxis()->SetLabelFont(132);//坐标字体
 		graph1[i]->GetYaxis()->SetLabelFont(132);//坐标字体
+		graph1[i]->GetXaxis()->SetLabelSize(0.135);
+		graph1[i]->GetYaxis()->SetLabelSize(0.135);
+		graph1[i]->GetXaxis()->SetLabelOffset(0.07);//坐标偏移
+		graph1[i]->GetXaxis()->SetTitleOffset(1.0);//轴名偏移
 		graph1[i]->GetXaxis()->SetTitleFont(132);//轴名字体
 		graph1[i]->GetYaxis()->SetTitleFont(132);//轴名字体
-		//graph1[i]->GetYaxis()->SetLabelSize(0.05);//坐标字号
-		//graph1[i]->GetYaxis()->SetTitleSize(0.05);//轴名字号
-		graph1[i]->GetXaxis()->SetTitleOffset(1.2);//轴名偏移
-		graph1[i]->GetYaxis()->SetTitleOffset(1.0);//轴名偏移
+		graph1[i]->GetYaxis()->SetTitleOffset(0.48);//轴名偏移
+		graph1[i]->GetXaxis()->SetTitleSize(0.135);
+		graph1[i]->GetYaxis()->SetTitleSize(0.135);
+		graph1[i]->GetYaxis()->SetNdivisions(505);
+		graph1[i]->GetYaxis()->SetTickLength(0.010);
 		graph1[i]->GetXaxis()->SetRangeUser(120,8500);
-		//graph1[i]->GetYaxis()->SetRangeUser(0.00,0.03);
+		graph1[i]->GetYaxis()->SetRangeUser(0.00,0.06);
+		graph1[i]->SetLineWidth(2);
 		graph1[i]->SetMarkerStyle(21);
 		graph1[i]->SetMarkerColor(1);
+		//graph1[i]->SetMarkerSize(0.8);
+
 		TF1 *fepol0 = new TF1("fepol0","(exp([0]+[1]*log(x)+[2]*pow(log(x),2)+[3]*pow(log(x),3)+[4]*pow(log(x),4)+[5]*pow(log(x),5)+[6]*pow(log(x),6)))*[7]",10,10000);
 		fepol0->SetParNames("p7","p1","p2","p3","p4","p5","p6","C");//y=exp(p7+p1*lnx+p2*(lnx)^2+...
 		fepol0->SetParameters(par[i]);
@@ -220,18 +230,19 @@ void graphpol0scale_band_four23Alpoints()// graph-pol0 fit scale the SeGA effici
 		fepol0->SetParLimits(4,par[i][4],par[i][4]);
 		fepol0->SetParLimits(5,par[i][5],par[i][5]);
 		fepol0->SetParLimits(6,par[i][6],par[i][6]);
+		fepol0->SetLineWidth(0);
 		//graph1[i]->Fit("fepol0");//fepol0 can be used directly without TF1 constructor in CINT
 
-		TFitResultPtr r_sig = graph1[i]->Fit("fepol0","MS");//"S" means the result of the fit is returned in the TFitResultPtr
+		TFitResultPtr r_sig = graph1[i]->Fit("fepol0","MES");//"S" means the result of the fit is returned in the TFitResultPtr
 		//If the option "S" is instead used, TFitResultPtr contains the TFitResult and behaves as a smart pointer to it.
 		//The fit parameters, error and chi2 (but not covariance matrix) can be retrieved also from the fitted function.
-		TH1D *hint_sig = new TH1D("hint_sig", "Fitted exponential with conf.band", 9000, 0, 9000);//Create a histogram to hold the confidence intervals
+		TH1D *hint_sig = new TH1D("hint_sig", "Fitted exponential with conf.band", 10000, 0, 10000);//Create a histogram to hold the confidence intervals
 		(TVirtualFitter::GetFitter())->GetConfidenceIntervals(hint_sig, 0.683);//By default the intervals are corrected using the chi2/ndf value of the fit if a chi2 fit is performed
 		//hint_sig will contain the CL result that you can draw on top of your fitted graph.
 		//where hint_sig will hold the errors and could superimpose it on the same canvas where you plot central values.
 		//The method TVirtualFitter::GetFitter())->GetConfidenceIntervals(hint_sig, 0.95) computes the confidence level of your model (fitting) function after having it fitted to an histogram.
 		hint_sig->SetStats(kFALSE);
-		hint_sig->SetFillColor(kRed-9);
+		hint_sig->SetFillColor(kRed-7);
 		//TMatrixDSym cov = r_sig->GetCovarianceMatrix();//useless for now
 		TMatrixD cov = r_sig->GetCorrelationMatrix();
 		TMatrixD cor = r_sig->GetCovarianceMatrix();
@@ -240,13 +251,14 @@ void graphpol0scale_band_four23Alpoints()// graph-pol0 fit scale the SeGA effici
 		r_sig->GetConfidenceIntervals(Npoint, 1, 1, energy_point, err_point, 0.683, true);//(Number of x points, 1, 1, x, err, confidence level, false); norm is a flag to control if the intervals need to be normalized to the chi2/ndf value. modify
 		for(ii=0;ii<Npoint;ii++)
 		{
-			residual[i][ii]=(fepol0->Eval(energy_point[ii])-eff[i][ii])/fepol0->Eval(energy_point[ii]);
-			residualerr[i][ii]=efferr[i][ii]/fepol0->Eval(energy_point[ii]);
+			residual[i][ii]=eff[i][ii]-fepol0->Eval(energy_point[ii]);
+			residualerr[i][ii]=efferr[i][ii];
 			outfile<<"Eg=	"<<energy_point[ii]<<"	eff=	"<<fepol0->Eval(energy_point[ii])<<"	relative residual=	"<<residual[i][ii]<<endl;
 		}
 		graph1[i]->Draw("AP");//"A": Axis are drawn around the graph, "P": The current marker is plotted at each point
 		hint_sig->Draw("e3 same");
 		graph1[i]->Draw("P same");//draw the points again above error band
+		pad1->RedrawAxis();
 
 		p7[i]=fepol0->GetParameter(7);
 		
@@ -255,6 +267,7 @@ void graphpol0scale_band_four23Alpoints()// graph-pol0 fit scale the SeGA effici
 		parchi[i]=fepol0->GetChisquare();
 		parNDF[i]=fepol0->GetNDF();
 		p_value[i]=fepol0->GetProb();//This probability is not the “probability that your fit is good.” If you did many fake experiments (draw many random samples of data points from the assumed distribution (your fit function)), this is the percentage of experiments that would give χ2 values ≥ to the one you got in this experiment.
+		
 // 		TVirtualFitter * fitter = TVirtualFitter::GetFitter();
 // 		p7[i]=fitter->GetParameter(0);
 // 		p1[i]=fitter->GetParameter(1);
@@ -299,45 +312,49 @@ void graphpol0scale_band_four23Alpoints()// graph-pol0 fit scale the SeGA effici
 		textpol1->AddText(paraprint);
 		sprintf(paraprint,"p-val=%e",p_value[i]);
 		textpol1->AddText(paraprint);
-		textpol1->Draw();
+		//textpol1->Draw();
 		//sprintf(hcali_name,"%s.png",hcali_name);
-		sprintf(hcali_name,"%s%s%s%s%s","D:/X/out/responseforDoppler/",hcali_name,"_",tauflag,"_band.png");
-		canvascali[i]->SaveAs(hcali_name);//存图
-		outfile2<<"SeGA_"<<i<<"	y=C*logpol6	"<<endl;
-		outfile2<<"p7=	"<<setprecision(8)<<p7[i]<<"	+/-	"<<p7err[i]<<endl;
-		outfile2<<"Chi2=	"<<parchi[i]<<"	ndf=	"<<parNDF[i]<<"	p-value=	"<<p_value[i];
-
+		
 		pad2->cd();
 		graph2[i]= new TGraphErrors(peaknum,energy[i],residual[i],energyerr[i],residualerr[i]);//画error bars TGraph(n,x,y,ex,ey);
-		graph2[i]->GetXaxis()->SetTitle("E_{#gamma} (keV)");//轴名
-		graph2[i]->GetYaxis()->SetTitle("Relative residual");//轴名
+		graph2[i]->SetTitle("");//图名
+		graph2[i]->GetXaxis()->SetTitle("#it{E}_{#it{#gamma}} #font[132]{(keV)}");
+		graph2[i]->GetYaxis()->SetTitle("Data #minus Fit");//轴名
 		graph2[i]->GetXaxis()->CenterTitle();//居中
-		graph2[i]->GetYaxis()->CenterTitle();//居中
+		//graph2[i]->GetYaxis()->CenterTitle();//居中
 		graph2[i]->GetXaxis()->SetLabelFont(132);//坐标字体
 		graph2[i]->GetYaxis()->SetLabelFont(132);//坐标字体
+		graph2[i]->GetXaxis()->SetLabelSize(0.18);
+		graph2[i]->GetYaxis()->SetLabelSize(0.18);
 		graph2[i]->GetXaxis()->SetTitleFont(132);//轴名字体
 		graph2[i]->GetYaxis()->SetTitleFont(132);//轴名字体
-		//graph1[i]->GetYaxis()->SetLabelSize(0.05);//坐标字号
-		//graph1[i]->GetYaxis()->SetTitleSize(0.05);//轴名字号
-		graph2[i]->GetXaxis()->SetRangeUser(120,8500);
-		graph2[i]->GetYaxis()->SetRangeUser(-0.3,0.2);
-		graph2[i]->GetXaxis()->SetTitleOffset(1.3);
-		graph2[i]->GetYaxis()->SetTitleOffset(0.4);
-		graph2[i]->GetXaxis()->SetTitleSize(0.08);
-		graph2[i]->GetXaxis()->SetLabelOffset(0.015);
-		graph2[i]->GetXaxis()->SetLabelSize(0.08);
-		graph2[i]->GetYaxis()->SetLabelSize(0.08);
-		graph2[i]->GetYaxis()->SetTitleSize(0.08);
-		graph2[i]->GetXaxis()->SetNdivisions(520);//n = n1 + 100*n2 + 10000*n3
-		graph2[i]->GetXaxis()->SetNdivisions(10,10,1);
-		graph2[i]->GetYaxis()->SetNdivisions(505);
+		graph2[i]->GetXaxis()->SetTitleOffset(1.11);//轴名偏移
+		graph2[i]->GetYaxis()->SetTitleOffset(0.37);//轴名偏移
+		graph2[i]->GetXaxis()->SetTitleSize(0.18);
+		graph2[i]->GetYaxis()->SetTitleSize(0.18);
+		graph2[i]->GetYaxis()->SetNdivisions(105);
+		graph2[i]->GetYaxis()->SetTickLength(0.010);
+		graph2[i]->SetStats(0);
+		graph2[i]->GetXaxis()->SetRangeUser(120, 8500);
+		graph2[i]->SetLineWidth(2);
 		graph2[i]->SetMarkerStyle(21);
 		graph2[i]->SetMarkerColor(1);
+		canvascali[i]->cd();//进入画布
+		pad2->SetFrameLineWidth(3);
+		pad2->Draw();
+		pad2->RedrawAxis();
+		pad2->cd();
 		graph2[i]->Draw("AP");//"A": Axis are drawn around the graph, "P": The current marker is plotted at each point
-		TLine *T1=new TLine(120,0,8500,0);
+		TLine *T1=new TLine(120,0,8515,0);
 		T1->Draw("R");
+		sprintf(hcali_name, "%s%s%s%s%s", "D:/X/out/responseforDoppler/", hcali_name, "_", tauflag, "_band.png");
+		canvascali[i]->SaveAs(hcali_name);//存图
+		outfile2 << "SeGA_" << i << "	y=C*logpol6	" << endl;
+		outfile2 << "p7=	" << setprecision(8) << p7[i] << "	+/-	" << p7err[i] << endl;
+		outfile2 << "Chi2=	" << parchi[i] << "	ndf=	" << parNDF[i] << "	p-value=	" << p_value[i];
+
 /*
-		//************ residual fit by sqrt + const func *****************************************
+		// ************ residual fit by sqrt + const func *****************************************
 
 		sprintf(hcali_name,"%s%d","Tau of SeGA",i);
 		canvascali[i]=new TCanvas(hcali_name,hcali_name,900,600);//建立画布
@@ -444,7 +461,7 @@ void graphpol0scale_band_four23Alpoints()// graph-pol0 fit scale the SeGA effici
 
 
 
-		//************ residual fit by quadratic func *****************************************
+		// ************ residual fit by quadratic func *****************************************
 
 		sprintf(hcali_name,"%s%d","AlSi_tau_pol2_SeGA_",i);
 		canvascali[i]=new TCanvas(hcali_name,hcali_name,900,600);//建立画布
@@ -547,7 +564,7 @@ void graphpol0scale_band_four23Alpoints()// graph-pol0 fit scale the SeGA effici
 
 
 
-		//************ residual fit by sqrt func *****************************************
+		// ************ residual fit by sqrt func *****************************************
 
 		sprintf(hcali_name,"%s%d","AlSi_tau_sqrt_SeGA_",i);
 		canvascali[i]=new TCanvas(hcali_name,hcali_name,900,600);//建立画布
