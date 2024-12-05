@@ -1,6 +1,6 @@
 #include <iostream>
 #include <fstream>
-#include <iomanip.h>
+#include <iomanip>
 #include <math.h>
 #include <time.h>
 #include <map>
@@ -39,7 +39,7 @@
 #include "stdio.h"
 #include "TLegend.h"
 using namespace std;
-void graphpol1fit_band_sigma_DSL()// the best band explanation
+void graphpol1fit_band_tau_DSL2()// the best band explanation
 	//graph-pol1 fit sigma (with confidence band) of GRIFFIN obtained from gausnerfcpol1_peakfit_response_DSL.C for 6 unshifited peaks
 {//also get the sigma at five 31S gamma energies of interest (1248,2234,3076,4971,5156) for the next simulation and uncertainty analysis.
 	time_t tim;
@@ -68,7 +68,7 @@ void graphpol1fit_band_sigma_DSL()// the best band explanation
 	TCanvas *canvaspeak[300];
 	TCanvas *canvascali[300];
 	TH1F *histo[ID2+1];//TH1F peak search+gauss fit,creat histograms
-	const int nummax=6; //modify
+	const int nummax=10; //modify
 	int peaknum=nummax;
 	TF1 *total[nummax];//creat function
 	TF1 *p[nummax], *g[nummax], *b[nummax];
@@ -90,8 +90,8 @@ void graphpol1fit_band_sigma_DSL()// the best band explanation
 // 	double energylit[6]={450.7, 1460.820, 1599, 2614.511, 2908, 7801};//23Al
 // 	double energyliterr[6]={0.15, 0.005, 2, 0.010, 3, 2};//23Al
 
-	const int Npoint=14;
-	double energy_point[Npoint] = {500,1000,1500,2000,2500,3000,3500,4000,4500,5000,5500,6000,6500,7000};// all NuDat values, set location of point for single value modify
+	const int Npoint=17;
+	double energy_point[Npoint] = {500,1000,1500,2000,2500,3000,3500,4000,4500,5000,5500,6000,6500,7000,7500,8000,8500};// all NuDat values, set location of point for single value modify
 	double err_point[Npoint];  // error on the function at point x0 for single value
 	
 //  	const int Npoint=500;
@@ -119,7 +119,7 @@ void graphpol1fit_band_sigma_DSL()// the best band explanation
 //		if(idetector==8||idetector==11||idetector==14|idetector==15) continue;
 // 		if(idetector==5)peaknum=nummax-1;
 // 		if(idetector==0)peaknum=nummax-4;
- 		sprintf(b_name,"%s%d%s","D:/X/out/DSL/DSL_sigma_tau_addback",idetector,"deg.dat");
+ 		sprintf(b_name,"%s","D:/X/out/DSL2/DSL2_sigma_tau_addback.dat");
  		ifstream infile(b_name,ios::in);//The input data that need to be fitted
 		for(iipeak=0;iipeak<peaknum;iipeak++)//which peak in a detector modify
 		{
@@ -133,12 +133,12 @@ void graphpol1fit_band_sigma_DSL()// the best band explanation
 			// energyerr[idetector][iipeak] = energyerr[idetector][iipeak] * 200; sigerr[idetector][iipeak] = sigerr[idetector][iipeak] * 5; // for fun
 			cout<<"GRIFFIN_"<<idetector<<'	'<<energy[idetector][iipeak]<<'	'<<energyerr[idetector][iipeak]<<'	'<<sig[idetector][iipeak]<<'	'<<sigerr[idetector][iipeak]<<'	'<<tau[idetector][iipeak]<<'	'<<tauerr[idetector][iipeak]<<endl;
 		}
-		if(idetector==0) {range_sig1[idetector]=0.5; range_sig2[idetector]=2.5; range_tau1[idetector]=0; range_tau2[idetector]=5;}
+		if(idetector==0) {range_sig1[idetector]=0; range_sig2[idetector]=5.4; range_tau1[idetector]=0; range_tau2[idetector]=9.0;}
 		//if(idetector==1) {range_sig1[idetector]=0; range_sig2[idetector]=4; range_tau1[idetector]=0; range_tau2[idetector]=3.5;}
 	}
-	sprintf(tauflag,"%s","taufree");
-	ofstream outfile("D:/X/out/Si25/outfile/peakcali.dat",ios::out);
-	ofstream outfile2("D:/X/out/Si25/outfile/peakcalipara.dat",ios::out);
+
+	ofstream outfile("D:/X/out/DSL2/peakcali.dat",ios::out);
+	ofstream outfile2("D:/X/out/DSL2/peakcalipara.dat",ios::out);
 
 
 	for(idetector=0;idetector<=0;idetector++)//don't change if there is only one detector
@@ -153,56 +153,66 @@ void graphpol1fit_band_sigma_DSL()// the best band explanation
 
 		//sprintf(hcali_name,"%s%d","Efficiency of SeGA",idetector);
 		sprintf(hcali_name,"%s","GRIFFIN0deg_Addback");
-		canvascali[idetector]=new TCanvas(hcali_name,hcali_name,1000,700);//建立画布
+		canvascali[idetector]=new TCanvas(hcali_name,hcali_name,1300,700);//建立画布
 		canvascali[idetector]->cd();//进入画布
-		TPad *pad1 = new TPad("pad1", "The pad 70% of the height",0.0,0.3,1.0,1.0);// Double_t xlow, Double_t ylow, Double_t xup, Double_t yup,
-		TPad *pad2 = new TPad("pad2", "The pad 30% of the height",0.0,0.0,1.0,0.3);
-		pad1->SetTopMargin(0.04);
-		pad1->SetRightMargin(0.03);
-		pad1->SetLeftMargin(0.08);
-		pad1->SetBottomMargin(0.10);
-		//pad1->SetBorderMode(0);
-		pad2->SetTopMargin(0.01);
-		pad2->SetRightMargin(0.03);
-		pad2->SetLeftMargin(0.08);
-		pad2->SetBottomMargin(0.23);
-		//pad2->SetBorderMode(0);
+		TPad* pad1 = new TPad("pad1", "The pad 70% of the height", 0.0, 0.42, 1.0, 1.0);
+		// xlow, ylow, xup, yup
+		TPad* pad2 = new TPad("pad2", "The pad 30% of the height", 0.0, 0.0, 1.0, 0.42);
+
+		// Set margins for pad1
+		pad1->SetTopMargin(0.04);  // relative to pad1 height
+		pad1->SetBottomMargin(0.05); // relative to pad1 height
+		pad1->SetLeftMargin(0.08);  // relative to pad1 width
+		pad1->SetRightMargin(0.04); // relative to pad1 width
+
+		// Set margins for pad2
+		pad2->SetTopMargin(0.04);    // relative to pad2 height
+		pad2->SetBottomMargin(0.4); // relative to pad2 height
+		pad2->SetLeftMargin(0.08);    // relative to pad2 width
+		pad2->SetRightMargin(0.04);   // relative to pad2 width
+
 		pad1->Draw();
-		pad2->Draw();
 		pad1->cd();
-		gStyle->SetOptTitle(0);
-		//canvascali[idetector]->SetGrid();//
+		pad1->SetFrameLineWidth(2);
 
 		//		graph1[idetector]=new TGraph(peaknum,energy,sig);//TGraph *gr1=new TGraph(n,x,y);
-		graph1[idetector]= new TGraphErrors(peaknum,energy[idetector],sig[idetector],energyerr[idetector],sigerr[idetector]);//画error bars TGraph(n,x,y,ex,ey);
-		graph1[idetector]->SetTitle(hcali_name);
+		graph1[idetector]= new TGraphErrors(peaknum,energy[idetector],tau[idetector],energyerr[idetector],tauerr[idetector]);//画error bars TGraph(n,x,y,ex,ey);
+		graph1[idetector]->SetTitle("");
 		graph1[idetector]->GetXaxis()->SetTitle("E_{#gamma} (keV)");
-		graph1[idetector]->GetYaxis()->SetTitle("Sigma");
-		graph1[idetector]->GetXaxis()->CenterTitle();
-		graph1[idetector]->GetYaxis()->CenterTitle();
-		graph1[idetector]->GetXaxis()->SetLabelFont(132);
-		graph1[idetector]->GetYaxis()->SetLabelFont(132);
-		graph1[idetector]->GetXaxis()->SetTitleFont(132);
-		graph1[idetector]->GetYaxis()->SetTitleFont(132);
-		//graph1[idetector]->GetYaxis()->SetLabelSize(0.05);
-		//graph1[idetector]->GetYaxis()->SetTitleSize(0.05);
-		graph1[idetector]->GetXaxis()->SetTitleOffset(1.2);
-		graph1[idetector]->GetYaxis()->SetTitleOffset(1.0);
-		graph1[idetector]->GetYaxis()->SetRangeUser(range_sig1[idetector],range_sig2[idetector]);
-//		graph1[idetector]->GetYaxis()->SetRangeUser(0.9,1.5);
-		graph1[idetector]->SetMarkerStyle(21);
+		graph1[idetector]->GetYaxis()->SetTitle("#tau");
+		graph1[idetector]->GetXaxis()->CenterTitle();//居中
+		graph1[idetector]->GetYaxis()->CenterTitle();//居中
+		graph1[idetector]->GetXaxis()->SetLabelFont(132);//坐标字体
+		graph1[idetector]->GetYaxis()->SetLabelFont(132);//坐标字体
+		graph1[idetector]->GetXaxis()->SetLabelSize(0.135);
+		graph1[idetector]->GetYaxis()->SetLabelSize(0.135);
+		graph1[idetector]->GetXaxis()->SetLabelOffset(0.07);//坐标偏移
+		graph1[idetector]->GetXaxis()->SetTitleOffset(1.0);//轴名偏移
+		graph1[idetector]->GetXaxis()->SetTitleFont(132);//轴名字体
+		graph1[idetector]->GetYaxis()->SetTitleFont(132);//轴名字体
+		graph1[idetector]->GetYaxis()->SetTitleOffset(0.295);//轴名偏移
+		graph1[idetector]->GetXaxis()->SetTitleSize(0.135);
+		graph1[idetector]->GetYaxis()->SetTitleSize(0.135);
+		graph1[idetector]->GetYaxis()->SetNdivisions(505);
+		graph1[idetector]->GetYaxis()->SetTickLength(0.010);
+		graph1[idetector]->GetXaxis()->SetLimits(0, 9000);
+		graph1[idetector]->GetYaxis()->SetRangeUser(range_tau1[idetector], range_tau2[idetector]);
+		graph1[idetector]->SetLineWidth(2);
+		graph1[idetector]->SetStats(0);
+		graph1[idetector]->SetMarkerStyle(7);
 		graph1[idetector]->SetMarkerColor(1);
 
 
 
-
-		TF1 *pol1 = new TF1("pol1","pol1",1,10000);
+		TF1 *pol1 = new TF1("pol1","pol1",0, 8998);
+		pol1->SetLineWidth(0);
+		pol1->SetNpx(89980);
 		pol1->SetParNames("p0","p1");//y=p1*x+p0
 		//graph1[idetector]->Fit("pol1");//pol1 can be used directly without TF1 constructor in CINT
-		TFitResultPtr r_sig = graph1[idetector]->Fit("pol1","MS");//"S" means the result of the fit is returned in the TFitResultPtr
+		TFitResultPtr r_sig = graph1[idetector]->Fit("pol1","MES");//"S" means the result of the fit is returned in the TFitResultPtr
 		//If the option "S" is instead used, TFitResultPtr contains the TFitResult and behaves as a smart pointer to it.
 		//The fit parameters, error and chi2 (but not covariance matrix) can be retrieved also from the fitted function.
-		TH1D *hint_sig = new TH1D("hint_sig", "Fitted exponential with conf.band", 9000, 0, 9000);//Create a histogram to hold the confidence intervals
+		TH1D *hint_sig = new TH1D("hint_sig", "Fitted exponential with conf.band", 8998, 0, 8998);//Create a histogram to hold the confidence intervals
 		TVirtualFitter * fitter = TVirtualFitter::GetFitter();//The method TVirtualFitter::GetFitter())->Get the parameters of your fitting function after having it fitted to an histogram.
 		fitter->GetConfidenceIntervals(hint_sig, 0.683);//By default the intervals are inflated using the chi2/ndf value of the fit if a chi2 fit is performed
 		//confidence interval for the colored band: 1σ confidence interval: P=0.683, 1σ confidence interval: P=0.95, 3σ confidence interval: P=0.997
@@ -220,6 +230,7 @@ void graphpol1fit_band_sigma_DSL()// the best band explanation
 		graph1[idetector]->Draw("AP");//"A": Axis are drawn around the graph, "P": The current marker is plotted at each point
 		hint_sig->Draw("e3 same");//draw the confidence band [colored] showing 1 or 2 or 3 standard deviation uncertainty
 		graph1[idetector]->Draw("P same");//draw the points again above error band
+		pad1->RedrawAxis();
 
 		p0[idetector]=pol1->GetParameter(0);//intercept
 		p1[idetector]=pol1->GetParameter(1);//slope
@@ -242,14 +253,14 @@ void graphpol1fit_band_sigma_DSL()// the best band explanation
 
 		for(iipeak=0;iipeak<peaknum;iipeak++)//get sigma/tau at energies for plotting the residuals
 		{
-			residual[idetector][iipeak]=(pol1->Eval(energy[idetector][iipeak])-sig[idetector][iipeak])/pol1->Eval(energy[idetector][iipeak]);
-			residualerr[idetector][iipeak]=sigerr[idetector][iipeak]/pol1->Eval(energy[idetector][iipeak]);
-			outfile<<"Eg=	"<<energy[idetector][iipeak]<<"	relative residual=	"<<residual[idetector][iipeak]<<endl;
+			residual[idetector][iipeak]= tau[idetector][iipeak]-pol1->Eval(energy[idetector][iipeak]);
+			residualerr[idetector][iipeak]=tauerr[idetector][iipeak];
+			outfile<<"Eg=	"<<energy[idetector][iipeak]<<"	residual=	"<<residual[idetector][iipeak]<<endl;
 		}
 
 		for(iipeak=0;iipeak<Npoint;iipeak++)//get sigma/tau at energies of interest for output file
 		{
-			outfile<<"GRIFFIN_"<<idetector<<"	Eg=	"<<energy_point[iipeak]<<"	sig=	"<<pol1->Eval(energy_point[iipeak])<<"	err_sig=	"<<err_point[iipeak]<<endl;
+			outfile<<"GRIFFIN_"<<idetector<<"	Eg=	"<<energy_point[iipeak]<<"	tau=	"<<pol1->Eval(energy_point[iipeak])<<"	err_tau=	"<<err_point[iipeak]<<endl;
 // 			outfile<<"err_sig from band=	"<<err_point[iipeak]<<endl;
 // 			outfile<<"err_sig from cov=	"<<sqrt(energy_point[iipeak]*energy_point[iipeak]*p1err[idetector]*p1err[idetector]+p0err[idetector]*p0err[idetector]+2*energy_point[iipeak]*p01err[idetector])<<endl;
 // 			outfile<<"err_sig from cov inflated=	"<<sqrt(energy_point[iipeak]*energy_point[iipeak]*p1err[idetector]*p1err[idetector]+p0err[idetector]*p0err[idetector]+2*energy_point[iipeak]*p01err[idetector])*sqrt(parchi[idetector]/parNDF[idetector])<<endl;
@@ -289,7 +300,7 @@ void graphpol1fit_band_sigma_DSL()// the best band explanation
 // 		graph1bandhigh[idetector]->SetLineWidth(1);
 // 		graph1bandhigh[idetector]->Draw("C");//"C" A smooth Curve is drawn
 
-		TPaveText *textpol1 = new TPaveText(0.69,0.14,0.96,0.45,"brNDC");//left, down, right, up
+		TPaveText *textpol1 = new TPaveText(0.69,0.10,0.95,0.45,"brNDC");//left, down, right, up
 		textpol1->SetBorderSize(1);
 		textpol1->SetFillColor(0);
 		textpol1->SetTextAlign(12);//align = 10*HorizontalAlign + VerticalAlign, 12 means水平左对齐、垂直居中对齐
@@ -307,42 +318,50 @@ void graphpol1fit_band_sigma_DSL()// the best band explanation
 		sprintf(paraprint,"p-val=%e",p_value[idetector]);
 		textpol1->AddText(paraprint);
 		textpol1->Draw();
-		//sprintf(hcali_name,"%s.png",hcali_name);
-		sprintf(hcali_name,"%s%s%s%s%s","D:/X/out/Figure_DSL/",hcali_name,"_",tauflag,"_sigma_band.png");
-		canvascali[idetector]->SaveAs(hcali_name);//存图
+
 		outfile2<<"GRIFFIN_"<<idetector<<"	y=p1*x+p0	p1=	"<<setprecision(8)<<p1[idetector]<<"	+/-	"<<p1err[idetector]<<"	p0=	"<<p0[idetector]<<"	+/-	"<<p0err[idetector]<<"	Chi2=	"<<parchi[idetector]<<"	ndf=	"<<parNDF[idetector]<<"	p-value=	"<<p_value[idetector];
 // 		outfile2<<"SeGA_"<<idetector<<"	y=pol1*x	"<<endl;
 // 		outfile2<<"p7=	"<<setprecision(8)<<p0[idetector]<<"	+/-	"<<p0err[idetector]<<endl;
 		//		outfile2<<"Chi2=	"<<parchi[idetector]<<"	ndf=	"<<parNDF[idetector]<<"	p-value=	"<<p_value[idetector];
 
-		pad2->cd();
+		
 		graph2[idetector]= new TGraphErrors(peaknum,energy[idetector],residual[idetector],energyerr[idetector],residualerr[idetector]);//画error bars TGraph(n,x,y,ex,ey);
+		graph2[idetector]->SetTitle("");
 		graph2[idetector]->GetXaxis()->SetTitle("E_{#gamma} (keV)");//轴名
-		graph2[idetector]->GetYaxis()->SetTitle("Relative residual");//轴名
+		graph2[idetector]->GetYaxis()->SetTitle("Data #minus Fit");//轴名
 		graph2[idetector]->GetXaxis()->CenterTitle();//居中
-		graph2[idetector]->GetYaxis()->CenterTitle();//居中
+		//graph2[idetector]->GetYaxis()->CenterTitle();//居中
 		graph2[idetector]->GetXaxis()->SetLabelFont(132);//坐标字体
 		graph2[idetector]->GetYaxis()->SetLabelFont(132);//坐标字体
+		graph2[idetector]->GetXaxis()->SetLabelSize(0.18);
+		graph2[idetector]->GetYaxis()->SetLabelSize(0.18);
 		graph2[idetector]->GetXaxis()->SetTitleFont(132);//轴名字体
 		graph2[idetector]->GetYaxis()->SetTitleFont(132);//轴名字体
-		//graph1[idetector]->GetYaxis()->SetLabelSize(0.05);//坐标字号
-		//graph1[idetector]->GetYaxis()->SetTitleSize(0.05);//轴名字号
-		//graph2[idetector]->GetXaxis()->SetRangeUser(100,1530);
-		//graph2[idetector]->GetYaxis()->SetRangeUser(-0.2,0.2);
-		graph2[idetector]->GetXaxis()->SetTitleOffset(1.3);
-		graph2[idetector]->GetYaxis()->SetTitleOffset(0.4);
-		graph2[idetector]->GetXaxis()->SetTitleSize(0.08);
-		graph2[idetector]->GetXaxis()->SetLabelOffset(0.015);
-		graph2[idetector]->GetXaxis()->SetLabelSize(0.08);
-		graph2[idetector]->GetYaxis()->SetLabelSize(0.08);
-		graph2[idetector]->GetYaxis()->SetTitleSize(0.08);
-		graph2[idetector]->GetXaxis()->SetNdivisions(520);//n = n1 + 100*n2 + 10000*n3
-		graph2[idetector]->GetXaxis()->SetNdivisions(10,10,1);
-		graph2[idetector]->GetYaxis()->SetNdivisions(505);
-		graph2[idetector]->SetMarkerStyle(21);
-		graph2[idetector]->SetMarkerColor(1);
+		graph2[idetector]->GetXaxis()->SetTitleOffset(1.10);//轴名偏移
+		graph2[idetector]->GetYaxis()->SetTitleOffset(0.22);//轴名偏移
+		graph2[idetector]->GetXaxis()->SetTitleSize(0.18);
+		graph2[idetector]->GetYaxis()->SetTitleSize(0.18);
+		graph2[idetector]->GetYaxis()->SetNdivisions(105);
+		graph2[idetector]->GetYaxis()->SetTickLength(0.010);
+		graph2[idetector]->SetStats(0);
+		graph2[idetector]->GetXaxis()->SetLimits(0, 9000);
+		graph2[idetector]->GetXaxis()->SetRangeUser(0, 9000);
+		graph2[idetector]->GetYaxis()->SetRangeUser(-3.7, 3.7); 
+		graph2[idetector]->SetLineWidth(2);
+		graph2[idetector]->SetLineColor(kBlack);
+		graph2[idetector]->SetMarkerStyle(7);
+		graph2[idetector]->SetMarkerColor(kBlack);
+		canvascali[idetector]->cd();//进入画布
+		pad2->SetFrameLineWidth(2);
+		pad2->Draw();
+		pad2->RedrawAxis();
+		pad2->cd();
 		graph2[idetector]->Draw("AP");//"A": Axis are drawn around the graph, "P": The current marker is plotted at each point
-		TLine *T1=new TLine(100,0,6700,0);
+		TLine* T1 = new TLine(0, 0, 9000, 0); //x1,y1,x2,y2
 		T1->Draw("R");
+
+		//sprintf(hcali_name,"%s.png",hcali_name);
+		sprintf(hcali_name, "%s", "D:/X/out/DSL2/tau_band.png");
+		canvascali[idetector]->SaveAs(hcali_name);//存图
 	}//for (idetector=0;idetector<ID;idetector++)
 }//peakcali main

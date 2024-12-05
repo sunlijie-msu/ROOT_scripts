@@ -260,7 +260,7 @@ void peakfit_cascadedecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_
 			fEMG[ii]->SetParLimits(0, 0.5e6, 10e6);//N59
 			fEMG[ii]->SetParLimits(1, 40, 140);//T59
 			fEMG[ii]->SetParLimits(2, 0, 12);//B
-			fEMG[ii]->SetParLimits(3, 0.000, 0.200);//T103
+			fEMG[ii]->SetParLimits(3, 0.080, 0.160);//T103
 			fEMG[ii]->SetParLimits(4, 0.15, 0.16);//k
 			fEMG[ii]->SetParNames("Total_direct_decays", "Half_life_59", "Background", "Half_life_103", "Ratio_indirect");
 			//fEMG[ii]->SetParNames("BkgA", "BkgB", "Const*bin", "Tau", "Sigma", "Mean");
