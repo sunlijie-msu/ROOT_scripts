@@ -55,19 +55,20 @@ using namespace std;
 
 void extract_histograms_from_G4_rootfiles_DSL2()
 {
-// 	double Tau_values[] = { 0.0, 1.0, 2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0, 18.0, 30.0 };
-// 	double SP_values[] = { 0.60, 1.00, 1.20 };
+	double Tau_values[] = { 0.0, 5.0, 10.0, 15.0, 20.0 };
+	double Eg_values[] = { 7331.20, 7333.20, 7335.20 };
+	double Bkg_values[] = { 0.90, 1.00, 1.10 };
+	double SP_values[] = { 0.90, 1.00, 1.10 };
+	double AC_values[] = { 0.0 };
+
+// 	double Tau_values[] = { 5.0 };
+// 	double Eg_values[] = { 4155.84 };
+// 	double Bkg_values[] = { 1.00 };
+// 	double SP_values[] = { 1.00 };
 // 	double AC_values = 0.0;
-// 	double Eg_values[] = { 4155.53, 4155.84, 4156.15 };
 
-	double Tau_values[] = { 5.0 };
-	double Eg_values[] = { 4155.84 };
-	double Bkg_values[] = { 1.00 };
-	double SP_values[] = { 1.00 };
-	double AC_values = 0.0;
-
-	const char* baseInputFileName = "F:/out/G4_rootfiles_with_tree_Eg4156/S31_Gamma4156_Eg%.2f_Tau%.1f_SP%.2f_AC%.1f_all.root";
-	const char* baseOutputFileName = "F:/out/G4_rootfiles_with_tree_Eg4156/S31_Gamma4156_Eg%.2f_Tau%.1f_SP%.2f_AC%.1f.root";
+	const char* baseInputFileName = "F:/out/G4_rootfiles_with_tree_Eg7333/Mg23_Gamma7333_Eg%.2f_Tau%.1f_SP%.2f_AC%.1f_all.root";
+	const char* baseOutputFileName = "F:/out/G4_rootfiles_with_tree_Eg7333/Mg23_Gamma7333_Eg%.2f_Tau%.1f_SP%.2f_AC%.1f.root";
 
 	for (int iEg = 0; iEg < sizeof(Eg_values) / sizeof(Eg_values[0]); ++iEg)
 	{
@@ -81,10 +82,10 @@ void extract_histograms_from_G4_rootfiles_DSL2()
 				sprintf(outputFileName, baseOutputFileName, Eg_values[iEg], Tau_values[iTau], SP_values[iSP], AC_values);
 
 				TFile* _file0 = TFile::Open(inputFileName);
-				TTree* tree = (TTree*)_file0->Get("tree"); // the tree name is "tree"
+				TTree* tree = (TTree*)_file0->Get("tree"); // the tree name in the simulation file is "tree"
 
-				TH1F* Eg = new TH1F("Eg", "Eg", 8000, 0, 8000);
-				tree->Draw("Clovere>>Eg", Form("Clovere>0&&Clovere<8000&&DSSD1e+DSSD2e>10000&&DSSD1e>100&&DSSD2e>100"));
+				TH1F* Eg = new TH1F("Eg", "Eg", 10000, 0, 10000);
+				tree->Draw("Clovere>>Eg", Form("Clovere>0&&Clovere<10000&&DSSD1e+DSSD2e>100&&DSSD1e>100&&DSSD2e>100"));
 
 				TFile* fout = new TFile(outputFileName, "RECREATE");
 				Eg->Write();
