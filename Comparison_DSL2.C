@@ -46,7 +46,7 @@
 #include "TLegend.h"
 #include "TPaletteAxis.h"
 using namespace std;
-//ROOT 5 only! ROOT 6 doesn't fit more than 1 spectrum.
+//Run with ROOT5. Somehow ROOT6 fits one spectrum and stops.
 // ROOTSYS put in C:\root5 or C:\root6. simple.
 //main_readhists; fcn(); comparehists(); main_draw_save;//search m o d i f y to change something
 // one peak + linear fline two-part bkg. Recommended for final results!
@@ -58,35 +58,44 @@ TH1F* h_simulated_spec_scaled_plus_fit_background_scaled;
 const double Binsperkev = 1; //Number of bins per keV, the only place to change binwidth, all other variables is related to Binsperkev // 10 for NSCL, 2 for RIBLL, useless for DSL
 const int binwidth = 1; //binwidths in units of keV
 const int factor_rebin = 1; //simu and data Rebin factor
-float bkgDown = 0.99;
-float bkgUp = 1.01; // if you set bkgDown and bkgUp the same value, the bkg will be set to zero in minimization, which is wrong
+float bkgDown = 0.50;
+float bkgUp = 0.51; // if you set bkgDown and bkgUp the same value, the bkg will be set to zero in minimization, which is wrong
 
-const double E0_gamma = 4156; //Ex=6390
-const int peakrange_min = 4410; // bin = 4411; bin center = 4410.5
-const int peakrange_max = 4524; // bin = 4520; bin center = 4523.5
-const int Ea = 39;
-double T0_lifetime = 0;
-int Lifetimestep = 1;
-double centroid = 4155.84;
-double Eg_uncertainty = 0.31;
-const double fitrange_min = 4280; // bin = 4281; bin center = 4280.5
-const double fitrange_max = 4660; // bin = 4660; bin center = 4659.5
-const int num_bins_fullrange = 380;
-const int num_bins_peak = 114;
-double Low_bkg = 0.97;
-double High_bkg = 1.03;
+const double E0_gamma = 7333; //Ex=7784.7
+const int peakrange_min = 7740; // bin = 4411; bin center = 4410.5
+const int peakrange_max = 7870; // bin = 4520; bin center = 4523.5
+const double fitrange_min = 7700; // bin = 4281; bin center = 4280.5
+const double fitrange_max = 7910; // bin = 4660; bin center = 4659.5
+const int num_bins_peak = peakrange_max - peakrange_min;
+double Low_bkg = 0.92;
+double High_bkg = 1.08;
 
-double Tau_values[] = { 0.0, 1.0, 2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0, 18.0, 30.0 };
-double Eg_values[] = { 4155.53, 4155.84, 4156.15 };
-double Bkg_values[] = { 0.90, 1.00, 1.10 };
-double SP_values[] = { 0.60, 1.00, 1.20 };
-double AC_values[] = { 0.0 };
+// const double E0_gamma = 4156; //Ex=6390
+// const int peakrange_min = 4410; // bin = 4411; bin center = 4410.5
+// const int peakrange_max = 4524; // bin = 4520; bin center = 4523.5
+// const int Ea = 39;
+// double T0_lifetime = 0;
+// int Lifetimestep = 1;
+// double centroid = 4155.84;
+// double Eg_uncertainty = 0.31;
+// const double fitrange_min = 4280; // bin = 4281; bin center = 4280.5
+// const double fitrange_max = 4660; // bin = 4660; bin center = 4659.5
+// const int num_bins_fullrange = 380;
+// const int num_bins_peak = 114;
+// double Low_bkg = 0.97;
+// double High_bkg = 1.03;
 
-// double Tau_values[] = { 1.0};
-// double Eg_values[] = { 4155.84 };
-// double Bkg_values[] = { 1.00 };
-// double SP_values[] = { 1.20 };
+// double Tau_values[] = { 0.0, 5.0, 10.0, 15.0, 20.0 };
+// double Eg_values[] = { 7331.20, 7333.20, 7335.20 };
+// double Bkg_values[] = { 0.90, 1.00, 1.10 };
+// double SP_values[] = { 0.90, 1.00, 1.10 };
 // double AC_values[] = { 0.0 };
+
+double Tau_values[] = { 0.0, 5.0, 10.0, 15.0, 20.0 };
+double Eg_values[] = { 7333.20 };
+double Bkg_values[] = { 1.00 };
+double SP_values[] = { 1.00 };
+double AC_values[] = { 0.0 };
 
 Bool_t reject;
 
@@ -145,7 +154,7 @@ void fcn(Int_t& npar, Double_t* gin, Double_t& f, Double_t* par, Int_t iflag)
 //iflag flag word to switch between several actions of FCN//Usually only f and par are essential
 {
 	if (h_simulated_spec_scaled_plus_fit_background_scaled) delete h_simulated_spec_scaled_plus_fit_background_scaled;
-	h_simulated_spec_scaled_plus_fit_background_scaled = new TH1F("h_simulated_spec_scaled_plus_fit_background_scaled", "h_simulated_spec_scaled_plus_fit_background_scaled", 8000, 0, 8000);
+	h_simulated_spec_scaled_plus_fit_background_scaled = new TH1F("h_simulated_spec_scaled_plus_fit_background_scaled", "h_simulated_spec_scaled_plus_fit_background_scaled", 10000, 0, 10000);
 	//h_simulated_spec_scaled_plus_fit_background_scaled->Scale(par[0]);  //Scale this histogram by a constant (relative intensity), determined by the minuit above
 	//h_simulated_gammaspec_and_fit_background_combined->Sumw2();//histogram is already filled, the sum of squares of weights is filled with the existing bin contents
 	//This function is automatically called when the histogram is created
@@ -167,13 +176,13 @@ void fcn(Int_t& npar, Double_t* gin, Double_t& f, Double_t* par, Int_t iflag)
 void Comparison_DSL2()
 {
 	char simurootname[400], outrootname[400], outtxtname[400], outfigname[400], tname[400], hname[400];
-	sprintf(outtxtname, "%s%.0f%s%.0f%s", "D:/X/out/DSL2_Comparison/Eg", E0_gamma, "/DSL_31S", E0_gamma, "_model_y_values.dat");
+	sprintf(outtxtname, "%s%.0f%s%.0f%s", "D:/X/out/DSL2_Comparison/Eg", E0_gamma, "/DSL_23Mg", E0_gamma, "_model_y_values.dat");
 	FILE* outfilehist1 = fopen(outtxtname, "w"); // "w" stands for write, and it will create a new file if it doesn't exist or clear the file to zero length if it already exists.
 
-	sprintf(outtxtname, "%s%.0f%s%.0f%s", "D:/X/out/DSL2_Comparison/Eg", E0_gamma, "/DSL_31S", E0_gamma, "_model_y_values_var.dat");
+	sprintf(outtxtname, "%s%.0f%s%.0f%s", "D:/X/out/DSL2_Comparison/Eg", E0_gamma, "/DSL_23Mg", E0_gamma, "_model_y_values_var.dat");
 	FILE* outfilehist2 = fopen(outtxtname, "w"); // "w" stands for write, and it will create a new file if it doesn't exist or clear the file to zero length if it already exists.
 
-	sprintf(outtxtname, "%s%.0f%s%.0f%s", "D:/X/out/DSL2_Comparison/Eg", E0_gamma, "/DSL_31S", E0_gamma, "_model_parameter_values.dat");
+	sprintf(outtxtname, "%s%.0f%s%.0f%s", "D:/X/out/DSL2_Comparison/Eg", E0_gamma, "/DSL_23Mg", E0_gamma, "_model_parameter_values.dat");
 	FILE* outfilepara = fopen(outtxtname, "w"); // "w" stands for write, and it will create a new file if it doesn't exist or clear the file to zero length if it already exists.
 
 	int i_model_run = 0;
@@ -192,20 +201,21 @@ void Comparison_DSL2()
 						//readHists();
 						Chi2 = 0;//Chi2 is global varible, use Chi2 to extract the minimized Chi2 obtained in fcn(), and output Chi2 in main(). Must clean Chi2 before each run in main().
 
-						sprintf(simurootname, "%s%.0f%s%.0f%s%.2f%s%.1f%s%.2f%s%.1f%s", "F:/out/G4_rootfiles_with_tree_Eg", E0_gamma, "/S31_Gamma", E0_gamma, "_Eg", Eg_values[iEg], "_Tau", Tau_values[iTau], "_SP", SP_values[iSP], "_AC", AC_values[iAC], ".root");
+						sprintf(simurootname, "%s%.0f%s%.0f%s%.2f%s%.1f%s%.2f%s%.1f%s", "F:/out/G4_rootfiles_with_tree_Eg", E0_gamma, "/Mg23_Gamma", E0_gamma, "_Eg", Eg_values[iEg], "_Tau", Tau_values[iTau], "_SP", SP_values[iSP], "_AC", AC_values[iAC], ".root");
 						//read in lots of simulation root files. Input root file names don't contain Bkg_values[iBkg], but output fig/dat/root file names contain Bkg_values[iBkg].
 						fin_simu = new TFile(simurootname); //Rootfile with Simulation histograms
 						cout << simurootname << endl;
-						fin_data = new TFile("F:/out/G4_rootfiles_with_tree_Eg4156/Fakedata_S31_Gamma4156_Eg4155.84_Tau3.0_SP1.00_AC0.0_scaled_0.5k.root"); //Rootfile with Experimental Data Histogram modify
+						fin_data = new TFile("F:/out/testadd.root"); //Rootfile with Experimental Data Histogram modify
 
 						//Get Histograms from Simulation
 						sprintf(hname, "Eg");
 						h_simulated_spec = (TH1F*)fin_simu->Get(hname);
+						h_simulated_spec->Rebin(factor_rebin); //Rebin the simulation histogram
 
-						int G4bkg = 0; // 1 means keep G4 bkg in the spectrum, 0 means subtract G4 bkg from the spectrum (preferable).
-						if (E0_gamma == 4156 && G4bkg == 0) // get rid of the low-energy Geant bkg so that pure peak component can be used to do data-to-simu comparison
+						int G4bkg = 1; // 1 means keep G4 bkg in the spectrum, 0 means subtract G4 bkg from the spectrum (preferable).
+						if (E0_gamma == 7333 && G4bkg == 0) // get rid of the low-energy Geant bkg so that pure peak component can be used to do data-to-simu comparison
 						{
-							TF1* G4pol1 = new TF1("G4pol1", "[0]*x+[1]", 0, 8000);//G4 bkg
+							TF1* G4pol1 = new TF1("G4pol1", "[0]*x+[1]", 0, 10000);//G4 bkg
 							h_simulated_spec->Fit("G4pol1", "MLE0", "", fitrange_min, peakrange_min - 10);
 							h_simulated_spec->Fit("G4pol1", "MLE0", "", fitrange_min, peakrange_min - 10);
 							double aG4 = G4pol1->GetParameter(0);
@@ -221,18 +231,20 @@ void Comparison_DSL2()
 							}
 						}
 
-						sprintf(hname, "%s", "hfakedata");//data histogram
+						sprintf(hname, "%s", "centersum2");//data histogram name
 						h_measured_spec = (TH1F*)fin_data->Get(hname); //Get Gamma ray spectrum from data
-						h_fit_background = new TH1F("h_fit_background", "h_fit_background", 8000, 0, 8000);
+						h_measured_spec->Rebin(factor_rebin); //Rebin the data histogram
+						h_fit_background = new TH1F("h_fit_background", "h_fit_background", 10000, 0, 10000);
 
 						// 			TF1 *f1=new TF1("f1","[0]+x*[1]",fitrange_min,fitrangelow2);
 						// 			TF1 *f2=new TF1("f2","[0]+x*[1]",fitrangehigh1,fitrangehigh2);
 						TF1* fl = new TF1("fl", fline, fitrange_min, fitrange_max, 2); //npar=2 is the number of free parameters used by the function pol1
 						//we want to fit only the linear background excluding the peak part
 						reject = kTRUE;
-						fl->SetParLimits(1, -0.01, 0.001);
-						h_measured_spec->Fit(fl, "L0"); // "1" will draw a full curve, "0" will not draw the fitted curve in the excluded region
-						// option "L" a likelihood fit is used instead of the default chi2 square fit. 
+						//fl->SetParLimits(0, 0, 100); //set limits for intercept
+						//fl->SetParLimits(1, -0.02, 0.0001); //set limits for slope
+						h_measured_spec->Fit(fl, "M0"); // "1" will draw a full curve, "0" will not draw the fitted curve in the excluded region
+						// option "L" a likelihood fit is used instead of the default chi2 square fit. Sometimes L doesn't work.
 						reject = kFALSE;
 
 						//store 3 separate functions for visualization (three bands) can be scaled
@@ -269,10 +281,10 @@ void Comparison_DSL2()
 						arglist[0] = 1;
 						// 			Double_t vstart[4] = {0.04,1.0,0.004,0.004};//initial guess par_Fit, par_bkg
 						// 			Double_t step[4] = {0.0001,0.01,0.0001,0.0001};                //fitting step
-						Double_t vstart[2] = { 0.04,1.0 };//initial guess par_Fit, par_bkg
-						Double_t step[2] = { 0.0001,0.001 };                //fitting step
+						Double_t vstart[2] = { 0.001,1.0 };//initial guess par_Fit, par_bkg
+						Double_t step[2] = { 0.000001,0.0001 };                //fitting step
 
-						gMin->mnparm(0, "a1", vstart[0], step[0], 0.0004, 2.0, ierflg);// par for simu
+						gMin->mnparm(0, "a1", vstart[0], step[0], 0.0001, 1.0, ierflg);// par for simu
 						//parID, parName, initialGuess, step, lowLimit, highLimit, irrelevant //0.00几，因为是从百万高统计模拟的histo scale下来的
 						gMin->mnparm(1, "a2", vstart[1], step[1], bkgDown, bkgUp, ierflg);// par for bkg //bkg 基本0.9-1.2之间，不会跟拟合的本底水平差别太大
 
@@ -341,7 +353,7 @@ void Comparison_DSL2()
 						h_measured_spec->GetYaxis()->SetTitleSize(0.06);
 						h_measured_spec->GetXaxis()->SetNdivisions(505);//n = n1 + 100*n2 + 10000*n3
 						h_measured_spec->GetYaxis()->SetNdivisions(505);//n = n1 + 100*n2 + 10000*n3
-						h_measured_spec->GetYaxis()->SetTickLength(0.02);
+						h_measured_spec->GetYaxis()->SetTickLength(0.015);
 						h_measured_spec->GetXaxis()->SetRangeUser(fitrange_min, fitrange_max);
 
 						h_fit_background->Scale(pars[1]);//h_fit_background scaled up/down by up to 10%
@@ -370,42 +382,42 @@ void Comparison_DSL2()
 						textchi->SetFillColor(0);
 						textchi->SetTextAlign(12);//align = 10*HorizontalAlign + VerticalAlign, 12 means水平左对齐、垂直居中对齐
 						textchi->SetTextFont(132);//font = 10 * fontID + precision, 12+2,12 means Symbol; 13+2, 13 means News Times Roman
-						sprintf(paraprint, "#chi^{2} = %.2f / %d = %.5f   E_{#gamma} = %.2f keV   #tau = %.1f fs   N = %.1f +/- %.1f", Chi2, (num_bins_peak - 2), Chi2 / (num_bins_peak - 2), Eg_values[iEg], Tau_values[iTau], pars[0] * 24000, errs[0] * 24000);
+						sprintf(paraprint, "#chi^{2} = %.2f / %d = %.5f   E_{#gamma} = %.2f keV   #tau = %.1f fs   N = %.1f +/- %.1f", Chi2, (num_bins_peak - 2), Chi2 / (num_bins_peak - 2), Eg_values[iEg], Tau_values[iTau], pars[0] * 14000, errs[0] * 14000);
 						textchi->AddText(paraprint);
 						textchi->Draw();
 
 						// for residuals plot
 
 						pad2->cd();
-						double x_values[8000] = { 0 }, y_residuals[8000] = { 0 }, x_errors[8000] = { 0 }, y_errors[8000] = { 0 };
+						double x_values[10000] = { 0 }, y_residuals[10000] = { 0 }, x_errors[10000] = { 0 }, y_errors[10000] = { 0 };
 
 						for (int ibin = fitrange_min + 1; ibin <= fitrange_max; ibin++)
 						{ // data array starts from [0], bin starts from [1]
 							x_values[ibin - 1] = h_measured_spec->GetBinCenter(ibin);
 							x_errors[ibin - 1] = binwidth / 2.0;
-							y_residuals[ibin - 1] = h_simulated_spec_scaled_plus_fit_background_scaled->GetBinContent(ibin) - h_measured_spec->GetBinContent(ibin);
+							y_residuals[ibin - 1] = h_measured_spec->GetBinContent(ibin) - h_simulated_spec_scaled_plus_fit_background_scaled->GetBinContent(ibin);
 							y_errors[ibin - 1] = (h_measured_spec->GetBinErrorUp(ibin) + h_measured_spec->GetBinErrorLow(ibin)) / 2.0;
 						}
 
-						TGraph* graph_residual = new TGraphErrors(8000, x_values, y_residuals, x_errors, y_errors); //TGraph(n,x,y,ex,ey);
+						TGraph* graph_residual = new TGraphErrors(10000, x_values, y_residuals, x_errors, y_errors); //TGraph(n,x,y,ex,ey);
 						graph_residual->SetTitle("");//图名
-						graph_residual->GetXaxis()->SetTitle("Energy (keV)");//轴名
-						graph_residual->GetYaxis()->SetTitle("Fit - Data");//轴名
-						graph_residual->GetXaxis()->CenterTitle();//居中
-						graph_residual->GetYaxis()->CenterTitle();//居中
-						graph_residual->GetXaxis()->SetLabelFont(132);//坐标字体
-						graph_residual->GetYaxis()->SetLabelFont(132);//坐标字体
+						graph_residual->GetXaxis()->SetTitle("Energy (keV)");
+						graph_residual->GetYaxis()->SetTitle("Data #minus Fit");
+						graph_residual->GetXaxis()->CenterTitle();
+						graph_residual->GetYaxis()->CenterTitle();
+						graph_residual->GetXaxis()->SetLabelFont(132);
+						graph_residual->GetYaxis()->SetLabelFont(132);
 						graph_residual->GetXaxis()->SetLabelSize(0.15);
 						graph_residual->GetYaxis()->SetLabelSize(0.15);
-						graph_residual->GetXaxis()->SetTitleFont(132);//轴名字体
-						graph_residual->GetYaxis()->SetTitleFont(132);//轴名字体
-						graph_residual->GetXaxis()->SetTitleOffset(1.1);//轴名偏移
-						graph_residual->GetYaxis()->SetTitleOffset(0.35);//轴名偏移
+						graph_residual->GetXaxis()->SetTitleFont(132);
+						graph_residual->GetYaxis()->SetTitleFont(132);
+						graph_residual->GetXaxis()->SetTitleOffset(1.1);
+						graph_residual->GetYaxis()->SetTitleOffset(0.35);
 						graph_residual->GetXaxis()->SetTitleSize(0.15);
 						graph_residual->GetYaxis()->SetTitleSize(0.15);
 						graph_residual->GetXaxis()->SetNdivisions(505);
 						graph_residual->GetYaxis()->SetNdivisions(505);
-						graph_residual->GetYaxis()->SetTickLength(0.02);
+						graph_residual->GetYaxis()->SetTickLength(0.015);
 						//graph_residual->SetStats(0);
 						graph_residual->GetXaxis()->SetRangeUser(fitrange_min, fitrange_max);
 						// graph_residual->GetYaxis()->SetRangeUser(-50, 50); 
@@ -424,7 +436,7 @@ void Comparison_DSL2()
 						//fprintf(outfile2, "%d	%e", Tau_values[iTau], LBayesian);//LB is global varible, use LB to extract the LB corresponding to the minimum Chi2 iterated by fcn(), and output LB in main().// use this sentence to output 2D LB matrix
 						//fprintf(outChi2file, "%.0f	%.3f", Tau_values[iTau], Chi2);//Chi2 is global varible, use Chi2 to extract the minimized Chi2 obtained in fcn(), and output Chi2 in main(). // use this sentence to output 1D2D chisquare matrix
 
-						sprintf(tname, "%s%.0f%s%.0f%s%.2f%s%.1f%s%.2f%s%.1f%s%.2f", "D:/X/out/DSL2_Comparison/Eg", E0_gamma, "/S31_Gamma", E0_gamma, "_Eg", Eg_values[iEg], "_Tau", Tau_values[iTau], "_SP", SP_values[iSP], "_AC", AC_values[iAC], "_Bkg", Bkg_values[iBkg]);
+						sprintf(tname, "%s%.0f%s%.0f%s%.2f%s%.1f%s%.2f%s%.1f%s%.2f", "D:/X/out/DSL2_Comparison/Eg", E0_gamma, "/Mg23_Gamma", E0_gamma, "_Eg", Eg_values[iEg], "_Tau", Tau_values[iTau], "_SP", SP_values[iSP], "_AC", AC_values[iAC], "_Bkg", Bkg_values[iBkg]);
 						//save figure
 						sprintf(outfigname, "%s%s", tname, ".png");
 						c1->SaveAs(outfigname);
@@ -441,7 +453,7 @@ void Comparison_DSL2()
 
 
 						//save histogram bin counts for Surmise "model y values full range"
-			 			sprintf(outtxtname,"%s%.0f%s%.0f%s","D:/X/out/DSL2_Comparison/Eg",E0_gamma,"/DSL_31S",E0_gamma,"_model_y_values.dat");
+			 			sprintf(outtxtname,"%s%.0f%s%.0f%s","D:/X/out/DSL2_Comparison/Eg",E0_gamma,"/DSL_23Mg",E0_gamma,"_model_y_values.dat");
 			 			outfilehist1 = fopen (outtxtname,"a"); //ofstream doesn't work
 						fprintf(outfilehist1, "%d", i_model_run);
 						for (int ibin = fitrange_min + 1; ibin <= fitrange_max; ibin++)
@@ -452,7 +464,7 @@ void Comparison_DSL2()
 						fclose(outfilehist1);
 
 						//save histogram bin counts for Surmise "model y values errors full range" (this may be less important)
-						sprintf(outtxtname, "%s%.0f%s%.0f%s", "D:/X/out/DSL2_Comparison/Eg", E0_gamma, "/DSL_31S", E0_gamma, "_model_y_values_var.dat");
+						sprintf(outtxtname, "%s%.0f%s%.0f%s", "D:/X/out/DSL2_Comparison/Eg", E0_gamma, "/DSL_23Mg", E0_gamma, "_model_y_values_var.dat");
 						outfilehist2 = fopen(outtxtname, "a"); //ofstream doesn't work
 						fprintf(outfilehist2, "%d", i_model_run);
 						for (int ibin = fitrange_min + 1; ibin <= fitrange_max; ibin++)
@@ -463,7 +475,7 @@ void Comparison_DSL2()
 						fclose(outfilehist2);
 
 						// save parameters txt for Surmise "model parameters"
-						sprintf(outtxtname, "%s%.0f%s%.0f%s", "D:/X/out/DSL2_Comparison/Eg", E0_gamma, "/DSL_31S", E0_gamma, "_model_parameter_values.dat");
+						sprintf(outtxtname, "%s%.0f%s%.0f%s", "D:/X/out/DSL2_Comparison/Eg", E0_gamma, "/DSL_23Mg", E0_gamma, "_model_parameter_values.dat");
 			 			outfilepara = fopen (outtxtname,"a"); //ofstream doesn't work
 						fprintf(outfilepara, "%d	%.1f	%.2f	%.2f	%.2f\n", i_model_run, Tau_values[iTau], Eg_values[iEg], Bkg_values[iBkg], SP_values[iSP]);
 						fclose(outfilepara);
