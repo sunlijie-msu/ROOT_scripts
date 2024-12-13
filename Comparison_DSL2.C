@@ -59,16 +59,28 @@ const double Binsperkev = 1; //Number of bins per keV, the only place to change 
 const int binwidth = 1; //binwidths in units of keV
 const int factor_rebin = 1; //simu and data Rebin factor
 float bkgDown = 0.50;
-float bkgUp = 0.51; // if you set bkgDown and bkgUp the same value, the bkg will be set to zero in minimization, which is wrong
+float bkgUp = 1.51; // if you set bkgDown and bkgUp the same value, the bkg will be set to zero in minimization, which is wrong
 
 const double E0_gamma = 7333; //Ex=7784.7
-const int peakrange_min = 7740; // bin = 4411; bin center = 4410.5
-const int peakrange_max = 7870; // bin = 4520; bin center = 4523.5
+const int peakrange_min = 7750; // bin = 4411; bin center = 4410.5
+const int peakrange_max = 7850; // bin = 4520; bin center = 4523.5
 const double fitrange_min = 7700; // bin = 4281; bin center = 4280.5
 const double fitrange_max = 7910; // bin = 4660; bin center = 4659.5
 const int num_bins_peak = peakrange_max - peakrange_min;
 double Low_bkg = 0.92;
 double High_bkg = 1.08;
+
+// double Tau_values[] = { 0.0, 5.0, 10.0, 15.0, 20.0 };
+// double Eg_values[] = { 7331.20, 7333.20, 7335.20 };
+// double Bkg_values[] = { 0.90, 1.00, 1.10 };
+// double SP_values[] = { 0.90, 1.00, 1.10 };
+// double AC_values[] = { 0.0 };
+
+double Tau_values[] = { 0.0, 5.0, 10.0, 15.0, 20.0 };
+double Eg_values[] = { 7333.20 };
+double Bkg_values[] = { 1.00 };
+double SP_values[] = { 1.00 };
+double AC_values[] = { 0.0 };
 
 // const double E0_gamma = 4156; //Ex=6390
 // const int peakrange_min = 4410; // bin = 4411; bin center = 4410.5
@@ -85,17 +97,7 @@ double High_bkg = 1.08;
 // double Low_bkg = 0.97;
 // double High_bkg = 1.03;
 
-// double Tau_values[] = { 0.0, 5.0, 10.0, 15.0, 20.0 };
-// double Eg_values[] = { 7331.20, 7333.20, 7335.20 };
-// double Bkg_values[] = { 0.90, 1.00, 1.10 };
-// double SP_values[] = { 0.90, 1.00, 1.10 };
-// double AC_values[] = { 0.0 };
 
-double Tau_values[] = { 0.0, 5.0, 10.0, 15.0, 20.0 };
-double Eg_values[] = { 7333.20 };
-double Bkg_values[] = { 1.00 };
-double SP_values[] = { 1.00 };
-double AC_values[] = { 0.0 };
 
 Bool_t reject;
 
