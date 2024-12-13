@@ -55,18 +55,24 @@ TFile* fin_simu, * fin_data;
 TH1F* h_simulated_spec, * h_measured_spec, * h_fit_background;
 TH1F* h_simulated_spec_scaled_plus_fit_background_scaled;
 
-const double Binsperkev = 1; //Number of bins per keV, the only place to change binwidth, all other variables is related to Binsperkev // 10 for NSCL, 2 for RIBLL, useless for DSL
-const int binwidth = 1; //binwidths in units of keV
-const int factor_rebin = 1; //simu and data Rebin factor
-float bkgDown = 0.50;
-float bkgUp = 1.51; // if you set bkgDown and bkgUp the same value, the bkg will be set to zero in minimization, which is wrong
+const int factor_rebin = 2; //simu and data Rebin factor
+const int binwidth = factor_rebin * 1; //binwidths in units of keV
+const int Total_bins = 10000 / factor_rebin; //10000 keV is the total energy range
+float bkgDown = 0.95;
+float bkgUp = 0.951; // if you set bkgDown and bkgUp the same value, the bkg will be set to zero in minimization, which is wrong
 
-const double E0_gamma = 7333; //Ex=7784.7
-const int peakrange_min = 7750; // bin = 4411; bin center = 4410.5
-const int peakrange_max = 7850; // bin = 4520; bin center = 4523.5
-const double fitrange_min = 7700; // bin = 4281; bin center = 4280.5
-const double fitrange_max = 7910; // bin = 4660; bin center = 4659.5
-const int num_bins_peak = peakrange_max - peakrange_min;
+const double E0_gamma = 7333; //Ex=7784.7, Eg=7333.2 by ENSDF
+const int peakrange_min = 7750;
+const int peakrange_max = 7850;
+const double fitrange_min = 7680;
+const double fitrange_max = 7920;
+
+const int peakbin_min = static_cast<int>(peakrange_min / binwidth) + 1; // 1551
+const int peakbin_max = static_cast<int>(peakrange_max / binwidth); // 1570
+const int fitbin_min = static_cast<int>(fitrange_min / binwidth) + 1; // 1541
+const int fitbin_max = static_cast<int>(fitrange_max / binwidth); // 1582
+const int num_bins_peak = peakbin_max - peakbin_min + 1; // 20
+
 double Low_bkg = 0.92;
 double High_bkg = 1.08;
 
@@ -76,7 +82,7 @@ double High_bkg = 1.08;
 // double SP_values[] = { 0.90, 1.00, 1.10 };
 // double AC_values[] = { 0.0 };
 
-double Tau_values[] = { 0.0, 5.0, 10.0, 15.0, 20.0 };
+double Tau_values[] = { 10.0 };
 double Eg_values[] = { 7333.20 };
 double Bkg_values[] = { 1.00 };
 double SP_values[] = { 1.00 };
@@ -139,6 +145,7 @@ double CompareHists(TH1F* his_fit, TH1F* his_data, int first_bin, int last_bin)
 
 Double_t fline(Double_t* x, Double_t* par) // pol1
 { // Double_t fcn(Double_t *x, Double_t *params)
+	//cout << "x[0]= " << x[0] << " par[0]= " << par[0] << " par[1]= " << par[1] << endl;
 	if (reject && x[0] > peakrange_min && x[0] < peakrange_max)
 	{
 		TF1::RejectPoint();
@@ -156,15 +163,14 @@ void fcn(Int_t& npar, Double_t* gin, Double_t& f, Double_t* par, Int_t iflag)
 //iflag flag word to switch between several actions of FCN//Usually only f and par are essential
 {
 	if (h_simulated_spec_scaled_plus_fit_background_scaled) delete h_simulated_spec_scaled_plus_fit_background_scaled;
-	h_simulated_spec_scaled_plus_fit_background_scaled = new TH1F("h_simulated_spec_scaled_plus_fit_background_scaled", "h_simulated_spec_scaled_plus_fit_background_scaled", 10000, 0, 10000);
+	h_simulated_spec_scaled_plus_fit_background_scaled = new TH1F("h_simulated_spec_scaled_plus_fit_background_scaled", "h_simulated_spec_scaled_plus_fit_background_scaled", Total_bins, 0, 10000);
 	//h_simulated_spec_scaled_plus_fit_background_scaled->Scale(par[0]);  //Scale this histogram by a constant (relative intensity), determined by the minuit above
 	//h_simulated_gammaspec_and_fit_background_combined->Sumw2();//histogram is already filled, the sum of squares of weights is filled with the existing bin contents
 	//This function is automatically called when the histogram is created
 	h_simulated_spec_scaled_plus_fit_background_scaled->Add(h_simulated_spec, par[0]);
 	h_simulated_spec_scaled_plus_fit_background_scaled->Add(h_fit_background, par[1]);//h_simulated_gammaspec_and_fit_background_combined=p1+p2+p3+h_fit_background
 	//	f = CompareHists
-	f = CompareHists(h_simulated_spec_scaled_plus_fit_background_scaled, h_measured_spec, peakrange_min + 1, peakrange_max);//first bin -> last bin peak region
-	//	f = CompareHists(h_simulated_gammaspec_and_fit_background_combined,h_measured_spec,1,num_bins_fullrange);//first bin -> last bin the same as the sentence above
+	f = CompareHists(h_simulated_spec_scaled_plus_fit_background_scaled, h_measured_spec, peakbin_min, peakbin_max);//first bin -> last bin peak region
 	Chi2 = f;//Chi2 is global varible, use Chi2 to extract the minimized Chi2 obtained in fcn(), and output Chi2 in main().
 }
 
@@ -177,6 +183,7 @@ void fcn(Int_t& npar, Double_t* gin, Double_t& f, Double_t* par, Int_t iflag)
 
 void Comparison_DSL2()
 {
+	cout << "peakbin_min= " << peakbin_min << " peakbin_max= " << peakbin_max << " fitbin_min= " << fitbin_min << " fitbin_max= " << fitbin_max << " num_bins_peak= " << num_bins_peak << endl;
 	char simurootname[400], outrootname[400], outtxtname[400], outfigname[400], tname[400], hname[400];
 	sprintf(outtxtname, "%s%.0f%s%.0f%s", "D:/X/out/DSL2_Comparison/Eg", E0_gamma, "/DSL_23Mg", E0_gamma, "_model_y_values.dat");
 	FILE* outfilehist1 = fopen(outtxtname, "w"); // "w" stands for write, and it will create a new file if it doesn't exist or clear the file to zero length if it already exists.
@@ -214,7 +221,7 @@ void Comparison_DSL2()
 						h_simulated_spec = (TH1F*)fin_simu->Get(hname);
 						h_simulated_spec->Rebin(factor_rebin); //Rebin the simulation histogram
 
-						int G4bkg = 1; // 1 means keep G4 bkg in the spectrum, 0 means subtract G4 bkg from the spectrum (preferable).
+						int G4bkg = 1; // 1 means keep G4 bkg in the spectrum, 0 means subtract G4 bkg from the spectrum. 0 was used by DSL1.
 						if (E0_gamma == 7333 && G4bkg == 0) // get rid of the low-energy Geant bkg so that pure peak component can be used to do data-to-simu comparison
 						{
 							TF1* G4pol1 = new TF1("G4pol1", "[0]*x+[1]", 0, 10000);//G4 bkg
@@ -235,39 +242,42 @@ void Comparison_DSL2()
 
 						sprintf(hname, "%s", "centersum2");//data histogram name
 						h_measured_spec = (TH1F*)fin_data->Get(hname); //Get Gamma ray spectrum from data
-						h_measured_spec->Rebin(factor_rebin); //Rebin the data histogram
-						h_fit_background = new TH1F("h_fit_background", "h_fit_background", 10000, 0, 10000);
-
+						h_measured_spec->Rebin(factor_rebin);
+						h_fit_background = new TH1F("h_fit_background", "h_fit_background", Total_bins, 0, 10000);
 						// 			TF1 *f1=new TF1("f1","[0]+x*[1]",fitrange_min,fitrangelow2);
 						// 			TF1 *f2=new TF1("f2","[0]+x*[1]",fitrangehigh1,fitrangehigh2);
-						TF1* fl = new TF1("fl", fline, fitrange_min, fitrange_max, 2); //npar=2 is the number of free parameters used by the function pol1
+						TF1* fl = new TF1("fl", fline, 0, 10000, 2); //npar=2 is the number of free parameters used by the function pol1
 						//we want to fit only the linear background excluding the peak part
 						reject = kTRUE;
-						//fl->SetParLimits(0, 0, 100); //set limits for intercept
+						fl->SetParameters(10, 0); //initial guess for the parameters
+						//fl->SetParLimits(0, 0, 50); //set limits for intercept
 						//fl->SetParLimits(1, -0.02, 0.0001); //set limits for slope
-						h_measured_spec->Fit(fl, "M0"); // "1" will draw a full curve, "0" will not draw the fitted curve in the excluded region
-						// option "L" a likelihood fit is used instead of the default chi2 square fit. Sometimes L doesn't work.
+						h_measured_spec->Fit(fl, "L0", "", fitrange_min, fitrange_max);
+						// "1" will draw a full curve, "0" will not draw the fitted curve in the excluded region
+						// option "L" a likelihood fit is used instead of the default chi2 square fit.
+						// fitrange_min and fitrange_max set the range of fit. Do not omit these two.
 						reject = kFALSE;
 
 						//store 3 separate functions for visualization (three bands) can be scaled
-						TH1D* h_confidence_interval1 = new TH1D("h_confidence_interval1", "Fitted func with conf.band", (peakrange_min - fitrange_min) * 10, fitrange_min, peakrange_min);
+						TH1D* h_confidence_interval1 = new TH1D("h_confidence_interval1", "Fitted func with conf.band", (peakrange_min - fitrange_min) * 1, fitrange_min, peakrange_min);
 						(TVirtualFitter::GetFitter())->GetConfidenceIntervals(h_confidence_interval1, 0.683);
 						h_confidence_interval1->SetStats(kFALSE);
 						h_confidence_interval1->SetFillColor(kGreen - 7);
 
-						TH1D* h_confidence_interval2 = new TH1D("h_confidence_interval2", "Fitted func with conf.band", (fitrange_max - peakrange_max) * 10, peakrange_max, fitrange_max);
+						TH1D* h_confidence_interval2 = new TH1D("h_confidence_interval2", "Fitted func with conf.band", (fitrange_max - peakrange_max) * 1, peakrange_max, fitrange_max);
 						(TVirtualFitter::GetFitter())->GetConfidenceIntervals(h_confidence_interval2, 0.683);
 						h_confidence_interval2->SetStats(kFALSE);
 						h_confidence_interval2->SetFillColor(kGreen - 7);
 
-						TH1D* h_confidence_interval3 = new TH1D("h_confidence_interval3", "Fitted func with conf.band", (fitrange_max - fitrange_min) * 10, fitrange_min, fitrange_max);
+						TH1D* h_confidence_interval3 = new TH1D("h_confidence_interval3", "Fitted func with conf.band", (fitrange_max - fitrange_min) * 1, fitrange_min, fitrange_max);
 						(TVirtualFitter::GetFitter())->GetConfidenceIntervals(h_confidence_interval3, 0.683);
 						h_confidence_interval3->SetStats(kFALSE);
 						h_confidence_interval3->SetFillColor(kGreen - 7);
 
-						for (int ibin = fitrange_min+1; ibin <= fitrange_max; ibin++)
+						for (int ibin = fitbin_min; ibin <= fitbin_max; ibin++)
 						{
 							double b = fl->GetParameter(0) + h_fit_background->GetBinCenter(ibin) * fl->GetParameter(1);
+							//cout << "x= " << h_fit_background->GetBinCenter(ibin) << " b= " << b << endl;
 							if (Bkg_values[iBkg] == 1.1) { b = b * High_bkg; }
 							if (Bkg_values[iBkg] == 0.9) { b = b * Low_bkg; }
 							h_fit_background->SetBinContent(ibin, b);//fit data, get background histogram
@@ -283,12 +293,12 @@ void Comparison_DSL2()
 						arglist[0] = 1;
 						// 			Double_t vstart[4] = {0.04,1.0,0.004,0.004};//initial guess par_Fit, par_bkg
 						// 			Double_t step[4] = {0.0001,0.01,0.0001,0.0001};                //fitting step
-						Double_t vstart[2] = { 0.001,1.0 };//initial guess par_Fit, par_bkg
+						Double_t vstart[2] = { 0.008,1.0 };//initial guess par_Fit, par_bkg
 						Double_t step[2] = { 0.000001,0.0001 };                //fitting step
 
 						gMin->mnparm(0, "a1", vstart[0], step[0], 0.0001, 1.0, ierflg);// par for simu
-						//parID, parName, initialGuess, step, lowLimit, highLimit, irrelevant //0.00几，因为是从百万高统计模拟的histo scale下来的
-						gMin->mnparm(1, "a2", vstart[1], step[1], bkgDown, bkgUp, ierflg);// par for bkg //bkg 基本0.9-1.2之间，不会跟拟合的本底水平差别太大
+						//parID, parName, initialGuess, step, lowLimit, highLimit, irrelevant //0.008 to scale the simulated peak with 14000 counts to the measured peak with 100 counts
+						gMin->mnparm(1, "a2", vstart[1], step[1], bkgDown, bkgUp, ierflg);// par for bkg //bkg is from fitting the data, should not deviate significantly from 1.0
 
 						arglist[0] = 2000;  //max number of fitting iterations
 						arglist[1] = 1.;  //tolerance 1 means one sigma
@@ -303,7 +313,7 @@ void Comparison_DSL2()
 						for (int i = 0; i < nParams; i++)
 						{
 							gMin->GetParameter(i, pars[i], errs[i]);
-							printf("pars=	%f	errs=	%f\n", pars[i], errs[i]);
+							printf("param%d= %f, err= %f\n", i, pars[i], errs[i]);
 						}
 
 						//visualization
@@ -370,12 +380,14 @@ void Comparison_DSL2()
 						h_simulated_spec->SetLineColor(3);
 						h_simulated_spec->SetMarkerColor(3);
 						h_fit_background->SetStats(0);
-						h_fit_background->SetLineColor(4);
-						h_fit_background->SetMarkerColor(4);
+						h_fit_background->SetLineColor(kGreen + 2);
+						h_fit_background->SetMarkerColor(kGreen + 2);
+						h_fit_background->Draw("samec");
 						h_simulated_spec_scaled_plus_fit_background_scaled->SetLineColor(kRed);
 						h_simulated_spec_scaled_plus_fit_background_scaled->SetMarkerColor(kRed);
 						h_simulated_spec_scaled_plus_fit_background_scaled->SetLineWidth(2);
 						h_simulated_spec_scaled_plus_fit_background_scaled->Draw("samec"); //“][”: Draw histogram without the vertical lines for the first and the last bin. Use it when superposing many histograms on the same picture.
+						h_measured_spec->Draw("esame"); // redraw data points on top of the green band
 						pad1->RedrawAxis();
 
 						char paraprint[100];
@@ -391,9 +403,10 @@ void Comparison_DSL2()
 						// for residuals plot
 
 						pad2->cd();
-						double x_values[10000] = { 0 }, y_residuals[10000] = { 0 }, x_errors[10000] = { 0 }, y_errors[10000] = { 0 };
+						double x_values[Total_bins] = { 0 }, y_residuals[Total_bins] = { 0 }, x_errors[Total_bins] = { 0 }, y_errors[Total_bins] = { 0 };
+						
 
-						for (int ibin = fitrange_min + 1; ibin <= fitrange_max; ibin++)
+						for (int ibin = fitbin_min; ibin <= fitbin_max; ibin++)
 						{ // data array starts from [0], bin starts from [1]
 							x_values[ibin - 1] = h_measured_spec->GetBinCenter(ibin);
 							x_errors[ibin - 1] = binwidth / 2.0;
@@ -401,7 +414,7 @@ void Comparison_DSL2()
 							y_errors[ibin - 1] = (h_measured_spec->GetBinErrorUp(ibin) + h_measured_spec->GetBinErrorLow(ibin)) / 2.0;
 						}
 
-						TGraph* graph_residual = new TGraphErrors(10000, x_values, y_residuals, x_errors, y_errors); //TGraph(n,x,y,ex,ey);
+						TGraph* graph_residual = new TGraphErrors(Total_bins, x_values, y_residuals, x_errors, y_errors); //TGraph(n,x,y,ex,ey);
 						graph_residual->SetTitle("");//图名
 						graph_residual->GetXaxis()->SetTitle("Energy (keV)");
 						graph_residual->GetYaxis()->SetTitle("Data #minus Fit");
@@ -421,6 +434,7 @@ void Comparison_DSL2()
 						graph_residual->GetYaxis()->SetNdivisions(505);
 						graph_residual->GetYaxis()->SetTickLength(0.015);
 						//graph_residual->SetStats(0);
+						graph_residual->GetXaxis()->SetLimits(fitrange_min, fitrange_max);
 						graph_residual->GetXaxis()->SetRangeUser(fitrange_min, fitrange_max);
 						// graph_residual->GetYaxis()->SetRangeUser(-50, 50); 
 						graph_residual->SetLineWidth(1);
@@ -458,7 +472,8 @@ void Comparison_DSL2()
 			 			sprintf(outtxtname,"%s%.0f%s%.0f%s","D:/X/out/DSL2_Comparison/Eg",E0_gamma,"/DSL_23Mg",E0_gamma,"_model_y_values.dat");
 			 			outfilehist1 = fopen (outtxtname,"a"); //ofstream doesn't work
 						fprintf(outfilehist1, "%d", i_model_run);
-						for (int ibin = fitrange_min + 1; ibin <= fitrange_max; ibin++)
+						//for (int ibin = fitrange_min + 1; ibin <= fitrange_max; ibin++)
+						for (int ibin = fitbin_min; ibin <= fitbin_max; ibin++)
 			 			{
 			 				fprintf(outfilehist1, "	%.4f", h_simulated_spec_scaled_plus_fit_background_scaled->GetBinContent(ibin));
 			 			}
@@ -469,7 +484,8 @@ void Comparison_DSL2()
 						sprintf(outtxtname, "%s%.0f%s%.0f%s", "D:/X/out/DSL2_Comparison/Eg", E0_gamma, "/DSL_23Mg", E0_gamma, "_model_y_values_var.dat");
 						outfilehist2 = fopen(outtxtname, "a"); //ofstream doesn't work
 						fprintf(outfilehist2, "%d", i_model_run);
-						for (int ibin = fitrange_min + 1; ibin <= fitrange_max; ibin++)
+						//for (int ibin = fitrange_min + 1; ibin <= fitrange_max; ibin++)
+						for (int ibin = fitbin_min; ibin <= fitbin_max; ibin++)
 						{
 							fprintf(outfilehist2, "	%.6f", errs[0] / pars[0] * h_simulated_spec_scaled_plus_fit_background_scaled->GetBinContent(ibin));
 						}
