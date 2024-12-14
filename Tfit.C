@@ -161,6 +161,11 @@ h1->GetBinCenter(i) returns the real x value.
 If you have an x value.
 h1->FindBin(x) returns the bin number corresponding to x.
 
+int histo_binmax = h_measured_spec->GetMaximumBin();
+double histo_ymax = h_measured_spec->GetBinContent(histo_binmax);
+histo_ymax = h_measured_spec->GetBinErrorUp(histo_binmax) + histo_ymax;
+h_measured_spec->GetYaxis()->SetRangeUser(0, histo_ymax * 1.2);
+
 TFile *fin = new TFile("Si25ET16m.root");
 TTree *T999 = (TTree*)fin->Get("T999");
 gStyle->SetOptFit(1111);//gStyle->SetOptFit(kTRUE)效果相同;
