@@ -55,16 +55,16 @@ TFile* fin_simu, * fin_data;
 TH1F* h_simulated_spec, * h_measured_spec, * h_fit_background;
 TH1F* h_simulated_spec_scaled_plus_fit_background_scaled;
 
-const int factor_rebin = 2; //simu and data Rebin factor
+const int factor_rebin = 5; //simu and data Rebin factor
 const int binwidth = factor_rebin * 1; //binwidths in units of keV
 const int Total_bins = 10000 / factor_rebin; //10000 keV is the total energy range
-float bkgDown = 0.95;
-float bkgUp = 0.951; // if you set bkgDown and bkgUp the same value, the bkg will be set to zero in minimization, which is wrong
+float bkgDown = 0.60;
+float bkgUp = 0.99; // if you set bkgDown and bkgUp the same value, the bkg will be set to zero in minimization, which is wrong
 
 const double E0_gamma = 7333; //Ex=7784.7, Eg=7333.2 by ENSDF
-const int peakrange_min = 7750;
+const int peakrange_min = 7730;
 const int peakrange_max = 7850;
-const double fitrange_min = 7680;
+const double fitrange_min = 7670;
 const double fitrange_max = 7920;
 
 const int peakbin_min = static_cast<int>(peakrange_min / binwidth) + 1; // 1551
@@ -73,20 +73,20 @@ const int fitbin_min = static_cast<int>(fitrange_min / binwidth) + 1; // 1541
 const int fitbin_max = static_cast<int>(fitrange_max / binwidth); // 1582
 const int num_bins_peak = peakbin_max - peakbin_min + 1; // 20
 
-double Low_bkg = 0.92;
-double High_bkg = 1.08;
+double Low_bkg = 0.91;
+double High_bkg = 1.09;
 
-// double Tau_values[] = { 0.0, 5.0, 10.0, 15.0, 20.0 };
-// double Eg_values[] = { 7331.20, 7333.20, 7335.20 };
-// double Bkg_values[] = { 0.90, 1.00, 1.10 };
-// double SP_values[] = { 0.90, 1.00, 1.10 };
-// double AC_values[] = { 0.0 };
-
-double Tau_values[] = { 10.0 };
-double Eg_values[] = { 7333.20 };
-double Bkg_values[] = { 1.00 };
-double SP_values[] = { 1.00 };
+double Tau_values[] = { 0.0, 5.0, 10.0, 15.0, 20.0 };
+double Eg_values[] = { 7331.20, 7333.20, 7335.20 };
+double Bkg_values[] = { 0.90, 1.00, 1.10 };
+double SP_values[] = { 0.90, 1.00, 1.10 };
 double AC_values[] = { 0.0 };
+
+// double Tau_values[] = { 10.0 };
+// double Eg_values[] = { 7333.20 };
+// double Bkg_values[] = { 1.00 };
+// double SP_values[] = { 1.00 };
+// double AC_values[] = { 0.0 };
 
 // const double E0_gamma = 4156; //Ex=6390
 // const int peakrange_min = 4410; // bin = 4411; bin center = 4410.5
@@ -322,17 +322,17 @@ void Comparison_DSL2()
 						c1->cd();
 						TPad* pad1 = new TPad("pad1", "The pad 70% of the height", 0.0, 0.3, 1.0, 1.0);// Double_t xlow, Double_t ylow, Double_t xup, Double_t yup,
 						TPad* pad2 = new TPad("pad2", "The pad 30% of the height", 0.0, 0.0, 1.0, 0.3);
-						pad1->SetTopMargin(0.08);
+						pad1->SetTopMargin(0.125);
 						pad1->SetRightMargin(0.035);
-						pad1->SetLeftMargin(0.11);
-						pad1->SetBottomMargin(0.06);
+						pad1->SetLeftMargin(0.09);
+						pad1->SetBottomMargin(0.07);
 						pad1->SetFrameLineWidth(2);
 						//pad1->SetBorderMode(0);
 
 						pad2->SetTopMargin(0.03);
 						pad2->SetRightMargin(0.035);
-						pad2->SetLeftMargin(0.11);
-						pad2->SetBottomMargin(0.35);
+						pad2->SetLeftMargin(0.09);
+						pad2->SetBottomMargin(0.4);
 						pad2->SetFrameLineWidth(2);
 						//pad2->SetBorderMode(0);
 
@@ -355,18 +355,23 @@ void Comparison_DSL2()
 						h_measured_spec->GetYaxis()->SetLabelFont(132);
 						h_measured_spec->GetXaxis()->SetTitleFont(132);
 						h_measured_spec->GetYaxis()->SetTitleFont(132);
-						h_measured_spec->GetXaxis()->SetLabelSize(0.06);
-						h_measured_spec->GetYaxis()->SetLabelSize(0.06);
+						h_measured_spec->GetXaxis()->SetLabelSize(0.07);
+						h_measured_spec->GetYaxis()->SetLabelSize(0.07);
 						h_measured_spec->GetXaxis()->CenterTitle();
 						h_measured_spec->GetYaxis()->CenterTitle();
 						//h_measured_spec->GetXaxis()->SetTitleOffset(0.8);
-						h_measured_spec->GetYaxis()->SetTitleOffset(0.84);
+						h_measured_spec->GetYaxis()->SetTitleOffset(0.63);
 						//h_measured_spec->GetXaxis()->SetTitleSize(0.05);
-						h_measured_spec->GetYaxis()->SetTitleSize(0.06);
+						h_measured_spec->GetYaxis()->SetTitleSize(0.07);
 						h_measured_spec->GetXaxis()->SetNdivisions(505);//n = n1 + 100*n2 + 10000*n3
 						h_measured_spec->GetYaxis()->SetNdivisions(505);//n = n1 + 100*n2 + 10000*n3
 						h_measured_spec->GetYaxis()->SetTickLength(0.015);
 						h_measured_spec->GetXaxis()->SetRangeUser(fitrange_min, fitrange_max);
+
+						int histo_binmax = h_measured_spec->GetMaximumBin();				
+						double histo_ymax = h_measured_spec->GetBinContent(histo_binmax);						
+						histo_ymax = h_measured_spec->GetBinErrorUp(histo_binmax) + histo_ymax;		
+						h_measured_spec->GetYaxis()->SetRangeUser(0, histo_ymax*1.1);
 
 						h_fit_background->Scale(pars[1]);//h_fit_background scaled up/down by up to 10%
 						// 			h_confidence_interval1->Scale(pars[1]);
@@ -375,13 +380,13 @@ void Comparison_DSL2()
 						//  			h_confidence_interval2->Draw("e3 same");
 						h_confidence_interval3->Scale(pars[1]);
 						h_confidence_interval3->Draw("e3 same"); // background uncertainty band
-						h_fit_background->SetLineWidth(2);
+						h_fit_background->SetLineWidth(1);
 						h_simulated_spec->SetStats(0);
 						h_simulated_spec->SetLineColor(3);
 						h_simulated_spec->SetMarkerColor(3);
 						h_fit_background->SetStats(0);
-						h_fit_background->SetLineColor(kGreen + 2);
-						h_fit_background->SetMarkerColor(kGreen + 2);
+						h_fit_background->SetLineColor(kGreen + 1);
+						h_fit_background->SetMarkerColor(kGreen + 1);
 						h_fit_background->Draw("samec");
 						h_simulated_spec_scaled_plus_fit_background_scaled->SetLineColor(kRed);
 						h_simulated_spec_scaled_plus_fit_background_scaled->SetMarkerColor(kRed);
@@ -391,7 +396,7 @@ void Comparison_DSL2()
 						pad1->RedrawAxis();
 
 						char paraprint[100];
-						TPaveText* textchi = new TPaveText(0.11, 0.93, 0.965, 0.99, "brNDC");//left, down, right, up
+						TPaveText* textchi = new TPaveText(0.09, 0.888, 0.965, 0.99, "brNDC");//left, down, right, up
 						textchi->SetBorderSize(1);
 						textchi->SetFillColor(0);
 						textchi->SetTextAlign(12);//align = 10*HorizontalAlign + VerticalAlign, 12 means水平左对齐、垂直居中对齐
@@ -422,21 +427,21 @@ void Comparison_DSL2()
 						graph_residual->GetYaxis()->CenterTitle();
 						graph_residual->GetXaxis()->SetLabelFont(132);
 						graph_residual->GetYaxis()->SetLabelFont(132);
-						graph_residual->GetXaxis()->SetLabelSize(0.15);
-						graph_residual->GetYaxis()->SetLabelSize(0.15);
+						graph_residual->GetXaxis()->SetLabelSize(0.17);
+						graph_residual->GetYaxis()->SetLabelSize(0.17);
 						graph_residual->GetXaxis()->SetTitleFont(132);
 						graph_residual->GetYaxis()->SetTitleFont(132);
 						graph_residual->GetXaxis()->SetTitleOffset(1.1);
-						graph_residual->GetYaxis()->SetTitleOffset(0.35);
-						graph_residual->GetXaxis()->SetTitleSize(0.15);
-						graph_residual->GetYaxis()->SetTitleSize(0.15);
+						graph_residual->GetYaxis()->SetTitleOffset(0.26);
+						graph_residual->GetXaxis()->SetTitleSize(0.17);
+						graph_residual->GetYaxis()->SetTitleSize(0.17);
 						graph_residual->GetXaxis()->SetNdivisions(505);
 						graph_residual->GetYaxis()->SetNdivisions(505);
 						graph_residual->GetYaxis()->SetTickLength(0.015);
 						//graph_residual->SetStats(0);
 						graph_residual->GetXaxis()->SetLimits(fitrange_min, fitrange_max);
 						graph_residual->GetXaxis()->SetRangeUser(fitrange_min, fitrange_max);
-						// graph_residual->GetYaxis()->SetRangeUser(-50, 50); 
+						graph_residual->GetYaxis()->SetRangeUser(-14, 14); 
 						graph_residual->SetLineWidth(1);
 						graph_residual->SetLineColor(1);
 						graph_residual->SetMarkerStyle(6);
