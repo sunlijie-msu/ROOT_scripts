@@ -85,7 +85,7 @@ void extract_histograms_from_G4_rootfiles_DSL2()
 				TTree* tree = (TTree*)_file0->Get("tree"); // the tree name in the simulation file is "tree"
 
 				TH1F* Eg = new TH1F("Eg", "Eg", 10000, 0, 10000);
-				tree->Draw("Clovere>>Eg", Form("Clovere>0&&Clovere<10000&&DSSD1e+DSSD2e>100&&DSSD1e>100&&DSSD2e>100"));
+				tree->Draw("Clovere>>Eg", Form("Clovere>0&&Clovere<10000&&DSSD1e+DSSD2e>100&&DSSD1e>100&&DSSD2e>100")); // place to add energy gates and location gates
 
 				TFile* fout = new TFile(outputFileName, "RECREATE");
 				Eg->Write();

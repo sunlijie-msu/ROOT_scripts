@@ -74,5 +74,4 @@ void histogram_get_bin_content_error_PXCT_237Np_timing()//get BinContent and Bin
 		outfile << h1->GetBinErrorUp(i) << endl;
 	}
 	outfile.close();
-
 }

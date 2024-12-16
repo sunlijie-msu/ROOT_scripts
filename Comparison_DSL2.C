@@ -47,7 +47,7 @@
 #include "TPaletteAxis.h"
 using namespace std;
 //Run with ROOT5. Somehow ROOT6 fits one spectrum and stops.
-// ROOTSYS put in C:\root5 or C:\root6. simple.
+// ROOTSYS: C:\root5 or C:\root6 to select the version of ROOT to use.
 //main_readhists; fcn(); comparehists(); main_draw_save;//search m o d i f y to change something
 // one peak + linear fline two-part bkg. Recommended for final results!
 // could subtract 2234's low-energy Compton bkg. // It could output some final figures.
@@ -58,8 +58,8 @@ TH1F* h_simulated_spec_scaled_plus_fit_background_scaled;
 const int factor_rebin = 5; //simu and data Rebin factor
 const int binwidth = factor_rebin * 1; //binwidths in units of keV
 const int Total_bins = 10000 / factor_rebin; //10000 keV is the total energy range
-float bkgDown = 0.60;
-float bkgUp = 0.99; // if you set bkgDown and bkgUp the same value, the bkg will be set to zero in minimization, which is wrong
+float bkgDown = 0.50;
+float bkgUp = 0.79; // if you set bkgDown and bkgUp the same value, the bkg will be set to zero in minimization, which is wrong
 
 const double E0_gamma = 7333; //Ex=7784.7, Eg=7333.2 by ENSDF
 const int peakrange_min = 7730;
@@ -67,26 +67,26 @@ const int peakrange_max = 7850;
 const double fitrange_min = 7670;
 const double fitrange_max = 7920;
 
-const int peakbin_min = static_cast<int>(peakrange_min / binwidth) + 1; // 1551
+const int peakbin_min = static_cast<int>(peakrange_min / binwidth) + 1; // 1547
 const int peakbin_max = static_cast<int>(peakrange_max / binwidth); // 1570
-const int fitbin_min = static_cast<int>(fitrange_min / binwidth) + 1; // 1541
-const int fitbin_max = static_cast<int>(fitrange_max / binwidth); // 1582
-const int num_bins_peak = peakbin_max - peakbin_min + 1; // 20
+const int fitbin_min = static_cast<int>(fitrange_min / binwidth) + 1; // 1535
+const int fitbin_max = static_cast<int>(fitrange_max / binwidth); // 1584
+const int num_bins_peak = peakbin_max - peakbin_min + 1; // 24
 
 double Low_bkg = 0.91;
 double High_bkg = 1.09;
 
-double Tau_values[] = { 0.0, 5.0, 10.0, 15.0, 20.0 };
-double Eg_values[] = { 7331.20, 7333.20, 7335.20 };
-double Bkg_values[] = { 0.90, 1.00, 1.10 };
-double SP_values[] = { 0.90, 1.00, 1.10 };
-double AC_values[] = { 0.0 };
-
-// double Tau_values[] = { 10.0 };
-// double Eg_values[] = { 7333.20 };
-// double Bkg_values[] = { 1.00 };
-// double SP_values[] = { 1.00 };
+// double Tau_values[] = { 0.0, 5.0, 10.0, 15.0, 20.0 };
+// double Eg_values[] = { 7331.20, 7333.20, 7335.20 };
+// double Bkg_values[] = { 0.90, 1.00, 1.10 };
+// double SP_values[] = { 0.90, 1.00, 1.10 };
 // double AC_values[] = { 0.0 };
+
+double Tau_values[] = { 10.0 };
+double Eg_values[] = { 7333.20 };
+double Bkg_values[] = { 1.00 };
+double SP_values[] = { 1.00 };
+double AC_values[] = { 0.0 };
 
 // const double E0_gamma = 4156; //Ex=6390
 // const int peakrange_min = 4410; // bin = 4411; bin center = 4410.5
@@ -151,7 +151,7 @@ Double_t fline(Double_t* x, Double_t* par) // pol1
 		TF1::RejectPoint();
 		return 0;
 	}
-	return par[0] + par[1] * x[0];
+	return par[0] + par[1] * x[0];  // place to add more complex background models
 }
 
 
