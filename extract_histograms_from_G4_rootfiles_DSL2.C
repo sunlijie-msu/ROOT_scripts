@@ -55,14 +55,14 @@ using namespace std;
 
 void extract_histograms_from_G4_rootfiles_DSL2()
 {
-	double Tau_values[] = { 0.0, 5.0, 10.0, 15.0, 20.0 };
+	double Tau_values[] = { 0.0, 5.0, 7.0, 10.0, 15.0, 20.0, 30.0 };
 	double Eg_values[] = { 7331.20, 7333.20, 7335.20 };
 	double Bkg_values[] = { 0.90, 1.00, 1.10 };
 	double SP_values[] = { 0.90, 1.00, 1.10 };
-	double AC_values[] = { 0.0 };
+	double AC_values = 0.0;
 
-// 	double Tau_values[] = { 5.0 };
-// 	double Eg_values[] = { 4155.84 };
+//	double Tau_values[] = { 7.0 };
+//	double Eg_values[] = { 7337.20 };
 // 	double Bkg_values[] = { 1.00 };
 // 	double SP_values[] = { 1.00 };
 // 	double AC_values = 0.0;

@@ -58,8 +58,8 @@ TH1F* h_simulated_spec_scaled_plus_fit_background_scaled;
 const int factor_rebin = 5; //simu and data Rebin factor
 const int binwidth = factor_rebin * 1; //binwidths in units of keV
 const int Total_bins = 10000 / factor_rebin; //10000 keV is the total energy range
-float bkgDown = 0.50;
-float bkgUp = 0.79; // if you set bkgDown and bkgUp the same value, the bkg will be set to zero in minimization, which is wrong
+float bkgDown = 0.59;
+float bkgUp = 0.75; // if you set bkgDown and bkgUp the same value, the bkg will be set to zero in minimization, which is wrong
 
 const double E0_gamma = 7333; //Ex=7784.7, Eg=7333.2 by ENSDF
 const int peakrange_min = 7730;
@@ -76,17 +76,17 @@ const int num_bins_peak = peakbin_max - peakbin_min + 1; // 24
 double Low_bkg = 0.91;
 double High_bkg = 1.09;
 
-// double Tau_values[] = { 0.0, 5.0, 10.0, 15.0, 20.0 };
-// double Eg_values[] = { 7331.20, 7333.20, 7335.20 };
-// double Bkg_values[] = { 0.90, 1.00, 1.10 };
-// double SP_values[] = { 0.90, 1.00, 1.10 };
-// double AC_values[] = { 0.0 };
-
-double Tau_values[] = { 10.0 };
-double Eg_values[] = { 7333.20 };
-double Bkg_values[] = { 1.00 };
-double SP_values[] = { 1.00 };
+double Tau_values[] = { 0.0, 5.0, 7.0, 10.0, 15.0, 20.0, 30.0 };
+double Eg_values[] = { 7331.20, 7333.20, 7335.20 };
+double Bkg_values[] = { 0.90, 1.00, 1.10 };
+double SP_values[] = { 0.90, 1.00, 1.10 };
 double AC_values[] = { 0.0 };
+
+// double Tau_values[] = { 7.0 };
+// double Eg_values[] = { 7333.20 };
+// double Bkg_values[] = { 1.00 };
+// double SP_values[] = { 1.00 };
+// double AC_values[] = { 0.0 };
 
 // const double E0_gamma = 4156; //Ex=6390
 // const int peakrange_min = 4410; // bin = 4411; bin center = 4410.5
@@ -401,7 +401,10 @@ void Comparison_DSL2()
 						textchi->SetFillColor(0);
 						textchi->SetTextAlign(12);//align = 10*HorizontalAlign + VerticalAlign, 12 means水平左对齐、垂直居中对齐
 						textchi->SetTextFont(132);//font = 10 * fontID + precision, 12+2,12 means Symbol; 13+2, 13 means News Times Roman
-						sprintf(paraprint, "#chi^{2} = %.2f / %d = %.5f   E_{#gamma} = %.2f keV   #tau = %.1f fs   N = %.1f +/- %.1f", Chi2, (num_bins_peak - 2), Chi2 / (num_bins_peak - 2), Eg_values[iEg], Tau_values[iTau], pars[0] * 14000, errs[0] * 14000);
+						// calculate p-value
+						double p_value = TMath::Prob(Chi2, (num_bins_peak - 2));
+						//cout << "p_value= " << p_value << endl;
+						sprintf(paraprint, "#chi^{2} = %.2f / %d = %.4f   p-val = %.5f   E_{#gamma} = %.2f keV   #tau = %.1f fs   N = %.1f +/- %.1f", Chi2, (num_bins_peak - 2), Chi2 / (num_bins_peak - 2), p_value, Eg_values[iEg], Tau_values[iTau], pars[0] * 14000, errs[0] * 14000);
 						textchi->AddText(paraprint);
 						textchi->Draw();
 
@@ -441,7 +444,7 @@ void Comparison_DSL2()
 						//graph_residual->SetStats(0);
 						graph_residual->GetXaxis()->SetLimits(fitrange_min, fitrange_max);
 						graph_residual->GetXaxis()->SetRangeUser(fitrange_min, fitrange_max);
-						graph_residual->GetYaxis()->SetRangeUser(-14, 14); 
+						graph_residual->GetYaxis()->SetRangeUser(-19, 19); 
 						graph_residual->SetLineWidth(1);
 						graph_residual->SetLineColor(1);
 						graph_residual->SetMarkerStyle(6);
