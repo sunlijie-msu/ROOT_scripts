@@ -59,7 +59,7 @@ const int factor_rebin = 5; //simu and data Rebin factor
 const int binwidth = factor_rebin * 1; //binwidths in units of keV
 const int Total_bins = 10000 / factor_rebin; //10000 keV is the total energy range
 float bkgDown = 0.59;
-float bkgUp = 0.75; // if you set bkgDown and bkgUp the same value, the bkg will be set to zero in minimization, which is wrong
+float bkgUp = 0.73; // if you set bkgDown and bkgUp the same value, the bkg will be set to zero in minimization, which is wrong
 
 const double E0_gamma = 7333; //Ex=7784.7, Eg=7333.2 by ENSDF
 const int peakrange_min = 7730;
@@ -76,17 +76,17 @@ const int num_bins_peak = peakbin_max - peakbin_min + 1; // 24
 double Low_bkg = 0.91;
 double High_bkg = 1.09;
 
-double Tau_values[] = { 0.0, 5.0, 7.0, 10.0, 15.0, 20.0, 30.0 };
-double Eg_values[] = { 7331.20, 7333.20, 7335.20 };
-double Bkg_values[] = { 0.90, 1.00, 1.10 };
-double SP_values[] = { 0.90, 1.00, 1.10 };
-double AC_values[] = { 0.0 };
-
-// double Tau_values[] = { 7.0 };
-// double Eg_values[] = { 7333.20 };
-// double Bkg_values[] = { 1.00 };
-// double SP_values[] = { 1.00 };
+// double Tau_values[] = { 0.0, 5.0, 7.0, 10.0, 15.0, 20.0, 30.0 };
+// double Eg_values[] = { 7331.20, 7333.20, 7335.20 };
+// double Bkg_values[] = { 0.90, 1.00, 1.10 };
+// double SP_values[] = { 0.90, 1.00, 1.10 };
 // double AC_values[] = { 0.0 };
+
+double Tau_values[] = { 7.0 };
+double Eg_values[] = { 7337.20 };
+double Bkg_values[] = { 1.00 };
+double SP_values[] = { 1.00 };
+double AC_values[] = { 0.0 };
 
 // const double E0_gamma = 4156; //Ex=6390
 // const int peakrange_min = 4410; // bin = 4411; bin center = 4410.5
