@@ -18,6 +18,6 @@ def rename_files(directory):
 if __name__ == "__main__":
     # Specify your directory path
     directory = r'D:\X\ND\Files'
-    
+
     # Call the rename function
     rename_files(directory)

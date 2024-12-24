@@ -58,8 +58,8 @@ TH1F* h_simulated_spec_scaled_plus_fit_background_scaled;
 const int factor_rebin = 5; //simu and data Rebin factor
 const int binwidth = factor_rebin * 1; //binwidths in units of keV
 const int Total_bins = 10000 / factor_rebin; //10000 keV is the total energy range
-float bkgDown = 0.59;
-float bkgUp = 0.73; // if you set bkgDown and bkgUp the same value, the bkg will be set to zero in minimization, which is wrong
+float bkgDown = 0.55;
+float bkgUp = 0.75; // if you set bkgDown and bkgUp the same value, the bkg will be set to zero in minimization, which is wrong
 
 const double E0_gamma = 7333; //Ex=7784.7, Eg=7333.2 by ENSDF
 const int peakrange_min = 7730;
@@ -82,9 +82,9 @@ double High_bkg = 1.09;
 // double SP_values[] = { 0.90, 1.00, 1.10 };
 // double AC_values[] = { 0.0 };
 
-double Tau_values[] = { 7.0 };
+double Tau_values[] = { 0.0, 7.0, 10.0, 20.0 };
 double Eg_values[] = { 7337.20 };
-double Bkg_values[] = { 1.00 };
+double Bkg_values[] = { 0.90, 1.00, 1.10 };
 double SP_values[] = { 1.00 };
 double AC_values[] = { 0.0 };
 

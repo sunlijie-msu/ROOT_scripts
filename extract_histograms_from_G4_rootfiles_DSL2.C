@@ -55,17 +55,17 @@ using namespace std;
 
 void extract_histograms_from_G4_rootfiles_DSL2()
 {
-	double Tau_values[] = { 0.0, 5.0, 7.0, 10.0, 15.0, 20.0, 30.0 };
-	double Eg_values[] = { 7331.20, 7333.20, 7335.20 };
-	double Bkg_values[] = { 0.90, 1.00, 1.10 };
-	double SP_values[] = { 0.90, 1.00, 1.10 };
-	double AC_values = 0.0;
+// 	double Tau_values[] = { 0.0, 5.0, 7.0, 10.0, 15.0, 20.0, 30.0 };
+// 	double Eg_values[] = { 7331.20, 7333.20, 7335.20 };
+// 	double Bkg_values[] = { 0.90, 1.00, 1.10 };
+// 	double SP_values[] = { 0.90, 1.00, 1.10 };
+// 	double AC_values[] = { 0.0 };
 
-//	double Tau_values[] = { 7.0 };
-//	double Eg_values[] = { 7337.20 };
-// 	double Bkg_values[] = { 1.00 };
-// 	double SP_values[] = { 1.00 };
-// 	double AC_values = 0.0;
+	double Tau_values[] = { 0.0, 10.0, 20.0 };
+	double Eg_values[] = { 7337.20 };
+	double Bkg_values[] = { 1.00 };
+	double SP_values[] = { 1.00 };
+	double AC_values[] = { 0.0 };
 
 	const char* baseInputFileName = "F:/out/G4_rootfiles_with_tree_Eg7333/Mg23_Gamma7333_Eg%.2f_Tau%.1f_SP%.2f_AC%.1f_all.root";
 	const char* baseOutputFileName = "F:/out/G4_rootfiles_with_tree_Eg7333/Mg23_Gamma7333_Eg%.2f_Tau%.1f_SP%.2f_AC%.1f.root";
@@ -76,20 +76,23 @@ void extract_histograms_from_G4_rootfiles_DSL2()
 		{
 			for (int iTau = 0; iTau < sizeof(Tau_values) / sizeof(Tau_values[0]); ++iTau)
 			{
-				char inputFileName[300];
-				char outputFileName[300];
-				sprintf(inputFileName, baseInputFileName, Eg_values[iEg], Tau_values[iTau], SP_values[iSP], AC_values);
-				sprintf(outputFileName, baseOutputFileName, Eg_values[iEg], Tau_values[iTau], SP_values[iSP], AC_values);
+				for (int iAC = 0; iAC < sizeof(AC_values) / sizeof(AC_values[0]); ++iAC)
+				{
+					char inputFileName[300];
+					char outputFileName[300];
+					sprintf(inputFileName, baseInputFileName, Eg_values[iEg], Tau_values[iTau], SP_values[iSP], AC_values[iAC]);
+					sprintf(outputFileName, baseOutputFileName, Eg_values[iEg], Tau_values[iTau], SP_values[iSP], AC_values[iAC]);
 
-				TFile* _file0 = TFile::Open(inputFileName);
-				TTree* tree = (TTree*)_file0->Get("tree"); // the tree name in the simulation file is "tree"
+					TFile* _file0 = TFile::Open(inputFileName);
+					TTree* tree = (TTree*)_file0->Get("tree"); // the tree name in the simulation file is "tree"
 
-				TH1F* Eg = new TH1F("Eg", "Eg", 10000, 0, 10000);
-				tree->Draw("Clovere>>Eg", Form("Clovere>0&&Clovere<10000&&DSSD1e+DSSD2e>100&&DSSD1e>100&&DSSD2e>100")); // place to add energy gates and location gates
+					TH1F* Eg = new TH1F("Eg", "Eg", 10000, 0, 10000);
+					tree->Draw("Clovere>>Eg", Form("Clovere>0&&Clovere<10000&&DSSD1e+DSSD2e>100&&DSSD1e>100&&DSSD2e>100")); // place to add energy gates and location gates
 
-				TFile* fout = new TFile(outputFileName, "RECREATE");
-				Eg->Write();
-				fout->Close();
+					TFile* fout = new TFile(outputFileName, "RECREATE");
+					Eg->Write();
+					fout->Close();
+				}
 			}
 		}
 	}
