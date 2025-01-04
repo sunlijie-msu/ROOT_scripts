@@ -175,6 +175,11 @@ gStyle->SetOptFit();
 
 TMath::Prob(¦Ö2,NDF);//calculate p-value from Chisquare
 TMath::Prob(500,498);//=0.466
+// ROOT calculate p-value from Chisquare
+Double_t Prob(Double_t chi2, Int_t ndf)
+double p_value = TMath::Prob(chi2, ndf);
+p_value = TMath::Prob(100, 100); //0.48119
+
 
 TH1F *TSi = new TH1F("TSi","TSi",1199,5,6600);
 T999->Draw("T>>TSi","T>0");
