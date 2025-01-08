@@ -175,7 +175,7 @@ gStyle->SetOptFit();
 
 TMath::Prob(¦Ö2,NDF);//calculate p-value from Chisquare
 TMath::Prob(500,498);//=0.466
-// ROOT calculate p-value from Chisquare
+// ROOT calculate p value from Chisquare
 Double_t Prob(Double_t chi2, Int_t ndf)
 double p_value = TMath::Prob(chi2, ndf);
 p_value = TMath::Prob(100, 100); //0.48119
