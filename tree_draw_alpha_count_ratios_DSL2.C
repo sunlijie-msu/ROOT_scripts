@@ -1,11 +1,20 @@
 TFile* _file0 = TFile::Open("Mg23_Gamma7333_Eg7333.20_Tau7.0_SP1.00_AC0.0_all.root.");
-TCanvas* canvaspeak = new TCanvas("canvaspeak", "canvaspeak", 890, 800);//
-canvaspeak->cd();//
-canvaspeak->SetTopMargin(0.03);
-canvaspeak->SetRightMargin(0.12);
-canvaspeak->SetLeftMargin(0.17);
-canvaspeak->SetBottomMargin(0.15);
+TCanvas* canvasring = new TCanvas("canvasring", "canvasring", 890, 800);//
+canvasring->cd();//
+canvasring->SetTopMargin(0.03);
+canvasring->SetRightMargin(0.12);
+canvasring->SetLeftMargin(0.17);
+canvasring->SetBottomMargin(0.15);
 gStyle->SetFrameLineWidth(3);
+canvasring->SetFrameLineWidth(3);
+canvasring->SetLogz();
+
+TCanvas* canvaspeak = new TCanvas("canvaspeak", "canvaspeak", 1300, 800);//
+canvaspeak->cd();//
+canvaspeak->SetTopMargin(0.025);
+canvaspeak->SetRightMargin(0.04);
+canvaspeak->SetLeftMargin(0.11);
+canvaspeak->SetBottomMargin(0.15);
 canvaspeak->SetFrameLineWidth(3);
 canvaspeak->SetLogz();
 
@@ -50,7 +59,7 @@ TH1D* h1DSSD_total_e_Ring5_sub11 = new TH1D("h1DSSD_total_e_Ring5_sub11", "h1DSS
 TH1D* h1DSSD_total_e_Ring5_sub12 = new TH1D("h1DSSD_total_e_Ring5_sub12", "h1DSSD_total_e_Ring5_sub12", 6000, 0, 60000);
 
 
-tree->Draw("DSSD1y-100:DSSD1x-100>>h2DSSD1xy", "DSSD1e+DSSD2e>100&&DSSD1e>100&&DSSD2e>100", "surf2");
+//tree->Draw("DSSD1y-100:DSSD1x-100>>h2DSSD1xy", "DSSD1e+DSSD2e>100&&DSSD1e>100&&DSSD2e>100", "surf2");
 
 tree->SetMarkerColor(1);
 tree->Draw("DSSD1y-100:DSSD1x-100>>h2DSSD1xy", "DSSD1e+DSSD2e>100&&DSSD1e>100&&DSSD2e>100&&DSSD1x>96.875&&DSSD1x<103.125&&DSSD1y>96.875&&DSSD1y<103.125", "");
@@ -99,7 +108,7 @@ h1DSSD_total_e_Ring3->Add(h1DSSD_total_e_Ring3_sub6);
 h1DSSD_total_e_Ring3->Add(h1DSSD_total_e_Ring3_sub7);
 h1DSSD_total_e_Ring3->Add(h1DSSD_total_e_Ring3_sub8);
 h1DSSD_total_e_Ring3->SetLineColor(kGreen+1);
-
+h1DSSD_total_e_Ring3->Draw("same");
 
 tree->SetMarkerColor(kAzure);
 tree->Draw("DSSD1y-100:DSSD1x-100", "DSSD1e+DSSD2e>100&&DSSD1e>100&&DSSD2e>100&&DSSD1x>93.75&&DSSD1x<106.25&&DSSD1y>109.375&&DSSD1y<112.5", "same");
@@ -199,7 +208,7 @@ palette->SetTitleSize(0.05);
 palette->SetLabelFont(132);
 palette->SetLabelSize(0.05);
 palette->SetLineWidth(3);
-canvaspeak->SaveAs("F:/out/G4_rootfiles_with_tree_Eg7333/DSL2_Fig_alpha_counts_rings.png");
+canvasring->SaveAs("DSL2_Fig_alpha_counts_rings.png");
 
 h1DSSD_total_e_Ring1->Draw();
 h1DSSD_total_e_Ring2->Draw("same");
@@ -219,13 +228,17 @@ h1DSSD_total_e_Ring1->GetYaxis()->SetLabelSize(0.05);
 h1DSSD_total_e_Ring1->GetXaxis()->SetTitleFont(132);
 h1DSSD_total_e_Ring1->GetYaxis()->SetTitleFont(132);
 h1DSSD_total_e_Ring1->GetXaxis()->SetTitleOffset(1.1);
-h1DSSD_total_e_Ring1->GetYaxis()->SetTitleOffset(1.4);
+h1DSSD_total_e_Ring1->GetYaxis()->SetTitleOffset(0.9);
 h1DSSD_total_e_Ring1->GetXaxis()->SetTitleSize(0.06);
 h1DSSD_total_e_Ring1->GetYaxis()->SetTitleSize(0.06);
 h1DSSD_total_e_Ring1->GetXaxis()->SetNdivisions(505);
 h1DSSD_total_e_Ring1->GetYaxis()->SetNdivisions(505);
 h1DSSD_total_e_Ring1->GetYaxis()->SetTickLength(0.02);
+h1DSSD_total_e_Ring1->GetXaxis()->SetRangeUser(7000, 25000);
+h1DSSD_total_e_Ring1->GetYaxis()->SetRangeUser(0, 220);
 gPad->RedrawAxis();
+canvaspeak->SaveAs("DSL2_Fig_alpha_energy_rings.png");
+
 double R1, R2, R3, R4, R5, R_total;
 double Ea_min = 5000, Ea_max = 25000;
 
