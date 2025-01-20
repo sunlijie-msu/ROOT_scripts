@@ -12,8 +12,8 @@ canvasring->SetFrameLineWidth(3);
 //TH2D* h2DSSD1xy = new TH2D("h2DSSD1xy", "h2DSSD1xy", 16, 75, 125, 16, 75, 125);
 TH2D* h2DSSD1xy = new TH2D("h2DSSD1xy", "h2DSSD1xy", 160, -25, 25, 160, -25, 25);
 
-tree->Draw("DSSD1y-100:DSSD1x-100>>h2DSSD1xy", "DSSD1e+DSSD2e>100&&DSSD1e>100&&DSSD2e>100", "surf2");
-//tree->Draw("DSSD1y-100:DSSD1x-100>>h2DSSD1xy", "DSSD1e+DSSD2e>100&&DSSD1e>100&&DSSD2e>100", "colz");
+//tree->Draw("DSSD1y-100:DSSD1x-100>>h2DSSD1xy", "DSSD1e+DSSD2e>100&&DSSD1e>100&&DSSD2e>100", "surf2");
+tree->Draw("DSSD1y-100:DSSD1x-100>>h2DSSD1xy", "DSSD1e+DSSD2e>100&&DSSD1e>100&&DSSD2e>100", "colz");
 
 h2DSSD1xy->SetStats(0);
 h2DSSD1xy->SetTitle("");
@@ -36,7 +36,7 @@ h2DSSD1xy->GetYaxis()->SetNdivisions(505);
 h2DSSD1xy->GetXaxis()->SetRangeUser(-25, 25);
 h2DSSD1xy->GetYaxis()->SetRangeUser(-25, 25);
 h2DSSD1xy->SetMinimum(1);
-h2DSSD1xy->SetMaximum(600);
+h2DSSD1xy->SetMaximum(540);
 h2DSSD1xy->SetContour(99);
 TPaletteAxis* palette = (TPaletteAxis*)h2DSSD1xy->GetListOfFunctions()->FindObject("palette");
 gStyle->SetPalette(kRainbow);
@@ -45,7 +45,7 @@ palette->SetTitleSize(0.05);
 palette->SetLabelFont(132);
 palette->SetLabelSize(0.05);
 palette->SetLineWidth(3);
-canvasring->SaveAs("F:/out/DSL2_Fig_alpha_counts_rings_Mg23_Gamma7333_Eg7333.20_Tau7.0_SP1.00_AD0.0_all.png");
+canvasring->SaveAs("F:/out/DSL2_Fig_alpha_counts_rings_Mg23_Gamma7333_Eg7333.20_Tau7.0_SP1.00_AD-1.0_all.png");
 
 tree->SetMarkerColor(1);
 tree->Draw("DSSD1y-100:DSSD1x-100>>h2DSSD1xy", "DSSD1e+DSSD2e>100&&DSSD1e>100&&DSSD2e>100&&DSSD1x>96.875&&DSSD1x<103.125&&DSSD1y>96.875&&DSSD1y<103.125", "");
@@ -246,7 +246,7 @@ h1DSSD_total_e_Ring1->GetYaxis()->SetRangeUser(0, 220);
 gPad->RedrawAxis();
 canvaspeak->SaveAs("DSL2_Fig_alpha_energy_rings.png");
 
-TFile* _file0 = TFile::Open("Mg23_Gamma7333_Eg7333.20_Tau7.0_SP1.00_AD-1.0_all.root.");
+TFile* _file0 = TFile::Open("Mg23_Gamma7333_Eg7333.20_Tau7.0_SP1.00_AD-0.8_all.root.");
 double R1, R2, R3, R4, R5, R_total;
 double Ea_min = 100, Ea_max = 30000;
 
@@ -308,8 +308,4 @@ R3_ratio = R3 / R_total;
 R4_ratio = R4 / R_total;
 R5_ratio = R5 / R_total;
 
-cout << "R1_ratio = " << R1_ratio << endl;
-cout << "R2_ratio = " << R2_ratio << endl;
-cout << "R3_ratio = " << R3_ratio << endl;
-cout << "R4_ratio = " << R4_ratio << endl;
-cout << "R5_ratio = " << R5_ratio << endl;
+cout << "R_ratios= " << R1_ratio << " " << R2_ratio << " " << R3_ratio << " " << R4_ratio << " " << R5_ratio << endl;
