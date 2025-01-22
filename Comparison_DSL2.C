@@ -80,13 +80,13 @@ double High_bkg = 1.09;
 // double Eg_values[] = { 7331.20, 7333.20, 7335.20 };
 // double Bkg_values[] = { 0.90, 1.00, 1.10 };
 // double SP_values[] = { 0.90, 1.00, 1.10 };
-// double AC_values[] = { 0.0 };
+// double AD_values[] = { 0.0 };
 
-double Tau_values[] = { 0.0, 7.0, 10.0, 20.0 };
-double Eg_values[] = { 7337.20 };
-double Bkg_values[] = { 0.90, 1.00, 1.10 };
+double Tau_values[] = { 7.0 };
+double Eg_values[] = { 7333.20 };
+double Bkg_values[] = { 1.00 };
 double SP_values[] = { 1.00 };
-double AC_values[] = { 0.0 };
+double AD_values[] = { -1.0, -0.9, -0.5, 0.0, 1.0 };
 
 // const double E0_gamma = 4156; //Ex=6390
 // const int peakrange_min = 4410; // bin = 4411; bin center = 4410.5
@@ -201,7 +201,7 @@ void Comparison_DSL2()
 		{
 			for (int iSP = 0; iSP < sizeof(SP_values) / sizeof(SP_values[0]); iSP++)
 			{
-				for (int iAC = 0; iAC < sizeof(AC_values) / sizeof(AC_values[0]); iAC++)
+				for (int iAD = 0; iAD < sizeof(AD_values) / sizeof(AD_values[0]); iAD++)
 				{
 // 					sprintf(b_name, "%s%.0f%s", "D:/X/out/DSL/Chi2/Chi2_Gamma", E0_gamma, "slice_vTau_G4.dat");
 // 					FILE* outChi2file = fopen(b_name, "a"); //ofstream doesn't work
@@ -210,7 +210,7 @@ void Comparison_DSL2()
 						//readHists();
 						Chi2 = 0;//Chi2 is global varible, use Chi2 to extract the minimized Chi2 obtained in fcn(), and output Chi2 in main(). Must clean Chi2 before each run in main().
 
-						sprintf(simurootname, "%s%.0f%s%.0f%s%.2f%s%.1f%s%.2f%s%.1f%s", "F:/out/G4_rootfiles_with_tree_Eg", E0_gamma, "/Mg23_Gamma", E0_gamma, "_Eg", Eg_values[iEg], "_Tau", Tau_values[iTau], "_SP", SP_values[iSP], "_AC", AC_values[iAC], ".root");
+						sprintf(simurootname, "%s%.0f%s%.0f%s%.2f%s%.1f%s%.2f%s%.1f%s", "F:/out/G4_rootfiles_with_tree_Eg", E0_gamma, "/Mg23_Gamma", E0_gamma, "_Eg", Eg_values[iEg], "_Tau", Tau_values[iTau], "_SP", SP_values[iSP], "_AD", AD_values[iAD], ".root");
 						//read in lots of simulation root files. Input root file names don't contain Bkg_values[iBkg], but output fig/dat/root file names contain Bkg_values[iBkg].
 						fin_simu = new TFile(simurootname); //Rootfile with Simulation histograms
 						cout << simurootname << endl;
@@ -460,7 +460,7 @@ void Comparison_DSL2()
 						//fprintf(outfile2, "%d	%e", Tau_values[iTau], LBayesian);//LB is global varible, use LB to extract the LB corresponding to the minimum Chi2 iterated by fcn(), and output LB in main().// use this sentence to output 2D LB matrix
 						//fprintf(outChi2file, "%.0f	%.3f", Tau_values[iTau], Chi2);//Chi2 is global varible, use Chi2 to extract the minimized Chi2 obtained in fcn(), and output Chi2 in main(). // use this sentence to output 1D2D chisquare matrix
 
-						sprintf(tname, "%s%.0f%s%.0f%s%.2f%s%.1f%s%.2f%s%.1f%s%.2f", "D:/X/out/DSL2_Comparison/Eg", E0_gamma, "/Mg23_Gamma", E0_gamma, "_Eg", Eg_values[iEg], "_Tau", Tau_values[iTau], "_SP", SP_values[iSP], "_AC", AC_values[iAC], "_Bkg", Bkg_values[iBkg]);
+						sprintf(tname, "%s%.0f%s%.0f%s%.2f%s%.1f%s%.2f%s%.1f%s%.2f", "D:/X/out/DSL2_Comparison/Eg", E0_gamma, "/Mg23_Gamma", E0_gamma, "_Eg", Eg_values[iEg], "_Tau", Tau_values[iTau], "_SP", SP_values[iSP], "_AD", AD_values[iAD], "_Bkg", Bkg_values[iBkg]);
 						//save figure
 						sprintf(outfigname, "%s%s", tname, ".png");
 						c1->SaveAs(outfigname);
@@ -511,7 +511,7 @@ void Comparison_DSL2()
 
 						delete outfileroot;
 					} // for (iTau)
-				} // for (iAC)
+				} // for (iAD)
 			} // for (iSP)
 		} // for (iBkg)
 	} // for(iEg)
