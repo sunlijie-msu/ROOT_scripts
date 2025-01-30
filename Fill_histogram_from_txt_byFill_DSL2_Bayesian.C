@@ -40,7 +40,7 @@ void Fill_histogram_from_txt_byFill_DSL2_Bayesian()//read bincontent from a txt 
 	char outrootname[200], datname[200], tname[200];
 	TCanvas *canvas;
 	int Entries=300;//modify
-	sprintf(tname, "%s", "D:/X/out/Bayesian_VS/Bayesian_DSL/DSL_31S4156_3fs/31S4156_samples");
+	sprintf(tname, "%s", "D:/X/out/Bayesian_VS/Bayesian_DSL/png_3fs_scaled_1k/31S4156_3fs_samples");
 	sprintf(datname, "%s%s", tname, ".dat");
 	sprintf(outrootname, "%s%s", tname, ".root");
 	ifstream infile(datname,ios::in);
@@ -51,6 +51,7 @@ void Fill_histogram_from_txt_byFill_DSL2_Bayesian()//read bincontent from a txt 
 	while ( getline(infile, line) )
 	{
 		stringstream(line) >> x;
+		//cout << x << endl;
 		h1->Fill(x);
 	}
 	canvas->cd();//½øÈë»­²¼

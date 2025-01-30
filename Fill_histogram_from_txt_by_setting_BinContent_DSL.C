@@ -31,26 +31,26 @@
 #include "stdio.h"
 #include "TLegend.h"
 using namespace std;
-void Fill_histogram_from_txt_byBinContent()//read bincontent from a txt file and create a histo and save it as a new root file.
+void Fill_histogram_from_txt_by_setting_BinContent_DSL()//read x and ybincontent from a txt file and create a histo and save it as a new root file.
 {// input bin by bin, not event by event
 	int ii,jj;
 	float Channel[500];
 	float x,y,xe,ye;
 	long Count[500];
-	char rootname[80];
-	char rawrootname[80];
+	char outrootname[300];
+	char rawrootname[300];
 	TCanvas *canvas;
 	int Entries=300;//modify
-	ifstream infile("C:/Si24/root_scripts/Xu/inputforh1.dat",ios::in);
-	sprintf(rootname,"%s","C:/Si24/root_scripts/Xu/outputforh1.root");
+	ifstream infile("D:/X/out/Fresco_DSL/B5-example-tr_angular_distribution.txt",ios::in);
+	sprintf(outrootname,"%s","D:/X/out/Fresco_DSL/Fresco_angular_distribution.root");
 //	sprintf(rawrootname,"C:/Si24/root_scripts/Xu/S27_pz_new.root");//modify if change path or nuclide
 //	TFile *fin = new TFile(rawrootname);//after this statement, you can use any ROOT command for this rootfile
 	//unsigned long nentries=T999->GetEntries();//读事件数
 //	cout<<rawrootname<<endl;
 	//cout<<"  Entries="<<nentries<<endl;
-	TFile *fout = new TFile(rootname,"RECREATE");//输出文件//It's better to define histograms and then define fout, in case of draw bugs.
+	TFile *fout = new TFile(outrootname,"RECREATE");//输出文件//It's better to define histograms and then define fout, in case of draw bugs.
 	canvas=new TCanvas("c1","c1", 900,600);//建立画布
-	TH1F *h1 = new TH1F("depth","depth",100,-1.5,298.5);//create a histogram
+	TH1F * angular_distribution = new TH1F("angular_distribution","angular_distribution",1800,-0.05,179.95);//create a histogram
 // 	TH1D *h40pz = (TH1D*)fin->Get("himpl40pz");//read a histogram from another Root file
 // 	TH1D *h304pz = (TH1D*)fin->Get("himpl304pz");//read a histogram from another Root file
 	string line;
@@ -67,9 +67,9 @@ void Fill_histogram_from_txt_byBinContent()//read bincontent from a txt file and
 	while ( getline(infile, line) )
 	{
 		stringstream(line) >> x >> y;
-		ibin=h1->FindBin(x);
+		ibin= angular_distribution->FindBin(x);
 		cout<<ibin<<' '<<x<<' '<<y<<endl;
-		h1->SetBinContent(ibin,y);//SetBinContent(ibin starts from 1, bincontent);
+		angular_distribution->SetBinContent(ibin,y);//SetBinContent(ibin starts from 1, bincontent);
 		//h1->SetBinError(ibin,xe);//SetBinContent(ibin starts from 1, bincontent);
 		//		h1->Fill(x);
 		ibin++;
@@ -77,7 +77,7 @@ void Fill_histogram_from_txt_byBinContent()//read bincontent from a txt file and
 	
 // 	h40pz->Write();//this histo was copied, not new, this write statement cannot be omitted.
 // 	h304pz->Write();//this histo was copied, not new, this write statement cannot be omitted.
-	h1->Write();// this write statement should be omitted.
+	angular_distribution->Write();// this write statement should be omitted.
 // 	for(ii=0;ii<Entries;ii++)
 // 	{
 // 		infile>>Channel[ii]>>Count[ii];
@@ -91,13 +91,13 @@ void Fill_histogram_from_txt_byBinContent()//read bincontent from a txt file and
 // 		}
 // 	}
 	canvas->cd();//进入画布
-	h1->GetXaxis()->SetTitle("Depth (nm)");//轴名
-	h1->GetYaxis()->SetTitle("Counts per 3 nm");//轴名
-	h1->GetXaxis()->CenterTitle();//居中
-	h1->GetYaxis()->CenterTitle();//居中
-	h1->Draw();
+	angular_distribution->GetXaxis()->SetTitle("Angle (deg)");//轴名
+	angular_distribution->GetYaxis()->SetTitle("mb/sr");//轴名
+	angular_distribution->GetXaxis()->CenterTitle();//居中
+	angular_distribution->GetYaxis()->CenterTitle();//居中
+	angular_distribution->Draw();
 	canvas->Update();
-	cout<<"RMS= "<<setiosflags(ios::fixed)<<setprecision(9)<<h1->GetRMS();//you can also find the RMS in the rootfile
+	cout<<"RMS= "<<setiosflags(ios::fixed)<<setprecision(9)<< angular_distribution->GetRMS();//you can also find the RMS in the rootfile to verify
 	fout->Write();
-	fout->Close();
+	//fout->Close();
 }

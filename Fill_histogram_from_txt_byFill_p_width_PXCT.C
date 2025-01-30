@@ -31,7 +31,7 @@
 #include "stdio.h"
 #include "TLegend.h"
 using namespace std;
-void Fill_histogram_from_txt_byFill_p_width()//read bincontent from a txt file and create a histo and save it as a new root file.
+void Fill_histogram_from_txt_byFill_p_width_PXCT()//read bincontent from a txt file and create a histo and save it as a new root file.
 {// input bin by bin, not event by event
 	int ii,jj;
 	float Channel[500];
