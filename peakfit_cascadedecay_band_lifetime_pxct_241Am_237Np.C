@@ -87,19 +87,19 @@ void peakfit_cascadedecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_
 	int bin_start_high = 1420; // placeholder
 	int colors[4] = { kBlack, kRed, kAzure, kGreen };
 	int colorsband[4] = { kGray + 1, kRed - 9, kAzure - 9, kGreen - 9 };
-	int Which_Dataset = 2; // Modify: 1 for MSDtotal; 2 for MSD26;
+	int Which_Dataset = 3; // Modify: 1 for MSDtotal; 2 for MSD26;
 	int Which_MSD;
 
 	if (Which_Dataset == 1)
 	{
 		Which_MSD = 26; // Modify: 12 for MSD12; 26 for MSD26;
-		Ea_central = 5418; // 5418 for MSDtotal, based on LISE++ calculation
+		Ea_central = 5417; // 5418 for MSDtotal, based on LISE++ calculation
 		if (Which_MSD == 12)	bin_start_low = 240; // Don't change
 		if (Which_MSD == 26)	bin_start_low = 160; // Don't change
-		Ea_gate_start = 60; // Modify: Default 4; 4 means +/-4 keV = 8 keV wide; 20 means +/-20 keV = 40 keV wide
-		Ea_gate_end = 60; // Modify: Default 60;
-		msd_e_cut_low = 5290; // Modify: for single peak fit
-		msd_e_cut_high = 5520; // Modify: for single peak fit
+		Ea_gate_start = 60; // Default 4; 4 means +/-4 keV = 8 keV wide; 20 means +/-20 keV = 40 keV wide
+		Ea_gate_end = 60; // Default 60;
+		msd_e_cut_low = 5317; // Modify: for single peak fit
+		msd_e_cut_high = 5517; // Modify: for single peak fit
 		sprintf(msdname, "%s", "msdtotal");
 	}
 	if (Which_Dataset == 2)
@@ -115,14 +115,14 @@ void peakfit_cascadedecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_
 	}
 	if (Which_Dataset == 3)
 	{
-		Which_MSD = 12; // Modify: 12 for MSD12; 26 for MSD26;
-		Ea_central = 5418; // 5418 for MSDtotal, based on LISE++ calculation
+		Which_MSD = 26; // Modify: 12 for MSD12; 26 for MSD26;
+		Ea_central = 5417; // 5418 for MSDtotal, based on LISE++ calculation
 		if (Which_MSD == 12)	bin_start_low = 230; // Don't change
 		if (Which_MSD == 26)	bin_start_low = 210; // Don't change
-		Ea_gate_start = 60; // Modify: Default 4; 4 means +/-4 keV = 8 keV wide; 20 means +/-20 keV = 40 keV wide
-		Ea_gate_end = 60; // Modify: Default 60;
-		msd_e_cut_low = 5290; // Modify: for single peak fit
-		msd_e_cut_high = 5520; // Modify: for single peak fit
+		Ea_gate_start = 60; // Default 4; 4 means +/-4 keV = 8 keV wide; 20 means +/-20 keV = 40 keV wide
+		Ea_gate_end = 60; // Default 60;
+		msd_e_cut_low = 5317; // Modify: for single peak fit
+		msd_e_cut_high = 5517; // Modify: for single peak fit
 		sprintf(msdname, "%s", "msdtotal");
 	}
 
@@ -256,11 +256,11 @@ void peakfit_cascadedecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_
 			//b[ii]->SetNpx(histoNbins * 10);
 			//fEMG[ii]->SetParameters(0.1,15,peaky[ii],10,10,peakx[ii]);//initial value [0]-A, [1]-B, [2]-N, [3]-而, [4]-考, [5]-米
 			int Total_decays_guess = 2000 * i;
-			fEMG[ii]->SetParameters(2e6, 67.8, 1, 0.08, 0.1542); // initial value [0]-N59, [1]-T59, [2]-B, [3]-T103, [4]-k
-			fEMG[ii]->SetParLimits(0, 0.5e6, 10e6);//N59
+			fEMG[ii]->SetParameters(2e6, 67.8, 1, 0.080, 0.1542); // initial value [0]-N59, [1]-T59, [2]-B, [3]-T103, [4]-k
+			fEMG[ii]->SetParLimits(0, 1e6, 4e6);//N59
 			fEMG[ii]->SetParLimits(1, 40, 140);//T59
 			fEMG[ii]->SetParLimits(2, 0, 12);//B
-			fEMG[ii]->SetParLimits(3, 0.080, 0.160);//T103
+			fEMG[ii]->SetParLimits(3, 0.040, 0.120);//T103
 			fEMG[ii]->SetParLimits(4, 0.15, 0.16);//k
 			fEMG[ii]->SetParNames("Total_direct_decays", "Half_life_59", "Background", "Half_life_103", "Ratio_indirect");
 			//fEMG[ii]->SetParNames("BkgA", "BkgB", "Const*bin", "Tau", "Sigma", "Mean");
@@ -297,7 +297,7 @@ void peakfit_cascadedecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_
 			sprintf(filename, "%s%s%d%s%d", "h_confidence_interval", "_", i, "_", ii);
 			h_confidence_interval[i][ii] = (TH1D*)histo[i]->Clone(filename);//Create a histogram to hold the confidence intervals
 			TVirtualFitter* fitter = TVirtualFitter::GetFitter();//The method TVirtualFitter::GetFitter())->Get the parameters of your fitting function after having it fitted to an histogram.
-			fitter->GetConfidenceIntervals(h_confidence_interval[i][ii], 0.95);//By default the intervals are inflated using the chi2/ndf value of the fit if a chi2 fit is performed
+			fitter->GetConfidenceIntervals(h_confidence_interval[i][ii], 0.683);//By default the intervals are inflated using the chi2/ndf value of the fit if a chi2 fit is performed
 			//confidence interval for the colored band: 1考 confidence interval: P=0.683, 1考 confidence interval: P=0.95, 3考 confidence interval: P=0.997
 			//h_confidence_interval will contain the CL result that you can draw on top of your fitted graph.
 			//where h_confidence_interval will hold the errors and could superimpose it on the same canvas where you plot central values.
