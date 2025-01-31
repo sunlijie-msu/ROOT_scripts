@@ -76,17 +76,17 @@ const int num_bins_peak = peakbin_max - peakbin_min + 1; // 24
 double Low_bkg = 0.91;
 double High_bkg = 1.09;
 
-// double Tau_values[] = { 0.0, 5.0, 7.0, 10.0, 15.0, 20.0, 30.0 };
-// double Eg_values[] = { 7331.20, 7333.20, 7335.20 };
-// double Bkg_values[] = { 0.90, 1.00, 1.10 };
-// double SP_values[] = { 0.90, 1.00, 1.10 };
-// double AD_values[] = { 0.0 };
+ double Tau_values[] = { 0.0, 5.0, 7.0, 10.0, 15.0, 20.0, 30.0 };
+ double Eg_values[] = { 7333.20 }; // 7331.20, 7333.20, 7335.20
+ double Bkg_values[] = { 1.00 }; // 0.90, 1.00, 1.10
+ double SP_values[] = { 1.00 }; // 0.90, 1.00, 1.10
+ double AD_values[] = { 0.0 };
 
-double Tau_values[] = { 7.0 };
-double Eg_values[] = { 7333.20 };
-double Bkg_values[] = { 1.00 };
-double SP_values[] = { 1.00 };
-double AD_values[] = { -1.0, -0.9, -0.5, 0.0, 1.0 };
+//double Tau_values[] = { 0.0, 5.0, 7.0, 10.0, 15.0, 20.0, 30.0 };
+//double Eg_values[] = { 7333.20 };
+//double Bkg_values[] = { 1.00 };
+//double SP_values[] = { 1.00 };
+//double AD_values[] = { -1.0, -0.9, -0.5, 0.0, 1.0 };
 
 // const double E0_gamma = 4156; //Ex=6390
 // const int peakrange_min = 4410; // bin = 4411; bin center = 4410.5
@@ -194,6 +194,9 @@ void Comparison_DSL2()
 	sprintf(outtxtname, "%s%.0f%s%.0f%s", "D:/X/out/DSL2_Comparison/Eg", E0_gamma, "/DSL_23Mg", E0_gamma, "_model_parameter_values.dat");
 	FILE* outfilepara = fopen(outtxtname, "w"); // "w" stands for write, and it will create a new file if it doesn't exist or clear the file to zero length if it already exists.
 
+	sprintf(outtxtname, "%s%.0f%s%.0f%s", "D:/X/out/DSL2_Comparison/Eg", E0_gamma, "/DSL_23Mg", E0_gamma, "_Chi2_values.dat");
+	FILE* outfileChi2 = fopen(outtxtname, "w"); // "w" stands for write, and it will create a new file if it doesn't exist or clear the file to zero length if it already exists.
+
 	int i_model_run = 0;
 	for (int iEg = 0; iEg < sizeof(Eg_values) / sizeof(Eg_values[0]); iEg++)
 	{
@@ -203,8 +206,6 @@ void Comparison_DSL2()
 			{
 				for (int iAD = 0; iAD < sizeof(AD_values) / sizeof(AD_values[0]); iAD++)
 				{
-// 					sprintf(b_name, "%s%.0f%s", "D:/X/out/DSL/Chi2/Chi2_Gamma", E0_gamma, "slice_vTau_G4.dat");
-// 					FILE* outChi2file = fopen(b_name, "a"); //ofstream doesn't work
 					for (int iTau = 0; iTau < sizeof(Tau_values) / sizeof(Tau_values[0]); iTau++)
 					{
 						//readHists();
@@ -456,10 +457,6 @@ void Comparison_DSL2()
 
 						cout << "=======	Eg=	" << Eg_values[iEg] << "	tau=	" << Tau_values[iTau] << " fs" << endl;
 
-						//save text
-						//fprintf(outfile2, "%d	%e", Tau_values[iTau], LBayesian);//LB is global varible, use LB to extract the LB corresponding to the minimum Chi2 iterated by fcn(), and output LB in main().// use this sentence to output 2D LB matrix
-						//fprintf(outChi2file, "%.0f	%.3f", Tau_values[iTau], Chi2);//Chi2 is global varible, use Chi2 to extract the minimized Chi2 obtained in fcn(), and output Chi2 in main(). // use this sentence to output 1D2D chisquare matrix
-
 						sprintf(tname, "%s%.0f%s%.0f%s%.2f%s%.1f%s%.2f%s%.1f%s%.2f", "D:/X/out/DSL2_Comparison/Eg", E0_gamma, "/Mg23_Gamma", E0_gamma, "_Eg", Eg_values[iEg], "_Tau", Tau_values[iTau], "_SP", SP_values[iSP], "_AD", AD_values[iAD], "_Bkg", Bkg_values[iBkg]);
 						//save figure
 						sprintf(outfigname, "%s%s", tname, ".png");
@@ -508,6 +505,12 @@ void Comparison_DSL2()
 
 						cout << "i_model_run=	" << i_model_run << endl;
 						i_model_run++;
+
+						//save Chi2 values for classical Chi2 minimization approach.
+						sprintf(outtxtname, "%s%.0f%s%.0f%s", "D:/X/out/DSL2_Comparison/Eg", E0_gamma, "/DSL_23Mg", E0_gamma, "_Chi2_values.dat");
+						outfileChi2 = fopen(outtxtname, "a"); //ofstream doesn't work
+						fprintf(outfileChi2, "% .0f % .3f\n", Tau_values[iTau], Chi2);//Chi2 is global varible, use Chi2 to extract the minimized Chi2 obtained in fcn(), and output Chi2 in main().
+						fclose(outfileChi2);
 
 						delete outfileroot;
 					} // for (iTau)
