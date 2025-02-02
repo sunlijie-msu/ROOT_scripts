@@ -124,20 +124,20 @@ void analysis_chain_pxct_241Am_237Np_timing_Run1_Run3()// chain pxct 237Np 59-ke
 
 	int Ea_central = 0, msd_e_cut_low = 0, msd_e_cut_high = 0, Ea_gate_start = 0, Ea_gate_end = 0;
 	
-	Ea_central = 5418;
-	Ea_gate_start = 60;
-	Ea_gate_end = 60; // 58 Ea gate choices for MSD12+MSD26 runs
+	Ea_central = 5417;
+	Ea_gate_start = 10;
+	Ea_gate_end = 100; // 58 Ea gate choices for MSD12+MSD26 runs
 
 	//Ea_central = 5479;
 	//Ea_gate_start = 3;
 	//Ea_gate_end = 30; // 28 Ea gate choices for MSD26 only runs
 	
-	for (int ianaroot = Ea_gate_start; ianaroot <= Ea_gate_end; ianaroot+=2)
+	for (int ianaroot = Ea_gate_start; ianaroot <= Ea_gate_end; ianaroot+=1)
 	{
-		//msd_e_cut_low = Ea_central - ianaroot;
-		//msd_e_cut_high = Ea_central + ianaroot;
-		msd_e_cut_low = 5317; // for single peak fit
-		msd_e_cut_high = 5517; // for single peak fit
+		msd_e_cut_low = Ea_central - ianaroot;
+		msd_e_cut_high = Ea_central + ianaroot;
+		//msd_e_cut_low = 5317; // for single peak fit
+		//msd_e_cut_high = 5517; // for single peak fit
 		cout << "msd_e_cut_low = " << msd_e_cut_low << "	msd_e_cut_high = " << msd_e_cut_high << endl;
 		sprintf(anarootname, "%s%s%d%s%d%s%d%s", pathname, "Run", Which_Dataset, "_timing_msdtotal_e_", msd_e_cut_low, "_", msd_e_cut_high, "_msdtotal_t.root");//output root modify
 

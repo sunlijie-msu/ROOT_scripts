@@ -110,6 +110,16 @@ h5->Draw();
 TH1F *h6=new TH1F("GetRandomfrom_Histogram","GetRandomfrom_Histogram",1000, 0,1000);
 TH1F *h7=new TH1F("GetRandomfrom_Function","GetRandomfrom_Function",1000, 0,1000);
 TH1F *h8=new TH1F("GetRandomfrom_Function_Range","GetRandomfrom_Function_Range",1000, 0,1000);
+
+for (int i = 0; i < 5e6; i++)
+{
+	true_time = gRandom->Exp(68 / log(2.0)); // 68 / log(2.0) = 98.103263
+	h_decay_exponential_TRandom3->Fill(true_time);//Add one value at a time
+
+	measured_time1 = true_time + gRandom->Gaus(0, 5);
+	h_decay_exponential_Gaus1_TRandom3->Fill(measured_time1);
+}
+
 for(Int_t i=0;i<1000000;i++)//If type for loop in root, it just execute once, instead of 1000 times. It's weird.
 {
 	Double_t n=h5->GetRandom();//Return a random number distributed according the histogram bin contents.
