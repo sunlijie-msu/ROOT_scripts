@@ -141,9 +141,9 @@ void analysis_chain_pxct_241Am_237Np_timing_Run2()
 		msd_e_cut_low = Ea_central - ianaroot;
 		msd_e_cut_high = Ea_central + ianaroot;
 		msd_e_cut_low = 5460; // for single peak fit
-		msd_e_cut_high = 5500; // for single peak fit
+		msd_e_cut_high = 5500; // for single peak fit modify
 		cout << "msd_e_cut_low = " << msd_e_cut_low << "	msd_e_cut_high = " << msd_e_cut_high << endl;
-		sprintf(anarootname, "%s%s%d%s%d%s%d%s", pathname, "Run", Which_Dataset, "_timing_msd26_e_", msd_e_cut_low, "_", msd_e_cut_high, "_msd26_t.root");//output root modify
+		sprintf(anarootname, "%s%s%d%s%d%s%d%s", pathname, "Run", Which_Dataset, "_timing_msd26_e_", msd_e_cut_low, "_", msd_e_cut_high, "_msd26_t.root");//output root
 
 		//sprintf(txtfilename, "%s%s%d%s%d%s%d%s", pathname, "Run", Which_Dataset, "_timing_msdtotal_e_", msd_e_cut_low, "_", msd_e_cut_high, "_msd12_t_bin01ns.csv");//output csv
 		//ofstream outfile1(txtfilename, ios::out);
