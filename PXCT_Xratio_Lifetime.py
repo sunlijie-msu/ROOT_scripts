@@ -143,10 +143,10 @@ ax2.set_ylabel('Lifetime (fs)', color=color, fontsize=60, labelpad=30)
 # ax1.tick_params(axis='both', which='minor', direction='in', length=tick_length / 2, width=tick_width, labelsize=60, colors=color, pad=10)
 # ax2.tick_params(axis='both', which='minor', direction='in', length=tick_length / 2, width=tick_width, labelsize=60, colors=color, pad=10)
 # Add grid lines
-ax1.grid(which='major', linestyle='--', linewidth=1)
+# ax1.grid(which='major', linestyle='--', linewidth=2)
 # ax1.grid(which='minor', linestyle='--', linewidth=1)
 
-plt.show()
+# plt.show()
 # Save the figure
-# plt.savefig(r'F:\e21010\pxct\Fig_PXCT_60Ga_Xratio.png')
-# plt.savefig(r'F:\e21010\pxct\Fig_PXCT_60Ga_Xratio.eps')
+plt.savefig(r'F:\e21010\pxct\Fig_PXCT_60Ga_Xratio.png')
+plt.savefig(r'F:\e21010\pxct\Fig_PXCT_60Ga_Xratio.eps')
