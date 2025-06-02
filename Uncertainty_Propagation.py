@@ -6,18 +6,20 @@ import math
 # It is part of the 'uncertainties' package, which allows for easy propagation of uncertainties through calculations.
 
 # Define a variable with uncertainty
-a = ufloat(2.0, 0.1)  # 2.0 ± 0.1
-b = ufloat(3.0, 0.2)  # 3.0 ± 0.2
-c = ufloat(4.0, 0.3)  # 4.0 ± 0.3
+# example: c = ufloat(4.0, 0.3)  # 4.0 ± 0.3
+g = ufloat(-1.2753, 0.0013)  # 2.0 ± 0.1
+K = ufloat(6144.48, 3.7)
+logft = ufloat(4.1144, 0.0237)
+
 
 # Perform calculations
-x = a / (a + b)
-y = b / (a + b)
+ft = 10**logft  # Convert log(ft) to ft
+BGT = K / g**2 / ft
 
 # Print results with uncertainties
-print(f"x = {x:.2f}")
-print(f"y = {y:.2f}")
+print(f"BGT = {BGT:.4f}")
 
+# Unrelated example:
 # Given uncertainties
 stat_uncertainty = 0.3  # ms
 syst_uncertainty = 0.6  # ms
