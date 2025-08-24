@@ -76,8 +76,8 @@ const int num_bins_peak = peakbin_max - peakbin_min + 1; // 24
 double Low_bkg = 0.91;
 double High_bkg = 1.09;
 
- double Tau_values[] = { 0.0, 5.0, 7.0, 10.0, 15.0, 20.0, 30.0 };
- double Eg_values[] = { 7333.20 }; // 7331.20, 7333.20, 7335.20
+ double Tau_values[] = { 10.0 };
+ double Eg_values[] = { 7337.20 }; // 7331.20, 7333.20, 7335.20
  double Bkg_values[] = { 1.00 }; // 0.90, 1.00, 1.10
  double SP_values[] = { 1.00 }; // 0.90, 1.00, 1.10
  double AD_values[] = { 0.0 };
@@ -215,7 +215,7 @@ void Comparison_DSL2()
 						//read in lots of simulation root files. Input root file names don't contain Bkg_values[iBkg], but output fig/dat/root file names contain Bkg_values[iBkg].
 						fin_simu = new TFile(simurootname); //Rootfile with Simulation histograms
 						cout << simurootname << endl;
-						fin_data = new TFile("F:/out/testadd.root"); //Rootfile with Experimental Data Histogram modify
+						fin_data = new TFile("F:/out/7787all.root"); //Rootfile with Experimental Data Histogram modify
 
 						//Get Histograms from Simulation
 						sprintf(hname, "Eg");
@@ -241,7 +241,7 @@ void Comparison_DSL2()
 							}
 						}
 
-						sprintf(hname, "%s", "centersum2");//data histogram name
+						sprintf(hname, "%s", "full");//data histogram name
 						h_measured_spec = (TH1F*)fin_data->Get(hname); //Get Gamma ray spectrum from data
 						h_measured_spec->Rebin(factor_rebin);
 						h_fit_background = new TH1F("h_fit_background", "h_fit_background", Total_bins, 0, 10000);
