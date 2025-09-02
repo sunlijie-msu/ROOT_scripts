@@ -28,3 +28,8 @@ syst_uncertainty = 0.6  # ms
 total_uncertainty = math.sqrt(stat_uncertainty**2 + syst_uncertainty**2)
 
 print(f"Total uncertainty: ±{total_uncertainty:.2f} ms")
+
+Gamma = ufloat(0.005, 0.0008)  # Width in eV.
+hbar = 6.582119569e-16  # eV*s
+tau = hbar / Gamma * 1e15  # Lifetime in femtoseconds
+print(f"Lifetime (tau) = {tau:.4f} fs")
