@@ -33,3 +33,11 @@ Gamma = ufloat(0.005, 0.0008)  # Width in eV.
 hbar = 6.582119569e-16  # eV*s
 tau = hbar / Gamma * 1e15  # Lifetime in femtoseconds
 print(f"Lifetime (tau) = {tau:.4f} fs")
+
+
+# Transition strength calculator:
+Branching_Ratio = ufloat(0.82, 0.00)  # Branching ratio (unitless)
+E_gamma = ufloat(0.610, 0.001)  # Gamma energy in MeV
+Tau = ufloat(1.34, 0.20)  # Lifetime in picoseconds
+BE2 = 0.0816 * Branching_Ratio / (E_gamma**5 * Tau)  # B(E2) in e^2*b^2
+print(f"B(E2) = {BE2:.4f} e^2*b^2")
