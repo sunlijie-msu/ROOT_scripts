@@ -8,8 +8,8 @@ print("Formula: B(E2) = 0.0816 * BR / (E_gamma^5 * Tau)")
 print("Units: B(E2) in e²b², E_gamma in MeV, Tau in ps")
 print("=" * 50)
 
-# Band A transitions
-print("\nBAND A:")
+# Band A transitions (νh₁₁/₂ band)
+print("\nBAND A (νh₁₁/₂ band):")
 print("-------")
 
 # 27/2− → 23/2− (982.1 keV)
@@ -22,7 +22,7 @@ print(f"27/2− (982.1 keV): B(E2) = {BE2:.2f} e²b²")
 # 23/2− → 19/2− (431.2 keV)
 Branching_Ratio = ufloat(0.98, 0.01)  # 98% branching ratio
 E_gamma = ufloat(0.4312, 0.001)  # 431.2 keV in MeV
-Tau = ufloat(2.00, 0.29)  # τAve=2.00 ps {I29} - CORRECTED: symmetric uncertainty
+Tau = ufloat(2.00, 0.29)  # τAve=2.00 ps {I29} - symmetric uncertainty
 BE2 = 0.0816 * Branching_Ratio / (E_gamma**5 * Tau)
 print(f"23/2− (431.2 keV): B(E2) = {BE2:.2f} e²b²")
 
@@ -40,7 +40,17 @@ Tau = ufloat(1.01, 0.13)  # τAve=1.01 ps {I+12-14} → use average uncertainty 
 BE2 = 0.0816 * Branching_Ratio / (E_gamma**5 * Tau)
 print(f"15/2− (658.7 keV): B(E2) = {BE2:.2f} e²b²")
 
-print("\nBAND B:")
+print("\nBAND B (π7/2[404] band, α=+1/2):")
+print("-------")
+
+# 17/2+ → 11/2+ (610.0 keV)
+Branching_Ratio = ufloat(0.82, 0.01)  # 82% branching ratio
+E_gamma = ufloat(0.6100, 0.001)  # 610.0 keV in MeV
+Tau = ufloat(1.34, 0.185)  # τAve=1.34 ps {I+17-20} → use average uncertainty (17+20)/2=18.5
+BE2 = 0.0816 * Branching_Ratio / (E_gamma**5 * Tau)
+print(f"17/2+ (610.0 keV): B(E2) = {BE2:.2f} e²b²")
+
+print("\nBAND b (π7/2[404] band, α=-1/2):")
 print("-------")
 
 # 19/2+ → 15/2+ (877.0 keV)
@@ -49,13 +59,6 @@ E_gamma = ufloat(0.8770, 0.001)  # 877.0 keV in MeV
 Tau = ufloat(1.02, 0.235)  # τAve=1.02 ps {I+24-23} → use average uncertainty (24+23)/2=23.5
 BE2 = 0.0816 * Branching_Ratio / (E_gamma**5 * Tau)
 print(f"19/2+ (877.0 keV): B(E2) = {BE2:.2f} e²b²")
-
-# 17/2+ → 11/2+ (610.0 keV)
-Branching_Ratio = ufloat(0.82, 0.01)  # 82% branching ratio
-E_gamma = ufloat(0.6100, 0.001)  # 610.0 keV in MeV
-Tau = ufloat(1.34, 0.185)  # τAve=1.34 ps {I+17-20} → use average uncertainty (17+20)/2=18.5
-BE2 = 0.0816 * Branching_Ratio / (E_gamma**5 * Tau)
-print(f"17/2+ (610.0 keV): B(E2) = {BE2:.2f} e²b²")
 
 # 15/2+ → 11/2+ (763.3 keV)
 Branching_Ratio = ufloat(0.94, 0.01)  # 94% branching ratio
@@ -71,9 +74,26 @@ Tau = ufloat(1.42, 0.105)  # τAve=1.42 ps {I+10-11} → use average uncertainty
 BE2 = 0.0816 * Branching_Ratio / (E_gamma**5 * Tau)
 print(f"11/2+ (659.0 keV): B(E2) = {BE2:.2f} e²b²")
 
+print("\nBAND C:")
+print("-------")
+
+# 9/2+ → 5/2+ (744.9 keV)
+Branching_Ratio = ufloat(0.80, 0.01)  # 100% branching ratio (assumed)
+E_gamma = ufloat(0.7449, 0.001)  # 744.9 keV in MeV
+Tau = ufloat(2.41, 0.30)  # τAve=2.41 ps {I+27-33} → use average uncertainty (27+33)/2=30
+BE2 = 0.0816 * Branching_Ratio / (E_gamma**5 * Tau)
+print(f"9/2+ (744.9 keV): B(E2) = {BE2:.2f} e²b²")
+
 print("\n" + "=" * 50)
 print("Note: Uncertainties include systematic errors from:")
 print("- Branching ratios (estimated ±1-2%)")
 print("- Gamma energies (assumed ±1 keV)")
 print("- Lifetimes (from ENSDF asymmetric uncertainties)")
+print("=" * 50)
+print("\nBAND ASSIGNMENTS FROM 2025LaAA:")
+print("- Band A: νh₁₁/₂ band")
+print("- Band B: π7/2[404] band, α=+1/2") 
+print("- Band b: π7/2[404] band, α=-1/2")
+print("- Band C: π5/2[402] band, α=+1/2")
+print("- Band c: π5/2[402] band, α=-1/2")
 print("=" * 50)
