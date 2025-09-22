@@ -41,3 +41,8 @@ E_gamma = ufloat(0.610, 0.001)  # Gamma energy in MeV
 Tau = ufloat(1.34, 0.20)  # Lifetime in picoseconds
 BE2 = 0.0816 * Branching_Ratio / (E_gamma**5 * Tau)  # B(E2) in e^2*b^2
 print(f"B(E2) = {BE2:.4f} e^2*b^2")
+
+
+# Calculate: 30973761.9977(8)/34976365.2518(8)
+result = ufloat(30973761.9977, 0.0008) / ufloat(34976365.2518, 0.0008)
+print(f"Result = {result:.9f}")
