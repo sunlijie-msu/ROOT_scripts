@@ -154,7 +154,7 @@ void average()// graph-pol0 fit several points to get the weighted average
 	parNDF = pol0->GetNDF();
 	p_value = pol0->GetProb();//This probability is not the “probability that your fit is good.” If you did many fake experiments (draw many random samples of data points from the assumed distribution (your fit function)), this is the percentage of experiments that would give χ2 values ≥ to the one you got in this experiment.
 
-	TPaveText* textpol2 = new TPaveText(0.32, 0.10, 0.90, 0.35, "brNDC");//left, down, right, up
+	TPaveText* textpol2 = new TPaveText(0.40, 0.14, 0.97, 0.35, "brNDC");//left, down, right, up
 	textpol2->SetBorderSize(1);
 	textpol2->SetFillColor(0);
 	textpol2->SetTextAlign(12);//align = 10*HorizontalAlign + VerticalAlign, 12 means水平左对齐、垂直居中对齐
@@ -175,6 +175,11 @@ void average()// graph-pol0 fit several points to get the weighted average
 	}
 	textpol2->AddText(paraprint);
 	textpol2->Draw();
-	sprintf(h_name, "%s%s%s", "D:/X/out/Chi2/", h_name, ".png");
-	canvas->SaveAs(h_name);//存图
+	TString outFile = h_name;
+	if (!outFile.Contains(":/") && !outFile.BeginsWith("/"))
+	{
+		outFile = TString("D:/X/out/") + outFile;
+	}
+	outFile += ".png";
+	canvas->SaveAs(outFile);//存图
 }// main
