@@ -46,3 +46,21 @@ print(f"B(E2) = {BE2:.4f} e^2*b^2")
 # Calculate: 30973761.9977(8)/34976365.2518(8)
 result = ufloat(30973761.9977, 0.0008) / ufloat(34976365.2518, 0.0008)
 print(f"Result = {result:.9f}")
+
+
+I_gamma_to_34S_ground = ufloat(129.3, 1.2) # From 1980Wi13
+I_gamma_to_34Cl_ground = ufloat(94.4, 1.4) # From 1980Wi13 146gamma
+I_gamma_to_34S_ground = ufloat(125.9, 1.2) # From 1975Va02
+I_gamma_to_34Cl_ground = ufloat(101.0, 4.0) # From 1975Va02 146gamma
+CC = ufloat(0.1656, 0.0024)  # Conversion coefficient
+I_ce_to_34Cl_ground = I_gamma_to_34Cl_ground * CC
+I_isomeric_transition_to_34Cl_ground = I_gamma_to_34Cl_ground * (1 + CC)
+I_total = I_gamma_to_34S_ground + I_gamma_to_34Cl_ground + I_ce_to_34Cl_ground
+BR_gamma_to_34S_ground = I_gamma_to_34S_ground / I_total
+BR_isomeric_transition_to_34Cl_ground = I_isomeric_transition_to_34Cl_ground / I_total
+
+print(f"I(CE to 34Cl ground) = {I_ce_to_34Cl_ground:.2f}")
+print(f"I(isomeric transition to 34Cl ground) = {I_isomeric_transition_to_34Cl_ground:.2f}")
+print(f"I(total) = {I_total:.2f}")
+print(f"BR(gamma to 34S ground) = {BR_gamma_to_34S_ground:.4f}")
+print(f"BR(isomeric transition to 34Cl ground) = {BR_isomeric_transition_to_34Cl_ground:.4f}")
