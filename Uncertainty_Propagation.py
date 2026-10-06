@@ -7,6 +7,23 @@ import math
 
 # Define a variable with uncertainty
 # example: c = ufloat(4.0, 0.3)  # 4.0 ± 0.3
+
+Sp = ufloat(2749.0, 0.4)
+Ef28Si = ufloat(1779.030, 0.011)
+p23 = ufloat(6656, 8)
+p18 = ufloat(4870, 4)
+E1 = p18 + Ef28Si + Sp
+E2 = p23 + Sp
+w1 = 1 / E1.s**2
+w2 = 1 / E2.s**2
+Eweighted = (w1 * E1 + w2 * E2) / (w1 + w2)
+Eunweighted = (E1 + E2) / 2
+
+print(f"E1: {E1:.3f} keV")
+print(f"E2: {E2:.3f} keV")
+print(f"Weighted mean: {Eweighted:.3f} keV")
+
+
 g = ufloat(-1.2753, 0.0013)  # 2.0 ± 0.1
 K = ufloat(6144.48, 3.7)
 logft = ufloat(4.1144, 0.0237)
