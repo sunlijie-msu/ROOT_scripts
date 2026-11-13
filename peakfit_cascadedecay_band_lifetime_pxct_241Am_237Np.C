@@ -364,15 +364,15 @@ void peakfit_cascadedecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_
 			textgaus->SetTextAlign(12);//align = 10*HorizontalAlign + VerticalAlign, 12 means水平左对齐、垂直居中对齐
 			textgaus->SetTextFont(132);//font = 10 * fontID + precision, 12+2,12 means Symbol; 13+2, 13 means News Times Roman
 			//text->SetTextColor(2);//文本颜色
-			sprintf(paraprint, "Total decays%d=%.1f%s%.1f", ii, par[ii][0], "+/-", par_err[ii][0]);//par数组还保持着刚才的参数
+			sprintf(paraprint, "#it{N}_{59,%d}=%.1f%s%.1f", ii, par[ii][0], "+/-", par_err[ii][0]);
 			textgaus->AddText(paraprint);
-			sprintf(paraprint, "Half-life%d=%.3f%s%.3f", ii, par[ii][1], "+/-", par_err[ii][1]);
+			sprintf(paraprint, "#it{T}_{59,%d}=%.3f%s%.3f", ii, par[ii][1], "+/-", par_err[ii][1]);
 			textgaus->AddText(paraprint);
-			sprintf(paraprint, "Background%d=%.3f%s%.3f", ii, par[ii][2], "+/-", par_err[ii][2]);
+			sprintf(paraprint, "#it{B}_{%d}=%.3f%s%.3f", ii, par[ii][2], "+/-", par_err[ii][2]);
 			textgaus->AddText(paraprint);
-			sprintf(paraprint, "Half-life103%d=%.3f%s%.3f", ii, par[ii][3], "+/-", par_err[ii][3]);
+			sprintf(paraprint, "#it{T}_{103,%d}=%.3f%s%.3f", ii, par[ii][3], "+/-", par_err[ii][3]);
 			textgaus->AddText(paraprint);
-			sprintf(paraprint, "Indirect_feeding%d=%.4f%s%.4f", ii, par[ii][4], "+/-", par_err[ii][4]);
+			sprintf(paraprint, "#it{k}_{%d}=%.4f%s%.4f", ii, par[ii][4], "+/-", par_err[ii][4]);
 			textgaus->AddText(paraprint);
 			sprintf(paraprint, "Chisquare%d=%.1f", ii, parChi[ii]);
 			textgaus->AddText(paraprint);

@@ -29,6 +29,7 @@
 #include "TF1.h"
 #include "TMath.h"
 #include "TPaveText.h"
+#include "TLatex.h"
 #include "TPad.h"
 #include "TAxis.h"
 #include "TClass.h"
@@ -46,7 +47,7 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 	double fitrange_min = 0, fitrange_max = 0;
 	double histomin = 0, histomax = 0, histoNbins = 0;
 	int minbin = 0, maxbin = 0;
-	float Eg, Eg2nd, gaplow = 70., gaphigh = 70.;//fitting range随分辨不同调整
+	float Eg, Eg2nd, gaplow = 70., gaphigh = 70.;//fitting range, adjust per resolution
 	int i, ii, jj, ibin;
 	char paraprint[100], histo_name[100], hfit_name[100];
 	TH1D* histo[100];//TH1D peak search+gauss fit, create histograms
@@ -144,8 +145,8 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 		for (ii = 0; ii <= 0; ii++) // Not necessary modify: ii <=39, fit one histogram with many different fit start points = ii * 20 + bin_start_low
 		{
 			sprintf(hfit_name, "%s%s%d%s%d%s%d", histo_name, "_Ea", msd_e_cut_low, "_", msd_e_cut_high, "_Fitrange", ii);
-			canvaspeak[i][ii] = new TCanvas(hfit_name, hfit_name, 1300, 700);//建立画布
-			canvaspeak[i][ii]->cd();//进入画布
+			canvaspeak[i][ii] = new TCanvas(hfit_name, hfit_name, 1300, 700);//create canvas
+			canvaspeak[i][ii]->cd();//enter canvas
 			// 			canvaspeak[i][ii]->SetTopMargin(0.02);
 			// 			canvaspeak[i][ii]->SetRightMargin(0.03);
 			// 			canvaspeak[i][ii]->SetLeftMargin(0.09);
@@ -171,20 +172,20 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 			pad1->SetFrameLineWidth(3);
 			//gStyle->SetOptTitle(0);
 
-			histo[i]->SetTitle("");//图名
+			histo[i]->SetTitle("");//plot title
 			histo[i]->GetXaxis()->SetTitle("");// Time difference LEGe - MSD26 (ns)
 			histo[i]->GetYaxis()->SetTitle("Counts per 1 ns");
-			histo[i]->GetXaxis()->CenterTitle();//居中
-			histo[i]->GetYaxis()->CenterTitle();//居中
-			histo[i]->GetXaxis()->SetLabelFont(132);//坐标字体
-			histo[i]->GetYaxis()->SetLabelFont(132);//坐标字体
+			histo[i]->GetXaxis()->CenterTitle();//center title
+			histo[i]->GetYaxis()->CenterTitle();//center title
+			histo[i]->GetXaxis()->SetLabelFont(132);//axis label font
+			histo[i]->GetYaxis()->SetLabelFont(132);//axis label font
 			histo[i]->GetXaxis()->SetLabelSize(0.135);
 			histo[i]->GetYaxis()->SetLabelSize(0.135);
-			histo[i]->GetXaxis()->SetLabelOffset(0.07);//坐标偏移
-			histo[i]->GetXaxis()->SetTitleOffset(1.0);//轴名偏移
-			histo[i]->GetXaxis()->SetTitleFont(132);//轴名字体
-			histo[i]->GetYaxis()->SetTitleFont(132);//轴名字体
-			histo[i]->GetYaxis()->SetTitleOffset(0.48);//轴名偏移
+			histo[i]->GetXaxis()->SetLabelOffset(0.07);//axis label offset
+			histo[i]->GetXaxis()->SetTitleOffset(1.0);//axis title offset
+			histo[i]->GetXaxis()->SetTitleFont(132);//axis title font
+			histo[i]->GetYaxis()->SetTitleFont(132);//axis title font
+			histo[i]->GetYaxis()->SetTitleOffset(0.48);//axis title offset
 			histo[i]->GetXaxis()->SetTitleSize(0.135);
 			histo[i]->GetYaxis()->SetTitleSize(0.135);
 			histo[i]->GetYaxis()->SetNdivisions(505);
@@ -205,7 +206,7 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 			fitrange_min = bin_start_low + ii * 20; fitrange_max = bin_start_low + 680; // Not necessary modify // 10*T1/2 = 10*68 = 680
 
 			histo[i]->GetXaxis()->SetRangeUser(fitrange_min, fitrange_max);//zoom the axis
-			histo[i]->GetYaxis()->SetRangeUser(1, histomax*1.3);//zoom the axis
+			histo[i]->GetYaxis()->SetRangeUser(1, histomax*1.1);//zoom the axis
 
 			minbin = histo[i]->FindBin(fitrange_min);
 			maxbin = histo[i]->FindBin(fitrange_max);
@@ -250,8 +251,8 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 			int Total_decays_guess = 2000 * i;
 			fEMG[ii]->SetParameters(1e6, 67.8, 1);//initial value
 			//fEMG[ii]->SetParameters(2e6, 68, 2);//initial value Fake test
-			fEMG[ii]->SetParLimits(0, 1e6, 10e6);//N
-			fEMG[ii]->SetParLimits(1, 40, 140);//T
+			fEMG[ii]->SetParLimits(0, 1e6, 10e6);//N59
+			fEMG[ii]->SetParLimits(1, 40, 140);//T59
 			fEMG[ii]->SetParLimits(2, 0, 10);//B
 			// 			fEMG[ii]->SetParLimits(3, 80, 120);//Tau
 			// 			fEMG[ii]->SetParLimits(4, 10, 120);//Sigma
@@ -268,7 +269,7 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 			//If the option "S" is instead used, TFitResultPtr contains the TFitResult and behaves as a smart pointer to it.
 			//The fit parameters, error and chi2 (but not covariance matrix) can be retrieved also from the fitted function.
 
-			fEMG[ii]->GetParameters(par[ii]);//二维数组的par[ii]是地址,pointer to the TF1, GetParameters的数组得是double类型Obtaining the value of parameters and saving them to par[]; 
+			fEMG[ii]->GetParameters(par[ii]);//par[ii] is a pointer to the TF1 (2D array element). GetParameters needs a double array; saves parameter values to par[]; 
 			par_err[ii][0] = fEMG[ii]->GetParError(0);//Obtaining the error of the 1st parameter
 			par_err[ii][1] = fEMG[ii]->GetParError(1);//Obtaining the error of the 2nd parameter
 			par_err[ii][2] = fEMG[ii]->GetParError(2);//Obtaining the error of the 3rd parameter
@@ -348,25 +349,36 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 
 			outfile << std::scientific << std::setprecision(10) << "msd_e_cut_low	" << msd_e_cut_low << "	msd_e_cut_high	" << msd_e_cut_high << "	fitrange_min	" << fitrange_min << "	fitrange_max	" << fitrange_max << "	" << hfit_name << "	Total_decays_" << ii << "=	" << par[ii][0] << "	+/-	" << par_err[ii][0] << "	Half-life_" << ii << "=	" << par[ii][1] << "	+/-	" << par_err[ii][1] << "	Background_" << ii << "=	" << par[ii][2] << "	+/-	" << par_err[ii][2] << "	Chi2_" << ii << "=	" << parChi[ii] << "	NDF_" << ii << "=	" << parNDF[ii] << "	p-val_" << ii << "=	" << p_value[ii] << endl;
 
-			TPaveText* textgaus = new TPaveText(0.77, 0.60, 0.975, 0.944, "brNDC");//加标注left, down, right, up
-			textgaus->SetBorderSize(1);//边框宽度
-			textgaus->SetFillColor(0);//填充颜色
-			textgaus->SetTextAlign(12);//align = 10*HorizontalAlign + VerticalAlign, 12 means水平左对齐、垂直居中对齐
-			textgaus->SetTextFont(132);//font = 10 * fontID + precision, 12+2,12 means Symbol; 13+2, 13 means News Times Roman
-			//text->SetTextColor(2);//文本颜色
-			sprintf(paraprint, "Total decays%d=%.1f%s%.1f", ii, par[ii][0], "+/-", par_err[ii][0]);//par数组还保持着刚才的参数
-			textgaus->AddText(paraprint);
-			sprintf(paraprint, "Half-life%d=%.3f%s%.3f", ii, par[ii][1], "+/-", par_err[ii][1]);
-			textgaus->AddText(paraprint);
-			sprintf(paraprint, "Background%d=%.3f%s%.3f", ii, par[ii][2], "+/-", par_err[ii][2]);
-			textgaus->AddText(paraprint);
-			sprintf(paraprint, "Chisquare%d=%.1f", ii, parChi[ii]);
-			textgaus->AddText(paraprint);
-			sprintf(paraprint, "NDF%d=%.1f", ii, parNDF[ii]);
-			textgaus->AddText(paraprint);
-			sprintf(paraprint, "p-val=%.3f", p_value[ii]);
-			textgaus->AddText(paraprint);
-			textgaus->Draw();
+			// Plain text (no box). Positions are NDC = fraction of the pad: (0,0) = bottom-left corner, (1,1) = top-right corner.
+			// Edit only the *_x / *_y anchors below to move a whole block; following lines are stacked downward automatically.
+			double para_textsize = 0.13; // font size, fraction of pad height
+			double para_dy = 1.2 * para_textsize; // line spacing, fraction of pad height
+
+			// Block 1 (N, T, B): left-aligned. fit_x = left edge of text (0 = left of pad), fit_y = vertical center of FIRST line (0 = bottom, 1 = top)
+			double fit_x = 0.15, fit_y = 0.46;
+			TLatex* textgaus = new TLatex();
+			textgaus->SetNDC();
+			textgaus->SetTextFont(132);
+			textgaus->SetTextSize(para_textsize);
+			textgaus->SetTextAlign(12); // left, vertically centered
+			sprintf(paraprint, "#it{N}_{59} = %.0f #pm %.0f", par[ii][0], par_err[ii][0]);
+			textgaus->DrawLatex(fit_x, fit_y, paraprint);
+			sprintf(paraprint, "#it{T}_{59} = %.2f #pm %.2f", par[ii][1], par_err[ii][1]);
+			textgaus->DrawLatex(fit_x, fit_y - para_dy, paraprint);
+			sprintf(paraprint, "#it{B} = %.2f #pm %.2f", par[ii][2], par_err[ii][2]);
+			textgaus->DrawLatex(fit_x, fit_y - 2 * para_dy, paraprint);
+
+			// Block 2 (chi2/NDF, p-value): right-aligned. stat_x = right edge of text, stat_y = vertical center of FIRST line
+			double stat_x = 0.96, stat_y = 0.86;
+			TLatex* textstat = new TLatex();
+			textstat->SetNDC();
+			textstat->SetTextFont(132);
+			textstat->SetTextSize(para_textsize);
+			textstat->SetTextAlign(32); // right, vertically centered
+			sprintf(paraprint, "#chi^{2}/#it{NDF} = %.1f / %.1f = %.2f", parChi[ii], parNDF[ii], parChi[ii] / parNDF[ii]);
+			textstat->DrawLatex(stat_x, stat_y, paraprint);
+			sprintf(paraprint, "#it{p}-value = %.3f", p_value[ii]);
+			textstat->DrawLatex(stat_x, stat_y - para_dy, paraprint);
 
 			// for residuals plot
 			double x_values[fit_Nbins], y_values[fit_Nbins], y_fit_values[fit_Nbins], y_residuals[fit_Nbins], x_errors[fit_Nbins], y_errors[fit_Nbins];
@@ -384,20 +396,20 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 			}
 
 			graph_residual[i] = new TGraphErrors(fit_Nbins, x_values, y_residuals, x_errors, y_errors); //TGraph(n,x,y,ex,ey);
-			graph_residual[i]->SetTitle("");//图名
+			graph_residual[i]->SetTitle("");//plot title
 			sprintf(paraprint, "Time difference LEGe #minus MSD%d (ns)", Which_MSD);
 			graph_residual[i]->GetXaxis()->SetTitle(paraprint);
 			graph_residual[i]->GetYaxis()->SetTitle("Data #minus Fit");
-			graph_residual[i]->GetXaxis()->CenterTitle();//居中
-			//graph_residual[i]->GetYaxis()->CenterTitle();//居中
-			graph_residual[i]->GetXaxis()->SetLabelFont(132);//坐标字体
-			graph_residual[i]->GetYaxis()->SetLabelFont(132);//坐标字体
+			graph_residual[i]->GetXaxis()->CenterTitle();//center title
+			//graph_residual[i]->GetYaxis()->CenterTitle();//center title
+			graph_residual[i]->GetXaxis()->SetLabelFont(132);//axis label font
+			graph_residual[i]->GetYaxis()->SetLabelFont(132);//axis label font
 			graph_residual[i]->GetXaxis()->SetLabelSize(0.18);
 			graph_residual[i]->GetYaxis()->SetLabelSize(0.18);
-			graph_residual[i]->GetXaxis()->SetTitleFont(132);//轴名字体
-			graph_residual[i]->GetYaxis()->SetTitleFont(132);//轴名字体
-			graph_residual[i]->GetXaxis()->SetTitleOffset(1.11);//轴名偏移
-			graph_residual[i]->GetYaxis()->SetTitleOffset(0.37);//轴名偏移
+			graph_residual[i]->GetXaxis()->SetTitleFont(132);//axis title font
+			graph_residual[i]->GetYaxis()->SetTitleFont(132);//axis title font
+			graph_residual[i]->GetXaxis()->SetTitleOffset(1.11);//axis title offset
+			graph_residual[i]->GetYaxis()->SetTitleOffset(0.37);//axis title offset
 			graph_residual[i]->GetXaxis()->SetTitleSize(0.18);
 			graph_residual[i]->GetYaxis()->SetTitleSize(0.18);
 			graph_residual[i]->GetYaxis()->SetNdivisions(105);
@@ -409,7 +421,7 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 			graph_residual[i]->SetLineColor(kBlack);
 			graph_residual[i]->SetMarkerStyle(6);
 			graph_residual[i]->SetMarkerColor(kBlack);
-			canvaspeak[i][ii]->cd();//进入画布
+			canvaspeak[i][ii]->cd();//enter canvas
 			pad2->SetFrameLineWidth(3);
 			pad2->Draw();
 			pad2->RedrawAxis();
