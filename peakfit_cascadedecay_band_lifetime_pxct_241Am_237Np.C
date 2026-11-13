@@ -255,7 +255,7 @@ void peakfit_cascadedecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_
 			//p[ii]->SetNpx(histoNbins * 10);
 			// 			p2[ii]->SetNpx(histoNbins);
 			//b[ii]->SetNpx(histoNbins * 10);
-			//fEMG[ii]->SetParameters(0.1,15,peaky[ii],10,10,peakx[ii]);//initial value [0]-A, [1]-B, [2]-N, [3]-��, [4]-��, [5]-��
+			//fEMG[ii]->SetParameters(0.1,15,peaky[ii],10,10,peakx[ii]);//initial value [0]-A, [1]-B, [2]-N, [3]-Tau, [4]-Sigma, [5]-Mu
 			int Total_decays_guess = 2000 * i;
 			fEMG[ii]->SetParameters(2e6, 67.8, 1, 0.080, 0.1542); // initial value [0]-N59, [1]-T59, [2]-B, [3]-T103, [4]-k
 			fEMG[ii]->SetParLimits(0, 1e6, 4e6);//N59
@@ -269,8 +269,8 @@ void peakfit_cascadedecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_
 			//histo[i]->Fit("fEMG", "MLEN", "", fitrange_min, fitrange_max);
 			TFitResultPtr Fit_result_pointer = histo[i]->Fit("fEMG", "MLES", "0", fitrange_min, fitrange_max);
 			//"S" means the result of the fit is returned in the TFitResultPtr
-			//��E�� Perform better errors estimation using the Minos technique.
-			//��M�� Improve fit results, by using the IMPROVE algorithm of TMinuit.
+			//"E" Perform better errors estimation using the Minos technique.
+			//"M" Improve fit results, by using the IMPROVE algorithm of TMinuit.
 			//If the option "S" is instead used, TFitResultPtr contains the TFitResult and behaves as a smart pointer to it.
 			//The fit parameters, error and chi2 (but not covariance matrix) can be retrieved also from the fitted function.
 
@@ -282,7 +282,7 @@ void peakfit_cascadedecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_
 			par_err[ii][4] = fEMG[ii]->GetParError(4);//Obtaining the error of the 5th parameter
 			parChi[ii] = fEMG[ii]->GetChisquare();
 			parNDF[ii] = fEMG[ii]->GetNDF();
-			p_value[ii] = fEMG[ii]->GetProb();//This probability is not the ��probability that your fit is good.�� If you did many fake experiments (draw many random samples of data points from the assumed distribution (your fit function)), this is the percentage of experiments that would give ��2 values �� to the one you got in this experiment.
+			p_value[ii] = fEMG[ii]->GetProb();//This probability is not the "probability that your fit is good." If you did many fake experiments (draw many random samples of data points from the assumed distribution (your fit function)), this is the percentage of experiments that would give chi2 values >= to the one you got in this experiment.
 			//g[ii]->SetParameters(par[ii][2], par[ii][5], par[ii][4]);//set parameters for drawing gausn
 			//g[ii]->SetLineColor(kViolet+1);
 			//p[ii]->SetParameters(par[ii][0], par[ii][1], par[ii][2], par[ii][3], par[ii][4], par[ii][5]);//set parameters for drawing peak
@@ -299,7 +299,7 @@ void peakfit_cascadedecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_
 			h_confidence_interval[i][ii] = (TH1D*)histo[i]->Clone(filename);//Create a histogram to hold the confidence intervals
 			TVirtualFitter* fitter = TVirtualFitter::GetFitter();//The method TVirtualFitter::GetFitter())->Get the parameters of your fitting function after having it fitted to an histogram.
 			fitter->GetConfidenceIntervals(h_confidence_interval[i][ii], 0.683);//By default the intervals are inflated using the chi2/ndf value of the fit if a chi2 fit is performed
-			//confidence interval for the colored band: 1�� confidence interval: P=0.683, 1�� confidence interval: P=0.95, 3�� confidence interval: P=0.997
+			//confidence interval for the colored band: 1Sigma confidence interval: P=0.683, 1Sigma confidence interval: P=0.95, 3Sigma confidence interval: P=0.997
 			//h_confidence_interval will contain the CL result that you can draw on top of your fitted graph.
 			//where h_confidence_interval will hold the errors and could superimpose it on the same canvas where you plot central values.
 			h_confidence_interval[i][ii]->SetStats(kFALSE);
@@ -322,7 +322,7 @@ void peakfit_cascadedecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_
 			double Utau_Utau = fitter->GetCovarianceMatrixElement(3, 3);//(Utau)^2
 			double Usigma_Usigma = fitter->GetCovarianceMatrixElement(4, 4);//(Usigma)^2
 			double Umean_Umean = fitter->GetCovarianceMatrixElement(5, 5);//(Umean)^2
-			double rou_Utau_Umean = fitter->GetCovarianceMatrixElement(3, 5);//(��*Utau*Umean), (3,5) (5,3) doesn't matter.
+			double rou_Utau_Umean = fitter->GetCovarianceMatrixElement(3, 5);//(Rho*Utau*Umean), (3,5) (5,3) doesn't matter.
 			double rou_Usigma_Umean = fitter->GetCovarianceMatrixElement(4, 5);//
 			// cout << rou_Usigma_Umean << endl;
 

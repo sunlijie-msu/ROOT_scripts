@@ -271,7 +271,7 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 			par_err[ii][2] = fEMG[ii]->GetParError(2);//Obtaining the error of the 3rd parameter
 			parChi[ii] = fEMG[ii]->GetChisquare();
 			parNDF[ii] = fEMG[ii]->GetNDF();
-			p_value[ii] = fEMG[ii]->GetProb();//This probability is not the "probability that your fit is good." If you did many fake experiments (draw many random samples of data points from the assumed distribution (your fit function)), this is the percentage of experiments that would give χ2 values ≥ to the one you got in this experiment.
+			p_value[ii] = fEMG[ii]->GetProb();//This probability is not the "probability that your fit is good." If you did many fake experiments (draw many random samples of data points from the assumed distribution (your fit function)), this is the percentage of experiments that would give chi2 values >= to the one you got in this experiment.
 			//g[ii]->SetParameters(par[ii][2], par[ii][5], par[ii][4]);//set parameters for drawing gausn
 			//g[ii]->SetLineColor(kViolet+1);
 			//p[ii]->SetParameters(par[ii][0], par[ii][1], par[ii][2], par[ii][3], par[ii][4], par[ii][5]);//set parameters for drawing peak
