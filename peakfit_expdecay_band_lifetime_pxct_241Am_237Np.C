@@ -40,7 +40,7 @@
 #include "stdio.h"
 #include "TLegend.h"
 using namespace std;
-void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd26_bin1ns from many Run3_timing_msdtotal_e_5358_5478_msdtotal_t.root files and fit exponential decay. Fit results are output to F:\e21010\pxct\peakpara.dat -> PXCT.xlsx
+void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd26_bin1ns from many Run2_timing_msd26_e_5459_5499_msd26_t.root files and fit exponential decay. Fit results are output to F:\e21010\pxct\peakpara.dat -> PXCT.xlsx
 // Upstream code: analysis_chain_pxct_241Am_237Np_timing
 {
 	double binwidth = 1;
@@ -247,25 +247,21 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 			//p[ii]->SetNpx(histoNbins * 10);
 			// 			p2[ii]->SetNpx(histoNbins);
 			//b[ii]->SetNpx(histoNbins * 10);
-			//fEMG[ii]->SetParameters(0.1,15,peaky[ii],10,10,peakx[ii]);//initial value [0]-A, [1]-B, [2]-N, [3]-¦Ó, [4]-¦Ò, [5]-¦Ì
+			//fEMG[ii]->SetParameters(0.1,15,peaky[ii],10,10,peakx[ii]);//initial value [0]-A, [1]-B, [2]-N, [3]-ï¿½ï¿½, [4]-ï¿½ï¿½, [5]-ï¿½ï¿½
 			int Total_decays_guess = 2000 * i;
 			fEMG[ii]->SetParameters(1e6, 67.8, 1);//initial value
 			//fEMG[ii]->SetParameters(2e6, 68, 2);//initial value Fake test
 			fEMG[ii]->SetParLimits(0, 1e6, 10e6);//N59
 			fEMG[ii]->SetParLimits(1, 40, 140);//T59
 			fEMG[ii]->SetParLimits(2, 0, 10);//B
-			// 			fEMG[ii]->SetParLimits(3, 80, 120);//Tau
-			// 			fEMG[ii]->SetParLimits(4, 10, 120);//Sigma
-			// 			fEMG[ii]->SetParLimits(5, peakx[ii] - gaplow / 4, peakx[ii] + gaphigh / 2);//Mean
-			// 			fEMG[ii]->SetParLimits(5, -100, 200);//Mean
-			fEMG[ii]->SetParNames("Total_decays", "Half_life", "Background");
+			fEMG[ii]->SetParNames("Total_decays", "Half_life_59", "Background");
 			//fEMG[ii]->SetParNames("BkgA", "BkgB", "Const*bin", "Tau", "Sigma", "Mean");
 			histo[i]->Fit("fEMG", "MLE", "", fitrange_min, fitrange_max);
 			//histo[i]->Fit("fEMG", "MLEN", "", fitrange_min, fitrange_max);
 			TFitResultPtr Fit_result_pointer = histo[i]->Fit("fEMG", "MLES", "0", fitrange_min, fitrange_max);
 			//"S" means the result of the fit is returned in the TFitResultPtr
-			//¡°E¡± Perform better errors estimation using the Minos technique.
-			//¡°M¡± Improve fit results, by using the IMPROVE algorithm of TMinuit.
+			//ï¿½ï¿½Eï¿½ï¿½ Perform better errors estimation using the Minos technique.
+			//ï¿½ï¿½Mï¿½ï¿½ Improve fit results, by using the IMPROVE algorithm of TMinuit.
 			//If the option "S" is instead used, TFitResultPtr contains the TFitResult and behaves as a smart pointer to it.
 			//The fit parameters, error and chi2 (but not covariance matrix) can be retrieved also from the fitted function.
 
@@ -275,7 +271,7 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 			par_err[ii][2] = fEMG[ii]->GetParError(2);//Obtaining the error of the 3rd parameter
 			parChi[ii] = fEMG[ii]->GetChisquare();
 			parNDF[ii] = fEMG[ii]->GetNDF();
-			p_value[ii] = fEMG[ii]->GetProb();//This probability is not the ¡°probability that your fit is good.¡± If you did many fake experiments (draw many random samples of data points from the assumed distribution (your fit function)), this is the percentage of experiments that would give ¦Ö2 values ¡Ý to the one you got in this experiment.
+			p_value[ii] = fEMG[ii]->GetProb();//This probability is not the ï¿½ï¿½probability that your fit is good.ï¿½ï¿½ If you did many fake experiments (draw many random samples of data points from the assumed distribution (your fit function)), this is the percentage of experiments that would give ï¿½ï¿½2 values ï¿½ï¿½ to the one you got in this experiment.
 			//g[ii]->SetParameters(par[ii][2], par[ii][5], par[ii][4]);//set parameters for drawing gausn
 			//g[ii]->SetLineColor(kViolet+1);
 			//p[ii]->SetParameters(par[ii][0], par[ii][1], par[ii][2], par[ii][3], par[ii][4], par[ii][5]);//set parameters for drawing peak
@@ -292,7 +288,7 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 			h_confidence_interval[i][ii] = (TH1D*)histo[i]->Clone(filename);//Create a histogram to hold the confidence intervals
 			TVirtualFitter* fitter = TVirtualFitter::GetFitter();//The method TVirtualFitter::GetFitter())->Get the parameters of your fitting function after having it fitted to an histogram.
 			fitter->GetConfidenceIntervals(h_confidence_interval[i][ii], 0.683);//By default the intervals are inflated using the chi2/ndf value of the fit if a chi2 fit is performed
-			//confidence interval for the colored band: 1¦Ò confidence interval: P=0.683, 1¦Ò confidence interval: P=0.95, 3¦Ò confidence interval: P=0.997
+			//confidence interval for the colored band: 1ï¿½ï¿½ confidence interval: P=0.683, 1ï¿½ï¿½ confidence interval: P=0.95, 3ï¿½ï¿½ confidence interval: P=0.997
 			//h_confidence_interval will contain the CL result that you can draw on top of your fitted graph.
 			//where h_confidence_interval will hold the errors and could superimpose it on the same canvas where you plot central values.
 			h_confidence_interval[i][ii]->SetStats(kFALSE);
@@ -315,7 +311,7 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 			double Utau_Utau = fitter->GetCovarianceMatrixElement(3, 3);//(Utau)^2
 			double Usigma_Usigma = fitter->GetCovarianceMatrixElement(4, 4);//(Usigma)^2
 			double Umean_Umean = fitter->GetCovarianceMatrixElement(5, 5);//(Umean)^2
-			double rou_Utau_Umean = fitter->GetCovarianceMatrixElement(3, 5);//(¦Ñ*Utau*Umean), (3,5) (5,3) doesn't matter.
+			double rou_Utau_Umean = fitter->GetCovarianceMatrixElement(3, 5);//(ï¿½ï¿½*Utau*Umean), (3,5) (5,3) doesn't matter.
 			double rou_Usigma_Umean = fitter->GetCovarianceMatrixElement(4, 5);//
 			// cout << rou_Usigma_Umean << endl;
 
@@ -433,7 +429,8 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 			T1->Draw("R");//"R" means the line is drawn with the current line attributes
 
 			pad1->SetLogy(1); // residuals are wrong if logy is turn on earlier
-			//sprintf(filename, "%s%s%d%s%s%s", pathname, "237Np_Output_png/Run", Which_Dataset, "_", hfit_name, ".png");
+			sprintf(filename, "%s%s%d%s%s%s", pathname, "237Np_Output_png/Run", Which_Dataset, "_", hfit_name, ".png");
+			canvaspeak[i][ii]->SaveAs(filename);
 			sprintf(filename, "%s%s%d%s%s%s", pathname, "237Np_Output_png/Run", Which_Dataset, "_", hfit_name, ".eps");
 			canvaspeak[i][ii]->SaveAs(filename);
 
