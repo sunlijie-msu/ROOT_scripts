@@ -88,7 +88,7 @@ void peakfit_cascadedecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_
 	int bin_start_high = 1420; // placeholder
 	int colors[4] = { kBlack, kRed, kAzure, kGreen };
 	int colorsband[4] = { kGray + 1, kRed - 9, kAzure - 9, kGreen - 9 };
-	int Which_Dataset = 3; // Modify: 1 for MSDtotal; 2 for MSD26;
+	int Which_Dataset = 3; // Modify: Run 1,3 for MSDtotal; Run 2 for MSD26;
 	int Which_MSD;
 
 	if (Which_Dataset == 1)
@@ -97,8 +97,8 @@ void peakfit_cascadedecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_
 		Ea_central = 5417; // 5418 for MSDtotal, based on LISE++ calculation
 		if (Which_MSD == 12)	bin_start_low = 240; // Don't change
 		if (Which_MSD == 26)	bin_start_low = 160; // Don't change
-		Ea_gate_start = 60; // Default 4; 4 means +/-4 keV = 8 keV wide; 20 means +/-20 keV = 40 keV wide
-		Ea_gate_end = 60; // Default 60;
+		Ea_gate_start = 4; // Useless now; Original intent: iterate alpha-gate half-widths:
+		Ea_gate_end = 60; // Useless now; Original intent: iterate alpha-gate half-widths:
 		msd_e_cut_low = 5317; // Modify: for single peak fit
 		msd_e_cut_high = 5517; // Modify: for single peak fit
 		sprintf(msdname, "%s", "msdtotal");
@@ -108,8 +108,8 @@ void peakfit_cascadedecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_
 		Which_MSD = 26; // 26 for MSD26;
 		Ea_central = 5479; // 5479 for MSD26; 5421 for MSDtotal, based on LISE++ calculation
 		if (Which_MSD == 26)	bin_start_low = 160; // Don't change
-		Ea_gate_start = 20; // Modify: Default 4; 4 means +/-4 keV = 8 keV wide; 20 means +/-20 keV = 40 keV wide
-		Ea_gate_end = 20; // Modify: Default 60;
+		Ea_gate_start = 4; // Useless now; Original intent: iterate alpha-gate half-widths:
+		Ea_gate_end = 20; // Useless now; Original intent: iterate alpha-gate half-widths:
 		msd_e_cut_low = 5415; // Modify: for single peak fit
 		msd_e_cut_high = 5500; // Modify: for single peak fit
 		sprintf(msdname, "%s", "msd26");
@@ -120,8 +120,8 @@ void peakfit_cascadedecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_
 		Ea_central = 5417; // 5418 for MSDtotal, based on LISE++ calculation
 		if (Which_MSD == 12)	bin_start_low = 230; // Don't change
 		if (Which_MSD == 26)	bin_start_low = 210; // Don't change
-		Ea_gate_start = 60; // Default 4; 4 means +/-4 keV = 8 keV wide; 20 means +/-20 keV = 40 keV wide
-		Ea_gate_end = 60; // Default 60;
+		Ea_gate_start = 4; // Useless now; Original intent: iterate alpha-gate half-widths:
+		Ea_gate_end = 60; // Useless now; Original intent: iterate alpha-gate half-widths:
 		msd_e_cut_low = 5317; // Modify: for single peak fit
 		msd_e_cut_high = 5517; // Modify: for single peak fit
 		sprintf(msdname, "%s", "msdtotal");
