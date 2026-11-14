@@ -260,12 +260,12 @@ void peakfit_cascadedecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_
 			//b[ii]->SetNpx(histoNbins * 10);
 			//fEMG[ii]->SetParameters(0.1,15,peaky[ii],10,10,peakx[ii]);//initial value [0]-A, [1]-B, [2]-N, [3]-Tau, [4]-Sigma, [5]-Mu
 			int Total_decays_guess = 2000 * i;
-			fEMG[ii]->SetParameters(2e6, 67.8, 1, 0.080, 0.1542); // initial value [0]-N59, [1]-T59, [2]-B, [3]-T103, [4]-k
+			fEMG[ii]->SetParameters(2e6, 67.8, 1, 0.080, 0.15); // initial value [0]-N59, [1]-T59, [2]-B, [3]-T103, [4]-k
 			fEMG[ii]->SetParLimits(0, 1e6, 4e6);//N59
 			fEMG[ii]->SetParLimits(1, 40, 140);//T59
 			fEMG[ii]->SetParLimits(2, 0, 12);//B
 			fEMG[ii]->SetParLimits(3, 0.040, 0.120);//T103
-			fEMG[ii]->SetParLimits(4, 0.15, 0.16);//k
+			fEMG[ii]->SetParLimits(4, 0.127, 0.163);//k=I(43.4|g+ce)/I(5486|a)=12.3(15)/84.8(2)=0.145(18)
 			fEMG[ii]->SetParNames("Total_direct_decays", "Half_life_59", "Background", "Half_life_103", "Ratio_indirect");
 			//fEMG[ii]->SetParNames("BkgA", "BkgB", "Const*bin", "Tau", "Sigma", "Mean");
 			histo[i]->Fit("fEMG", "MLE", "", fitrange_min, fitrange_max);
