@@ -97,6 +97,7 @@ void peakfit_cascadedecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_
 		Ea_central = 5417; // 5418 for MSDtotal, based on LISE++ calculation
 		if (Which_MSD == 12)	bin_start_low = 240; // Don't change
 		if (Which_MSD == 26)	bin_start_low = 160; // Don't change
+		bin_start_high = bin_start_low + 680; // 10*T1/2 = 10*68 = 680
 		Ea_gate_start = 4; // Useless now; Original intent: iterate alpha-gate half-widths:
 		Ea_gate_end = 60; // Useless now; Original intent: iterate alpha-gate half-widths:
 		msd_e_cut_low = 5317; // Modify: for single peak fit
@@ -108,6 +109,7 @@ void peakfit_cascadedecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_
 		Which_MSD = 26; // 26 for MSD26;
 		Ea_central = 5479; // 5479 for MSD26; 5421 for MSDtotal, based on LISE++ calculation
 		if (Which_MSD == 26)	bin_start_low = 160; // Don't change
+		bin_start_high = bin_start_low + 680; // 10*T1/2 = 10*68 = 680
 		Ea_gate_start = 4; // Useless now; Original intent: iterate alpha-gate half-widths:
 		Ea_gate_end = 20; // Useless now; Original intent: iterate alpha-gate half-widths:
 		msd_e_cut_low = 5415; // Modify: for single peak fit
@@ -120,6 +122,7 @@ void peakfit_cascadedecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_
 		Ea_central = 5417; // 5418 for MSDtotal, based on LISE++ calculation
 		if (Which_MSD == 12)	bin_start_low = 230; // Don't change
 		if (Which_MSD == 26)	bin_start_low = 210; // Don't change
+		bin_start_high = bin_start_low + 680; // 10*T1/2 = 10*68 = 680
 		Ea_gate_start = 4; // Useless now; Original intent: iterate alpha-gate half-widths:
 		Ea_gate_end = 60; // Useless now; Original intent: iterate alpha-gate half-widths:
 		msd_e_cut_low = 5317; // Modify: for single peak fit
@@ -207,7 +210,7 @@ void peakfit_cascadedecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_
 
 			histomax = histo[i]->GetMaximum();
 			histoNbins = histo[i]->GetNbinsX();
-			fitrange_min = bin_start_low + ii * 20; fitrange_max = bin_start_low + 680; // Not necessary modify // 10*T1/2 = 10*68 = 680
+			fitrange_min = bin_start_low + ii * 20; fitrange_max = bin_start_high; // Not necessary modify
 
 			histo[i]->GetXaxis()->SetRangeUser(fitrange_min, fitrange_max);//zoom the axis
 			histo[i]->GetYaxis()->SetRangeUser(1, histomax*1.1);//zoom the axis
@@ -360,26 +363,26 @@ void peakfit_cascadedecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_
 
 			// Plain text (no box). Positions are NDC = fraction of the pad: (0,0) = bottom-left corner, (1,1) = top-right corner.
 			// Edit only the *_x / *_y anchors below to move a whole block; following lines are stacked downward automatically.
-			double para_textsize = 0.13; // font size, fraction of pad height
-			double para_dy = 1.2 * para_textsize; // line spacing, fraction of pad height
+			double para_textsize = 0.12; // font size, fraction of pad height
+			double para_dy = 1.0 * para_textsize; // line spacing, fraction of pad height
 
-			// Block 1 (N, T59, B, T103, k): left-aligned. fit_x = left edge of text (0 = left of pad), fit_y = vertical center of FIRST line (0 = bottom, 1 = top)
-			double fit_x = 0.15, fit_y = 0.46;
+			// Block 1 (N, T59, B, T103, k): left-aligned. fit_para_x = left edge of text (0 = left of pad), fit_para_y = vertical center of FIRST line (0 = bottom, 1 = top)
+			double fit_para_x = 0.15, fit_para_y = 0.50;
 			TLatex* textgaus = new TLatex();
 			textgaus->SetNDC();
 			textgaus->SetTextFont(132);
 			textgaus->SetTextSize(para_textsize);
 			textgaus->SetTextAlign(12); // left, vertically centered
-			sprintf(paraprint, "#it{N}_{59} = %.1f #pm %.1f", par[ii][0], par_err[ii][0]);
-			textgaus->DrawLatex(fit_x, fit_y, paraprint);
-			sprintf(paraprint, "#it{T}_{59} = %.3f #pm %.3f", par[ii][1], par_err[ii][1]);
-			textgaus->DrawLatex(fit_x, fit_y - para_dy, paraprint);
-			sprintf(paraprint, "#it{B} = %.3f #pm %.3f", par[ii][2], par_err[ii][2]);
-			textgaus->DrawLatex(fit_x, fit_y - 2 * para_dy, paraprint);
-			sprintf(paraprint, "#it{T}_{103} = %.3f #pm %.3f", par[ii][3], par_err[ii][3]);
-			textgaus->DrawLatex(fit_x, fit_y - 3 * para_dy, paraprint);
-			sprintf(paraprint, "#it{k} = %.4f #pm %.4f", par[ii][4], par_err[ii][4]);
-			textgaus->DrawLatex(fit_x, fit_y - 4 * para_dy, paraprint);
+			sprintf(paraprint, "#it{N}_{59} = %.0f #pm %.0f", par[ii][0], par_err[ii][0]);
+			textgaus->DrawLatex(fit_para_x, fit_para_y, paraprint);
+			sprintf(paraprint, "#it{T}_{59} = %.2f #pm %.2f", par[ii][1], par_err[ii][1]);
+			textgaus->DrawLatex(fit_para_x, fit_para_y - para_dy, paraprint);
+			sprintf(paraprint, "#it{B} = %.2f #pm %.2f", par[ii][2], par_err[ii][2]);
+			textgaus->DrawLatex(fit_para_x, fit_para_y - 2 * para_dy, paraprint);
+			sprintf(paraprint, "#it{T}_{103} = %.2f #pm %.2f", par[ii][3], par_err[ii][3]);
+			textgaus->DrawLatex(fit_para_x, fit_para_y - 3 * para_dy, paraprint);
+			sprintf(paraprint, "#it{k} = %.3f #pm %.3f", par[ii][4], par_err[ii][4]);
+			textgaus->DrawLatex(fit_para_x, fit_para_y - 4 * para_dy, paraprint);
 
 			// Block 2 (chi2/NDF, p-value): right-aligned. stat_x = right edge of text, stat_y = vertical center of FIRST line
 			double stat_x = 0.96, stat_y = 0.86;
