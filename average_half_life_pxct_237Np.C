@@ -162,20 +162,18 @@ void average_half_life_pxct_237Np()// graph-pol0 fit several points to get the w
 	graph->GetYaxis()->SetTitleOffset(0.72);//axis title offset
 	graph->GetXaxis()->SetTitleSize(0.07);
 	graph->GetYaxis()->SetTitleSize(0.07);
-	//		graph[i]->GetYaxis()->SetRangeUser(1,8);
+	graph->GetXaxis()->SetRangeUser(0,16);
 	graph->GetYaxis()->SetRangeUser(54, 75);
+	graph->GetXaxis()->SetNdivisions(505);//n = n1 + 100*n2 + 10000*n3
 	graph->GetYaxis()->SetNdivisions(505);
-	//graph->GetXaxis()->SetNdivisions(510);//n = n1 + 100*n2 + 10000*n3
-	graph->GetXaxis()->SetLimits(0.00001, 15.99999);//fix the range first, otherwise the divisions land on fractional values
-	graph->GetXaxis()->SetNdivisions(16, kFALSE);//n1=16 primary divisions, no label optimisation -> 0,1,...,16 all shown
 	graph->SetMarkerStyle(6);
 	graph->SetMarkerColor(kBlack);
-	graph->SetLineWidth(2);
+	graph->SetLineWidth(3);
 	TF1* pol0 = new TF1("pol0", "pol0", 0, 200);//pol0 constant fit
 	pol0->SetNpx(2000);
 	pol0->SetParNames("p0");
 	pol0->SetLineColor(kRed);
-	pol0->SetLineWidth(1);
+	pol0->SetLineWidth(0);
 
 	//graph->Fit("pol1");//pol1 can be used directly without TF1 constructor in CINT
 	//graph->Fit("pol0","ME");
@@ -197,7 +195,7 @@ void average_half_life_pxct_237Np()// graph-pol0 fit several points to get the w
 	//h_confidence_interval will contain the CL result that you can draw on top of your fitted graph.
 	//where h_confidence_interval will hold the errors and could superimpose it on the same canvas where you plot central values.
 	h_confidence_interval->SetStats(kFALSE);
-	h_confidence_interval->SetFillColor(kRed - 9);
+	h_confidence_interval->SetFillColor(kRed - 7);
 	graph->Draw("AP");//"A": Axis are drawn around the graph, "P": The current marker is plotted at each point
 	h_confidence_interval->Draw("e3 same"); // plot the uncertainty band
 
@@ -233,7 +231,7 @@ void average_half_life_pxct_237Np()// graph-pol0 fit several points to get the w
 	double para_dy = 1.2 * para_textsize; // line spacing, fraction of pad height
 
 	// Block 1 (p0, averages, inflation factor): left-aligned. fit_para_x = left edge of text, fit_para_y = vertical center of FIRST line
-	double fit_para_x = 0.50, fit_para_y = 0.46;
+	double fit_para_x = 0.47, fit_para_y = 0.44;
 	TLatex* textgaus = new TLatex();
 	textgaus->SetNDC();
 	textgaus->SetTextFont(132);
@@ -241,13 +239,13 @@ void average_half_life_pxct_237Np()// graph-pol0 fit several points to get the w
 	textgaus->SetTextAlign(12); // left, vertically centered
 	sprintf(paraprint, "Weighted average = %.2f #pm %.2f", p0, p0err);
 	textgaus->DrawLatex(fit_para_x, fit_para_y, paraprint);
-	sprintf(paraprint, "Internal = %.2f #pm %.2f", p0, p0err);
+	sprintf(paraprint, "#chi^{2}/#it{NDF} = %.1f / %.0f = %.2f", parChi2, parNDF, parChi2 / parNDF);
 	textgaus->DrawLatex(fit_para_x, fit_para_y - para_dy, paraprint);
-	sprintf(paraprint, "#chi^{2}/#it{NDF} = %.1f / %.1f = %.2f", parChi2, parNDF, parChi2 / parNDF);
+	sprintf(paraprint, "Internal uncertainty = %.2f #pm %.2f", p0, p0err);
 	textgaus->DrawLatex(fit_para_x, fit_para_y - 2 * para_dy, paraprint);
 	if (sqrt(parChi2 / parNDF) > 1)
 	{
-		sprintf(paraprint, "External = %.2f #pm %.2f", p0, p0err * sqrt(parChi2 / parNDF));
+		sprintf(paraprint, "External uncertainty = %.2f #pm %.2f", p0, p0err * sqrt(parChi2 / parNDF));
 		textgaus->DrawLatex(fit_para_x, fit_para_y - 3 * para_dy, paraprint);
 	}
 
@@ -269,5 +267,7 @@ void average_half_life_pxct_237Np()// graph-pol0 fit several points to get the w
 	}
 	outFile += ".png";
 	gPad->RedrawAxis();//repaint frame and axes above the confidence band; also required so the pad is painted before saving
-	canvas->SaveAs(outFile);//save figure
+	canvas->SaveAs(outFile);//save figure (raster)
+	outFile.ReplaceAll(".png", ".eps");
+	canvas->SaveAs(outFile);//save figure (vector, for the manuscript)
 }// main
