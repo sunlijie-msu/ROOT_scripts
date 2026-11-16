@@ -40,7 +40,7 @@
 #include "TLegend.h"
 #include "TLatex.h"
 using namespace std;
-void average_half-life_pxct_237Np()// graph-pol0 fit several points to get the weighted average
+void average_half_life_pxct_237Np()// graph-pol0 fit several points to get the weighted average
 {
 	TCanvas* canvas;
 	TGraph* graph, * graph_uncertainty_low, * graph_uncertainty_high;//TGraph
@@ -56,28 +56,58 @@ void average_half-life_pxct_237Np()// graph-pol0 fit several points to get the w
 	double y_point_lower_bound[1000], y_point_higher_bound[1000];
 	double p0, p0err, parChi2, parNDF, p_value;
 
-	string line;
-	char h_name[100], infile_name[100], paraprint[100];
-	sprintf(infile_name, "%s", "D:/X/out/weightedaverage.dat");
-	cout << infile_name << endl;
-	ifstream infile(infile_name, ios::in);//The data that need to be fitted
-	int number = 0;
-	while (getline(infile, line))
+	// Alternative (disabled): read the same values from a text file instead of the hard-coded arrays.
+	// string line;
+	// char h_name[100], infile_name[100], paraprint[100];
+	// sprintf(infile_name, "%s", "D:/X/out/weightedaverage.dat");
+	// cout << infile_name << endl;
+	// ifstream infile(infile_name, ios::in);//The data that need to be fitted
+	// int number = 0;
+	// while (getline(infile, line))
+	// {
+	//     stringstream(line) >> y_value[number] >> y_error[number];
+	//     x_value[number] = number + 1;
+	//     x_error[number] = 0;
+	//     cout << x_value[number] << '\t' << y_value[number] << '\t' << y_error[number] << endl;
+	//     number++;
+	// }
+
+	char h_name[100], paraprint[100];
+	
+//63 ns {I5} (Beling_PR1952), \\
+//62 ns {I3} (Vartapetian_AP1958), \\
+//63 ns {I5} (Unik_Thesis1960), \\
+//64.2 ns {I20} (Oberhofer_Thesis1968), \\
+//66.7 ns {I7} (Garg_ZP1971), \\
+//66.9 ns {I10} (McBeth_NIM1972), \\
+//67.8 ns {I10} (McBeth_NIM1972), \\
+//68.3 ns {I2} (Miller_NIM1972), \\
+//68.5 ns {I4} (Bishop_NIM1974), \\
+//70 ns {I4} (Finck_NIMA1985), \\
+//67.7 ns {I1} (Vretenar_AJP2019), \\
+//67.60 ns {I25} (Dutsov_ARI2021), \\
+//67.86 ns {I9} (Takacs_ARI2021), \\
+//67.60 ns {I20} (Santos_NPA2023), \\
+//68.03 ns {I7} (Present_work)
+
+	const int number = 15;
+	double y_data[number] = { 63.0, 62.0, 63.0, 64.2, 66.7, 66.9, 67.8, 68.3, 68.5, 70.0, 67.7, 67.60, 67.86, 67.60, 68.03 };
+	double y_data_err[number] = { 5.0, 3.0, 5.0, 2.0, 0.7, 1.0, 1.0, 0.2, 0.4, 4.0, 0.1, 0.25, 0.09, 0.20, 0.07 };
+	for (int ii = 0; ii < number; ii++)
 	{
-		stringstream(line) >> y_value[number] >> y_error[number];
-		x_value[number] = number + 1;
-		x_error[number] = 0;
-		cout << x_value[number] << '	' << y_value[number] << '	' << y_error[number] << endl;
-		number++;
+		x_value[ii] = ii + 1;
+		x_error[ii] = 0;
+		y_value[ii] = y_data[ii];
+		y_error[ii] = y_data_err[ii];
 	}
 
 	sprintf(h_name, "%s", "weighted_average");
-	canvas = new TCanvas(h_name, h_name, 1300, 700);//create canvas
+	canvas = new TCanvas(h_name, h_name, 1300, 800);//create canvas
 	canvas->cd();//enter canvas
-	canvas->SetTopMargin(0.04);
-	canvas->SetRightMargin(0.02);
-	canvas->SetLeftMargin(0.13);
-	canvas->SetBottomMargin(0.22);
+	canvas->SetTopMargin(0.03);
+	canvas->SetRightMargin(0.04);
+	canvas->SetLeftMargin(0.11);
+	canvas->SetBottomMargin(0.15);
 	canvas->SetFrameLineWidth(3);
 	//canvascali[i]->SetGrid();//show grid
 	//graph[i]=new TGraph(peaknum,Number[i],input_value[i]);//TGraph *gr1=new TGraph(n,x,y);
@@ -88,28 +118,29 @@ void average_half-life_pxct_237Np()// graph-pol0 fit several points to get the w
 	graph->GetXaxis()->CenterTitle();//center title
 	graph->GetYaxis()->CenterTitle();//center title
 	graph->SetTitle("");
+	graph->SetStats(0);
 	graph->GetXaxis()->SetLabelFont(132);//axis label font
 	graph->GetYaxis()->SetLabelFont(132);//axis label font
-	graph->GetXaxis()->SetLabelSize(0.078);
-	graph->GetYaxis()->SetLabelSize(0.078);
-	graph->GetXaxis()->SetTickLength(0.010);
-	graph->GetYaxis()->SetTickLength(0.010);
+	graph->GetXaxis()->SetLabelSize(0.06);
+	graph->GetYaxis()->SetLabelSize(0.06);
+	graph->GetYaxis()->SetTickLength(0.015);
 	graph->GetXaxis()->SetTitleFont(132);//axis title font
 	graph->GetYaxis()->SetTitleFont(132);//axis title font
-	graph->GetXaxis()->SetTitleOffset(0.9);//axis title offset
-	graph->GetYaxis()->SetTitleOffset(0.48);//axis title offset
-	graph->GetXaxis()->SetTitleSize(0.078);
-	graph->GetYaxis()->SetTitleSize(0.078);
+	graph->GetXaxis()->SetTitleOffset(1.0);//axis title offset
+	graph->GetYaxis()->SetTitleOffset(0.72);//axis title offset
+	graph->GetXaxis()->SetTitleSize(0.07);
+	graph->GetYaxis()->SetTitleSize(0.07);
 	//		graph[i]->GetYaxis()->SetRangeUser(1,8);
 	graph->GetYaxis()->SetRangeUser(54, 78);
 	graph->GetYaxis()->SetNdivisions(505);
 	graph->GetXaxis()->SetNdivisions(510);//n = n1 + 100*n2 + 10000*n3
 	graph->SetMarkerStyle(6);
 	graph->SetMarkerColor(kBlack);
-	graph->SetLineWidth(1);
+	graph->SetLineWidth(2);
 	TF1* pol0 = new TF1("pol0", "pol0", 0, 200);//pol0 constant fit
 	pol0->SetNpx(2000);
 	pol0->SetParNames("p0");
+	pol0->SetLineColor(kRed);
 	pol0->SetLineWidth(2);
 
 	//graph->Fit("pol1");//pol1 can be used directly without TF1 constructor in CINT
@@ -160,7 +191,7 @@ void average_half-life_pxct_237Np()// graph-pol0 fit several points to get the w
 	p_value = pol0->GetProb();//This probability is not the "probability that your fit is good." If you did many fake experiments (draw many random samples of data points from the assumed distribution (your fit function)), this is the percentage of experiments that would give chi2 values >= to the one you got in this experiment.
 
 	// Fit results: plain text, no box, matching peakfit style
-	double para_textsize = 0.045; // font size, fraction of pad height
+	double para_textsize = 0.05; // font size, fraction of pad height
 	double para_dy = 1.2 * para_textsize; // line spacing, fraction of pad height
 
 	// Block 1 (p0, averages, inflation factor): left-aligned. fit_para_x = left edge of text, fit_para_y = vertical center of FIRST line
@@ -183,7 +214,7 @@ void average_half-life_pxct_237Np()// graph-pol0 fit several points to get the w
 	}
 
 	// Block 2 (chi2/NDF, p-value): right-aligned. stat_x = right edge of text, stat_y = vertical center of FIRST line
-	double stat_x = 0.97, stat_y = 0.31;
+	double stat_x = 0.95, stat_y = 0.31;
 	TLatex* textstat = new TLatex();
 	textstat->SetNDC();
 	textstat->SetTextFont(132);
@@ -199,5 +230,6 @@ void average_half-life_pxct_237Np()// graph-pol0 fit several points to get the w
 		outFile = TString("D:/X/out/") + outFile;
 	}
 	outFile += ".png";
+	gPad->RedrawAxis();
 	canvas->SaveAs(outFile);//save figure
 }// main
