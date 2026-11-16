@@ -90,9 +90,41 @@ void average_half_life_pxct_237Np()// graph-pol0 fit several points to get the w
 //67.60 ns {I20} (Santos_NPA2023), \\
 //68.03 ns {I7} (Present_work)
 
-	const int number = 15;
-	double y_data[number] = { 63.0, 62.0, 63.0, 64.2, 66.7, 66.9, 67.8, 68.3, 68.5, 70.0, 67.7, 67.60, 67.86, 67.60, 68.03 };
-	double y_data_err[number] = { 5.0, 3.0, 5.0, 2.0, 0.7, 1.0, 1.0, 0.2, 0.4, 4.0, 0.1, 0.25, 0.09, 0.20, 0.07 };
+	const int number = 15; // Half-life (ns); uncertainty (ns) = ENSDF last-digit uncertainty {In}
+	double y_data[number] = { // half-life (ns)
+		63.0,  //  1  Beling_PR1952
+		62.0,  //  2  Vartapetian_AP1958
+		63.0,  //  3  Unik_Thesis1960
+		64.2,  //  4  Oberhofer_Thesis1968
+		66.7,  //  5  Garg_ZP1971
+		66.9,  //  6  McBeth_NIM1972 (66.9)
+		67.8,  //  7  McBeth_NIM1972 (67.8)
+		68.3,  //  8  Miller_NIM1972
+		68.5,  //  9  Bishop_NIM1974
+		70.0,  // 10  Finck_NIMA1985
+		67.7,  // 11  Vretenar_AJP2019
+		67.60, // 12  Dutsov_ARI2021
+		67.86, // 13  Takacs_ARI2021
+		67.60, // 14  Santos_NPA2023
+		68.03  // 15  Present_work
+	};
+	double y_data_err[number] = { // uncertainty (ns)
+		5.0,   //  1  Beling_PR1952
+		3.0,   //  2  Vartapetian_AP1958
+		5.0,   //  3  Unik_Thesis1960
+		2.0,   //  4  Oberhofer_Thesis1968
+		0.7,   //  5  Garg_ZP1971
+		1.0,   //  6  McBeth_NIM1972 (66.9)
+		1.0,   //  7  McBeth_NIM1972 (67.8)
+		0.2,   //  8  Miller_NIM1972
+		0.4,   //  9  Bishop_NIM1974
+		4.0,   // 10  Finck_NIMA1985
+		0.1,   // 11  Vretenar_AJP2019
+		0.25,  // 12  Dutsov_ARI2021
+		0.09,  // 13  Takacs_ARI2021
+		0.20,  // 14  Santos_NPA2023
+		0.07   // 15  Present_work
+	};
 	for (int ii = 0; ii < number; ii++)
 	{
 		x_value[ii] = ii + 1;
