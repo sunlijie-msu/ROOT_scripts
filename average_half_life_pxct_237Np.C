@@ -173,7 +173,7 @@ void average_half_life_pxct_237Np()// graph-pol0 fit several points to get the w
 	pol0->SetNpx(2000);
 	pol0->SetParNames("p0");
 	pol0->SetLineColor(kRed);
-	pol0->SetLineWidth(2);
+	pol0->SetLineWidth(1);
 
 	//graph->Fit("pol1");//pol1 can be used directly without TF1 constructor in CINT
 	//graph->Fit("pol0","ME");
@@ -185,6 +185,10 @@ void average_half_life_pxct_237Np()// graph-pol0 fit several points to get the w
 
 	// Uncertainty Band
 	TH1D* h_confidence_interval = new TH1D("h_confidence_interval", "h_confidence_interval", 10000, 0, 100);//Create a histogram to hold the confidence intervals
+	// GetConfidenceIntervals fills only the bin ERRORS, so the bin CONTENTS must hold the fit curve;
+	// otherwise the band is painted around y=0 and falls outside the plotted range.
+	for (int ib = 1; ib <= h_confidence_interval->GetNbinsX(); ib++)
+		h_confidence_interval->SetBinContent(ib, pol0->Eval(h_confidence_interval->GetBinCenter(ib)));
 	TVirtualFitter* fitter = TVirtualFitter::GetFitter();//The method TVirtualFitter::GetFitter())->Get the parameters of your fitting function after having it fitted to an histogram.
 	fitter->GetConfidenceIntervals(h_confidence_interval, 0.683);//By default the intervals are inflated using the chi2/ndf value of the fit if a chi2 fit is performed
 	//confidence interval for the colored band: 1Sigma confidence interval: P=0.683, 1Sigma confidence interval: P=0.95, 3Sigma confidence interval: P=0.997
@@ -211,9 +215,9 @@ void average_half_life_pxct_237Np()// graph-pol0 fit several points to get the w
 	graph_uncertainty_high->SetLineColor(4);
 	graph_uncertainty_high->SetLineWidth(1);
 	//graph_uncertainty_high->Draw("C");//"C" A smooth line is drawn
-
-	graph->Draw("P same");//draw the points again above error band for better visibility
-	pol0->Draw("same");//draw the fit line above the band
+	h_confidence_interval->Draw("e3 same");//uncertainty band from the fit confidence intervals
+	pol0->Draw("C same");//fit line
+	graph->Draw("PE same");//data points and error bars above the band
 
 	// Write Fit Results on Canvas
 	p0 = pol0->GetParameter(0);
@@ -233,15 +237,15 @@ void average_half_life_pxct_237Np()// graph-pol0 fit several points to get the w
 	textgaus->SetTextFont(132);
 	textgaus->SetTextSize(para_textsize);
 	textgaus->SetTextAlign(12); // left, vertically centered
-	sprintf(paraprint, "#it{p}_{0} = %.4f #pm %.4f", p0, p0err);
+	sprintf(paraprint, "Weighted average = %.2f #pm %.2f", p0, p0err);
 	textgaus->DrawLatex(fit_para_x, fit_para_y, paraprint);
-	sprintf(paraprint, "Internal = %.4f #pm %.4f", p0, p0err);
+	sprintf(paraprint, "Internal = %.2f #pm %.2f", p0, p0err);
 	textgaus->DrawLatex(fit_para_x, fit_para_y - para_dy, paraprint);
 	sprintf(paraprint, "sqrt(#chi^{2}/#it{NDF}) = %.2f", sqrt(parChi2 / parNDF));
 	textgaus->DrawLatex(fit_para_x, fit_para_y - 2 * para_dy, paraprint);
 	if (sqrt(parChi2 / parNDF) > 1)
 	{
-		sprintf(paraprint, "External = %.4f #pm %.4f", p0, p0err * sqrt(parChi2 / parNDF));
+		sprintf(paraprint, "External = %.2f #pm %.2f", p0, p0err * sqrt(parChi2 / parNDF));
 		textgaus->DrawLatex(fit_para_x, fit_para_y - 3 * para_dy, paraprint);
 	}
 
@@ -262,6 +266,6 @@ void average_half_life_pxct_237Np()// graph-pol0 fit several points to get the w
 		outFile = TString("D:/X/out/") + outFile;
 	}
 	outFile += ".png";
-	gPad->RedrawAxis();
+	gPad->RedrawAxis();//repaint frame and axes above the confidence band; also required so the pad is painted before saving
 	canvas->SaveAs(outFile);//save figure
 }// main
