@@ -163,9 +163,11 @@ void average_half_life_pxct_237Np()// graph-pol0 fit several points to get the w
 	graph->GetXaxis()->SetTitleSize(0.07);
 	graph->GetYaxis()->SetTitleSize(0.07);
 	//		graph[i]->GetYaxis()->SetRangeUser(1,8);
-	graph->GetYaxis()->SetRangeUser(54, 78);
+	graph->GetYaxis()->SetRangeUser(54, 75);
 	graph->GetYaxis()->SetNdivisions(505);
-	graph->GetXaxis()->SetNdivisions(510);//n = n1 + 100*n2 + 10000*n3
+	//graph->GetXaxis()->SetNdivisions(510);//n = n1 + 100*n2 + 10000*n3
+	graph->GetXaxis()->SetLimits(0.00001, 15.99999);//fix the range first, otherwise the divisions land on fractional values
+	graph->GetXaxis()->SetNdivisions(16, kFALSE);//n1=16 primary divisions, no label optimisation -> 0,1,...,16 all shown
 	graph->SetMarkerStyle(6);
 	graph->SetMarkerColor(kBlack);
 	graph->SetLineWidth(2);
@@ -195,7 +197,7 @@ void average_half_life_pxct_237Np()// graph-pol0 fit several points to get the w
 	//h_confidence_interval will contain the CL result that you can draw on top of your fitted graph.
 	//where h_confidence_interval will hold the errors and could superimpose it on the same canvas where you plot central values.
 	h_confidence_interval->SetStats(kFALSE);
-	h_confidence_interval->SetFillColor(kAzure - 9);
+	h_confidence_interval->SetFillColor(kRed - 9);
 	graph->Draw("AP");//"A": Axis are drawn around the graph, "P": The current marker is plotted at each point
 	h_confidence_interval->Draw("e3 same"); // plot the uncertainty band
 
@@ -216,7 +218,7 @@ void average_half_life_pxct_237Np()// graph-pol0 fit several points to get the w
 	graph_uncertainty_high->SetLineWidth(1);
 	//graph_uncertainty_high->Draw("C");//"C" A smooth line is drawn
 	h_confidence_interval->Draw("e3 same");//uncertainty band from the fit confidence intervals
-	pol0->Draw("C same");//fit line
+	//pol0->Draw("C same");//fit line
 	graph->Draw("PE same");//data points and error bars above the band
 
 	// Write Fit Results on Canvas
@@ -227,11 +229,11 @@ void average_half_life_pxct_237Np()// graph-pol0 fit several points to get the w
 	p_value = pol0->GetProb();//This probability is not the "probability that your fit is good." If you did many fake experiments (draw many random samples of data points from the assumed distribution (your fit function)), this is the percentage of experiments that would give chi2 values >= to the one you got in this experiment.
 
 	// Fit results: plain text, no box, matching peakfit style
-	double para_textsize = 0.05; // font size, fraction of pad height
+	double para_textsize = 0.06; // font size, fraction of pad height
 	double para_dy = 1.2 * para_textsize; // line spacing, fraction of pad height
 
 	// Block 1 (p0, averages, inflation factor): left-aligned. fit_para_x = left edge of text, fit_para_y = vertical center of FIRST line
-	double fit_para_x = 0.15, fit_para_y = 0.92;
+	double fit_para_x = 0.50, fit_para_y = 0.46;
 	TLatex* textgaus = new TLatex();
 	textgaus->SetNDC();
 	textgaus->SetTextFont(132);
@@ -241,7 +243,7 @@ void average_half_life_pxct_237Np()// graph-pol0 fit several points to get the w
 	textgaus->DrawLatex(fit_para_x, fit_para_y, paraprint);
 	sprintf(paraprint, "Internal = %.2f #pm %.2f", p0, p0err);
 	textgaus->DrawLatex(fit_para_x, fit_para_y - para_dy, paraprint);
-	sprintf(paraprint, "sqrt(#chi^{2}/#it{NDF}) = %.2f", sqrt(parChi2 / parNDF));
+	sprintf(paraprint, "#chi^{2}/#it{NDF} = %.1f / %.1f = %.2f", parChi2, parNDF, parChi2 / parNDF);
 	textgaus->DrawLatex(fit_para_x, fit_para_y - 2 * para_dy, paraprint);
 	if (sqrt(parChi2 / parNDF) > 1)
 	{
@@ -250,16 +252,16 @@ void average_half_life_pxct_237Np()// graph-pol0 fit several points to get the w
 	}
 
 	// Block 2 (chi2/NDF, p-value): right-aligned. stat_x = right edge of text, stat_y = vertical center of FIRST line
-	double stat_x = 0.95, stat_y = 0.31;
-	TLatex* textstat = new TLatex();
-	textstat->SetNDC();
-	textstat->SetTextFont(132);
-	textstat->SetTextSize(para_textsize);
-	textstat->SetTextAlign(32); // right, vertically centered
-	sprintf(paraprint, "#chi^{2}/#it{NDF} = %.1f / %.0f = %.2f", parChi2, parNDF, parChi2 / parNDF);
-	textstat->DrawLatex(stat_x, stat_y, paraprint);
-	sprintf(paraprint, "#it{p}-value = %.3f", p_value);
-	textstat->DrawLatex(stat_x, stat_y - para_dy, paraprint);
+	//double stat_x = 0.95, stat_y = 0.31;
+	//TLatex* textstat = new TLatex();
+	//textstat->SetNDC();
+	//textstat->SetTextFont(132);
+	//textstat->SetTextSize(para_textsize);
+	//textstat->SetTextAlign(32); // right, vertically centered
+	//sprintf(paraprint, "#chi^{2}/#it{NDF} = %.1f / %.0f = %.2f", parChi2, parNDF, //parChi2 / parNDF);
+	//textstat->DrawLatex(stat_x, stat_y, paraprint);
+	//sprintf(paraprint, "#it{p}-value = %.3f", p_value);
+	//textstat->DrawLatex(stat_x, stat_y - para_dy, paraprint);
 	TString outFile = h_name;
 	if (!outFile.Contains(":/") && !outFile.BeginsWith("/"))
 	{
