@@ -38,6 +38,7 @@
 #include "stdlib.h"
 #include "stdio.h"
 #include "TLegend.h"
+#include "TLatex.h"
 using namespace std;
 void average()// graph-pol0 fit several points to get the weighted average
 {
@@ -71,48 +72,51 @@ void average()// graph-pol0 fit several points to get the weighted average
 	}
 
 	sprintf(h_name, "%s", "weighted_average");
-	canvas = new TCanvas(h_name, h_name, 1300, 800);//建立画布
-	canvas->cd();//进入画布
-	canvas->SetTopMargin(0.03);
+	canvas = new TCanvas(h_name, h_name, 1300, 700);//create canvas
+	canvas->cd();//enter canvas
+	canvas->SetTopMargin(0.04);
 	canvas->SetRightMargin(0.02);
 	canvas->SetLeftMargin(0.13);
-	canvas->SetBottomMargin(0.13);
-	canvas->SetFrameLineWidth(2);
-	//canvascali[i]->SetGrid();//显示网格
+	canvas->SetBottomMargin(0.22);
+	canvas->SetFrameLineWidth(3);
+	//canvascali[i]->SetGrid();//show grid
 	//graph[i]=new TGraph(peaknum,Number[i],input_value[i]);//TGraph *gr1=new TGraph(n,x,y);
-	graph = new TGraphErrors(number, x_value, y_value, x_error, y_error);//画error bars TGraph(n,x,y,ex,ey);
+	graph = new TGraphErrors(number, x_value, y_value, x_error, y_error);//error bars TGraph(n,x,y,ex,ey);
 	graph->SetTitle(h_name);
-	graph->GetXaxis()->SetTitle("Measurements");//轴名
-	graph->GetYaxis()->SetTitle("Half-life (ns)");//轴名
-	graph->GetXaxis()->CenterTitle();//居中
-	graph->GetYaxis()->CenterTitle();//居中
+	graph->GetXaxis()->SetTitle("Measurements");//axis title
+	graph->GetYaxis()->SetTitle("Half-life (ns)");//axis title
+	graph->GetXaxis()->CenterTitle();//center title
+	graph->GetYaxis()->CenterTitle();//center title
 	graph->SetTitle("");
-	graph->GetXaxis()->SetLabelFont(132);//坐标字体
-	graph->GetYaxis()->SetLabelFont(132);//坐标字体
-	graph->GetXaxis()->SetLabelSize(0.06);
-	graph->GetYaxis()->SetLabelSize(0.06);
-	graph->GetXaxis()->SetTitleFont(132);//轴名字体
-	graph->GetYaxis()->SetTitleFont(132);//轴名字体
-	graph->GetXaxis()->SetTitleOffset(0.8);//轴名偏移
-	graph->GetYaxis()->SetTitleOffset(0.9);//轴名偏移
-	graph->GetXaxis()->SetTitleSize(0.07);
-	graph->GetYaxis()->SetTitleSize(0.07);
+	graph->GetXaxis()->SetLabelFont(132);//axis label font
+	graph->GetYaxis()->SetLabelFont(132);//axis label font
+	graph->GetXaxis()->SetLabelSize(0.078);
+	graph->GetYaxis()->SetLabelSize(0.078);
+	graph->GetXaxis()->SetTickLength(0.010);
+	graph->GetYaxis()->SetTickLength(0.010);
+	graph->GetXaxis()->SetTitleFont(132);//axis title font
+	graph->GetYaxis()->SetTitleFont(132);//axis title font
+	graph->GetXaxis()->SetTitleOffset(0.9);//axis title offset
+	graph->GetYaxis()->SetTitleOffset(0.48);//axis title offset
+	graph->GetXaxis()->SetTitleSize(0.078);
+	graph->GetYaxis()->SetTitleSize(0.078);
 	//		graph[i]->GetYaxis()->SetRangeUser(1,8);
+	graph->GetYaxis()->SetRangeUser(54, 78);
 	graph->GetYaxis()->SetNdivisions(505);
-	graph->GetXaxis()->SetNdivisions(100);//n = n1 + 100*n2 + 10000*n3
-	graph->SetMarkerStyle(21);
-	graph->SetMarkerColor(1);
-	graph->SetLineWidth(2);
-	TF1* pol0 = new TF1("pol0", "pol0", 0, 200);//多项式拟合
+	graph->GetXaxis()->SetNdivisions(510);//n = n1 + 100*n2 + 10000*n3
+	graph->SetMarkerStyle(6);
+	graph->SetMarkerColor(kBlack);
+	graph->SetLineWidth(1);
+	TF1* pol0 = new TF1("pol0", "pol0", 0, 200);//pol0 constant fit
 	pol0->SetNpx(2000);
 	pol0->SetParNames("p0");
-	pol0->SetLineWidth(3);
+	pol0->SetLineWidth(2);
 
 	//graph->Fit("pol1");//pol1 can be used directly without TF1 constructor in CINT
 	//graph->Fit("pol0","ME");
 	TFitResultPtr Fit_result_pointer = graph->Fit("pol0", "MES");//"S" means the result of the fit is returned in the TFitResultPtr
-	//“E” Perform better errors estimation using the Minos technique.
-	//“M” Improve fit results, by using the IMPROVE algorithm of TMinuit.
+	//"E" Perform better errors estimation using the Minos technique.
+	//"M" Improve fit results, by using the IMPROVE algorithm of TMinuit.
 	//If the option "S" is instead used, TFitResultPtr contains the TFitResult and behaves as a smart pointer to it.
 	//The fit parameters, error and chi2 (but not covariance matrix) can be retrieved also from the fitted function.
 
@@ -120,11 +124,11 @@ void average()// graph-pol0 fit several points to get the weighted average
 	TH1D* h_confidence_interval = new TH1D("h_confidence_interval", "h_confidence_interval", 10000, 0, 100);//Create a histogram to hold the confidence intervals
 	TVirtualFitter* fitter = TVirtualFitter::GetFitter();//The method TVirtualFitter::GetFitter())->Get the parameters of your fitting function after having it fitted to an histogram.
 	fitter->GetConfidenceIntervals(h_confidence_interval, 0.683);//By default the intervals are inflated using the chi2/ndf value of the fit if a chi2 fit is performed
-	//confidence interval for the colored band: 1σ confidence interval: P=0.683, 1σ confidence interval: P=0.95, 3σ confidence interval: P=0.997
+	//confidence interval for the colored band: 1Sigma confidence interval: P=0.683, 1Sigma confidence interval: P=0.95, 3Sigma confidence interval: P=0.997
 	//h_confidence_interval will contain the CL result that you can draw on top of your fitted graph.
 	//where h_confidence_interval will hold the errors and could superimpose it on the same canvas where you plot central values.
 	h_confidence_interval->SetStats(kFALSE);
-	h_confidence_interval->SetFillColor(kRed - 10);
+	h_confidence_interval->SetFillColor(kAzure - 9);
 	graph->Draw("AP");//"A": Axis are drawn around the graph, "P": The current marker is plotted at each point
 	h_confidence_interval->Draw("e3 same"); // plot the uncertainty band
 
@@ -146,40 +150,54 @@ void average()// graph-pol0 fit several points to get the weighted average
 	//graph_uncertainty_high->Draw("C");//"C" A smooth line is drawn
 
 	graph->Draw("P same");//draw the points again above error band for better visibility
+	pol0->Draw("same");//draw the fit line above the band
 
 	// Write Fit Results on Canvas
 	p0 = pol0->GetParameter(0);
 	p0err = pol0->GetParError(0);
 	parChi2 = pol0->GetChisquare();
 	parNDF = pol0->GetNDF();
-	p_value = pol0->GetProb();//This probability is not the “probability that your fit is good.” If you did many fake experiments (draw many random samples of data points from the assumed distribution (your fit function)), this is the percentage of experiments that would give χ2 values ≥ to the one you got in this experiment.
+	p_value = pol0->GetProb();//This probability is not the "probability that your fit is good." If you did many fake experiments (draw many random samples of data points from the assumed distribution (your fit function)), this is the percentage of experiments that would give chi2 values >= to the one you got in this experiment.
 
-	TPaveText* textpol2 = new TPaveText(0.40, 0.14, 0.97, 0.35, "brNDC");//left, down, right, up
-	textpol2->SetBorderSize(1);
-	textpol2->SetFillColor(0);
-	textpol2->SetTextAlign(12);//align = 10*HorizontalAlign + VerticalAlign, 12 means水平左对齐、垂直居中对齐
-	textpol2->SetTextFont(132);//font = 10 * fontID + precision, 12+2,12 means Symbol; 13+2, 13 means News Times Roman
-	sprintf(paraprint, "Chi2 = %.2f", parChi2);
-	textpol2->AddText(paraprint);
-	sprintf(paraprint, "NDF = %.0f", parNDF);
-	textpol2->AddText(paraprint);
-	sprintf(paraprint, "p-val = %.2f", p_value);
-	textpol2->AddText(paraprint);
-	sprintf(paraprint, "Average with internal uncertainty = %.4f+/-%.4f", p0, p0err);
-	textpol2->AddText(paraprint);
-	sprintf(paraprint, "Inflation factor = sqrt(%.2f/%.0f)=%.2f", parChi2, parNDF, sqrt(parChi2 / parNDF));
+	// Fit results: plain text, no box, matching peakfit style
+	double para_textsize = 0.045; // font size, fraction of pad height
+	double para_dy = 1.2 * para_textsize; // line spacing, fraction of pad height
+
+	// Block 1 (p0, averages, inflation factor): left-aligned. fit_para_x = left edge of text, fit_para_y = vertical center of FIRST line
+	double fit_para_x = 0.15, fit_para_y = 0.92;
+	TLatex* textgaus = new TLatex();
+	textgaus->SetNDC();
+	textgaus->SetTextFont(132);
+	textgaus->SetTextSize(para_textsize);
+	textgaus->SetTextAlign(12); // left, vertically centered
+	sprintf(paraprint, "#it{p}_{0} = %.4f #pm %.4f", p0, p0err);
+	textgaus->DrawLatex(fit_para_x, fit_para_y, paraprint);
+	sprintf(paraprint, "Internal = %.4f #pm %.4f", p0, p0err);
+	textgaus->DrawLatex(fit_para_x, fit_para_y - para_dy, paraprint);
+	sprintf(paraprint, "sqrt(#chi^{2}/#it{NDF}) = %.2f", sqrt(parChi2 / parNDF));
+	textgaus->DrawLatex(fit_para_x, fit_para_y - 2 * para_dy, paraprint);
 	if (sqrt(parChi2 / parNDF) > 1)
 	{
-		textpol2->AddText(paraprint);
-		sprintf(paraprint, "Average with external uncertainty = %.4f+/-%.4f", p0, p0err * sqrt(parChi2 / parNDF));
+		sprintf(paraprint, "External = %.4f #pm %.4f", p0, p0err * sqrt(parChi2 / parNDF));
+		textgaus->DrawLatex(fit_para_x, fit_para_y - 3 * para_dy, paraprint);
 	}
-	textpol2->AddText(paraprint);
-	textpol2->Draw();
+
+	// Block 2 (chi2/NDF, p-value): right-aligned. stat_x = right edge of text, stat_y = vertical center of FIRST line
+	double stat_x = 0.97, stat_y = 0.31;
+	TLatex* textstat = new TLatex();
+	textstat->SetNDC();
+	textstat->SetTextFont(132);
+	textstat->SetTextSize(para_textsize);
+	textstat->SetTextAlign(32); // right, vertically centered
+	sprintf(paraprint, "#chi^{2}/#it{NDF} = %.1f / %.0f = %.2f", parChi2, parNDF, parChi2 / parNDF);
+	textstat->DrawLatex(stat_x, stat_y, paraprint);
+	sprintf(paraprint, "#it{p}-value = %.3f", p_value);
+	textstat->DrawLatex(stat_x, stat_y - para_dy, paraprint);
 	TString outFile = h_name;
 	if (!outFile.Contains(":/") && !outFile.BeginsWith("/"))
 	{
 		outFile = TString("D:/X/out/") + outFile;
 	}
 	outFile += ".png";
-	canvas->SaveAs(outFile);//存图
+	canvas->SaveAs(outFile);//save figure
 }// main
