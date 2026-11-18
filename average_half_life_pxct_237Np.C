@@ -9,7 +9,6 @@
 #include <TStyle.h>
 #include <TCutG.h>
 #include "TChain.h"
-#include "TStyle.h"
 #include "TCanvas.h"
 #include "TEllipse.h"
 #include "TString.h"
@@ -134,7 +133,7 @@ void average_half_life_pxct_237Np()// graph-pol0 fit several points to get the w
 	}
 
 	sprintf(h_name, "%s", "weighted_average");
-	canvas = new TCanvas(h_name, h_name, 1300, 800);//create canvas
+	canvas = new TCanvas(h_name, h_name, 1300, 960);//create canvas
 	canvas->cd();//enter canvas
 	canvas->SetTopMargin(0.03);
 	canvas->SetRightMargin(0.04);
@@ -166,14 +165,16 @@ void average_half_life_pxct_237Np()// graph-pol0 fit several points to get the w
 	graph->GetYaxis()->SetRangeUser(54, 75);
 	graph->GetXaxis()->SetNdivisions(505);//n = n1 + 100*n2 + 10000*n3
 	graph->GetYaxis()->SetNdivisions(505);
-	graph->SetMarkerStyle(6);
+	graph->SetMarkerStyle(kFullSquare);
+	graph->SetMarkerSize(0);
 	graph->SetMarkerColor(kBlack);
 	graph->SetLineWidth(3);
+	gStyle->SetEndErrorSize(5);
 	TF1* pol0 = new TF1("pol0", "pol0", 0, 200);//pol0 constant fit
 	pol0->SetNpx(2000);
 	pol0->SetParNames("p0");
 	pol0->SetLineColor(kRed);
-	pol0->SetLineWidth(0);
+	pol0->SetLineWidth(1);
 
 	//graph->Fit("pol1");//pol1 can be used directly without TF1 constructor in CINT
 	//graph->Fit("pol0","ME");
@@ -184,7 +185,7 @@ void average_half_life_pxct_237Np()// graph-pol0 fit several points to get the w
 	//The fit parameters, error and chi2 (but not covariance matrix) can be retrieved also from the fitted function.
 
 	// Uncertainty Band
-	TH1D* h_confidence_interval = new TH1D("h_confidence_interval", "h_confidence_interval", 10000, 0, 100);//Create a histogram to hold the confidence intervals
+	TH1D* h_confidence_interval = new TH1D("h_confidence_interval", "h_confidence_interval", 10000, 0, 50);//Create a histogram to hold the confidence intervals
 	// GetConfidenceIntervals fills only the bin ERRORS, so the bin CONTENTS must hold the fit curve;
 	// otherwise the band is painted around y=0 and falls outside the plotted range.
 	for (int ib = 1; ib <= h_confidence_interval->GetNbinsX(); ib++)
@@ -199,7 +200,7 @@ void average_half_life_pxct_237Np()// graph-pol0 fit several points to get the w
 	graph->Draw("AP");//"A": Axis are drawn around the graph, "P": The current marker is plotted at each point
 	h_confidence_interval->Draw("e3 same"); // plot the uncertainty band
 
-	// Uncertainty Lines
+	// Uncertainty Lines; not used.
 	Fit_result_pointer->GetConfidenceIntervals(1000, 1, 1, x_point, y_point_error, 0.683, false);//get the error of y at x points of interest, this command is independent of the colored band
 	//(Number of x points, 1, 1, x, err, confidence level, false); norm is a flag to control if the intervals need to be inflated by the chi2/ndf value. true is inflated = external uncertainty, false is not inflated = internal uncertainty.
 	for (int ii = 0; ii < 1000; ii++)
@@ -207,17 +208,17 @@ void average_half_life_pxct_237Np()// graph-pol0 fit several points to get the w
 		y_point_lower_bound[ii] = pol0->Eval(x_point[ii]) - y_point_error[ii];
 		y_point_higher_bound[ii] = pol0->Eval(x_point[ii]) + y_point_error[ii];
 	}
-	graph_uncertainty_low = new TGraph(1000, x_point, y_point_lower_bound);//error bars TGraph(n,x,y,ex,ey);
-	graph_uncertainty_low->SetLineColor(4);
-	graph_uncertainty_low->SetLineWidth(1);
+	//graph_uncertainty_low = new TGraph(1000, x_point, y_point_lower_bound);//error bars TGraph(n,x,y,ex,ey);
+	//graph_uncertainty_low->SetLineColor(4);
+	//graph_uncertainty_low->SetLineWidth(1);
 	//graph_uncertainty_low->Draw("C");//"C" A smooth line is drawn
-	graph_uncertainty_high = new TGraph(1000, x_point, y_point_higher_bound);//error bars TGraph(n,x,y,ex,ey);
-	graph_uncertainty_high->SetLineColor(4);
-	graph_uncertainty_high->SetLineWidth(1);
+	//graph_uncertainty_high = new TGraph(1000, x_point, y_point_higher_bound);//error bars TGraph(n,x,y,ex,ey);
+	//graph_uncertainty_high->SetLineColor(4);
+	//graph_uncertainty_high->SetLineWidth(1);
 	//graph_uncertainty_high->Draw("C");//"C" A smooth line is drawn
-	h_confidence_interval->Draw("e3 same");//uncertainty band from the fit confidence intervals
+	//h_confidence_interval->Draw("e3 same");//uncertainty band from the fit confidence intervals
 	//pol0->Draw("C same");//fit line
-	graph->Draw("PE same");//data points and error bars above the band
+	graph->Draw("P same");//data points and error bars above the band
 
 	// Write Fit Results on Canvas
 	p0 = pol0->GetParameter(0);
@@ -249,17 +250,6 @@ void average_half_life_pxct_237Np()// graph-pol0 fit several points to get the w
 		textgaus->DrawLatex(fit_para_x, fit_para_y - 3 * para_dy, paraprint);
 	}
 
-	// Block 2 (chi2/NDF, p-value): right-aligned. stat_x = right edge of text, stat_y = vertical center of FIRST line
-	//double stat_x = 0.95, stat_y = 0.31;
-	//TLatex* textstat = new TLatex();
-	//textstat->SetNDC();
-	//textstat->SetTextFont(132);
-	//textstat->SetTextSize(para_textsize);
-	//textstat->SetTextAlign(32); // right, vertically centered
-	//sprintf(paraprint, "#chi^{2}/#it{NDF} = %.1f / %.0f = %.2f", parChi2, parNDF, //parChi2 / parNDF);
-	//textstat->DrawLatex(stat_x, stat_y, paraprint);
-	//sprintf(paraprint, "#it{p}-value = %.3f", p_value);
-	//textstat->DrawLatex(stat_x, stat_y - para_dy, paraprint);
 	TString outFile = h_name;
 	if (!outFile.Contains(":/") && !outFile.BeginsWith("/"))
 	{
