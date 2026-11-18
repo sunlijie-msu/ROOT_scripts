@@ -272,7 +272,7 @@ void average_half_life_pxct_237Np()// graph-pol0 fit several points to get the w
 	textgaus->SetTextAlign(12); // left, vertically centered
 	sprintf(paraprint, "Weighted average = %.2f #pm %.2f", p0, p0err);
 	textgaus->DrawLatex(fit_para_x, fit_para_y, paraprint);
-	sprintf(paraprint, "#chi^{2}/#it{NDF} = %.1f / %.0f = %.2f", parChi2, parNDF, parChi2 / parNDF);
+	sprintf(paraprint, "#chi^{2}/#nu = %.2f / %.0f = %.3f", parChi2, parNDF, parChi2 / parNDF);
 	textgaus->DrawLatex(fit_para_x, fit_para_y - para_dy, paraprint);
 	sprintf(paraprint, "Internal uncertainty = %.2f #pm %.2f", p0, p0err);
 	textgaus->DrawLatex(fit_para_x, fit_para_y - 2 * para_dy, paraprint);
