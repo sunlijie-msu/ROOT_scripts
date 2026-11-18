@@ -41,6 +41,7 @@
 using namespace std;
 void average_half_life_pxct_237Np()// graph-pol0 fit several points to get the weighted average
 {
+	gROOT->SetBatch(kTRUE);//headless: write the figure files only, no on-screen window
 	TCanvas* canvas;
 	TGraph* graph, * graph_uncertainty_low, * graph_uncertainty_high;//TGraph
 	double x_value[100], x_error[100];
@@ -133,18 +134,18 @@ void average_half_life_pxct_237Np()// graph-pol0 fit several points to get the w
 	}
 
 	sprintf(h_name, "%s", "weighted_average");
-	canvas = new TCanvas(h_name, h_name, 1300, 960);//create canvas
+	canvas = new TCanvas(h_name, h_name, 1300, 1300);//create canvas
 	canvas->cd();//enter canvas
 	canvas->SetTopMargin(0.03);
 	canvas->SetRightMargin(0.04);
-	canvas->SetLeftMargin(0.11);
-	canvas->SetBottomMargin(0.15);
+	canvas->SetLeftMargin(0.15);
+	canvas->SetBottomMargin(0.03);
 	canvas->SetFrameLineWidth(3);
 	//canvascali[i]->SetGrid();//show grid
 	//graph[i]=new TGraph(peaknum,Number[i],input_value[i]);//TGraph *gr1=new TGraph(n,x,y);
 	graph = new TGraphErrors(number, x_value, y_value, x_error, y_error);//error bars TGraph(n,x,y,ex,ey);
 	graph->SetTitle(h_name);
-	graph->GetXaxis()->SetTitle("Measurements");//axis title
+	//graph->GetXaxis()->SetTitle("Measurements");//axis title
 	graph->GetYaxis()->SetTitle("Half-life (ns)");//axis title
 	graph->GetXaxis()->CenterTitle();//center title
 	graph->GetYaxis()->CenterTitle();//center title
@@ -154,16 +155,17 @@ void average_half_life_pxct_237Np()// graph-pol0 fit several points to get the w
 	graph->GetYaxis()->SetLabelFont(132);//axis label font
 	graph->GetXaxis()->SetLabelSize(0.06);
 	graph->GetYaxis()->SetLabelSize(0.06);
+	graph->GetXaxis()->SetTickLength(0);
 	graph->GetYaxis()->SetTickLength(0.015);
 	graph->GetXaxis()->SetTitleFont(132);//axis title font
 	graph->GetYaxis()->SetTitleFont(132);//axis title font
 	graph->GetXaxis()->SetTitleOffset(1.0);//axis title offset
-	graph->GetYaxis()->SetTitleOffset(0.72);//axis title offset
+	graph->GetYaxis()->SetTitleOffset(1.0);//axis title offset
 	graph->GetXaxis()->SetTitleSize(0.07);
 	graph->GetYaxis()->SetTitleSize(0.07);
 	graph->GetXaxis()->SetRangeUser(0,16);
 	graph->GetYaxis()->SetRangeUser(54, 75);
-	graph->GetXaxis()->SetNdivisions(505);//n = n1 + 100*n2 + 10000*n3
+	graph->GetXaxis()->SetNdivisions(000);//n = n1 + 100*n2 + 10000*n3
 	graph->GetYaxis()->SetNdivisions(505);
 	graph->SetMarkerStyle(kFullSquare);
 	graph->SetMarkerSize(0);
@@ -228,25 +230,25 @@ void average_half_life_pxct_237Np()// graph-pol0 fit several points to get the w
 	p_value = pol0->GetProb();//This probability is not the "probability that your fit is good." If you did many fake experiments (draw many random samples of data points from the assumed distribution (your fit function)), this is the percentage of experiments that would give chi2 values >= to the one you got in this experiment.
 
 	// Fit results: plain text, no box, matching peakfit style
-	double para_textsize = 0.06; // font size, fraction of pad height
+	double para_textsize = 0.036; // font size, fraction of pad height
 	double para_dy = 1.2 * para_textsize; // line spacing, fraction of pad height
 
 	// Block 1 (p0, averages, inflation factor): left-aligned. fit_para_x = left edge of text, fit_para_y = vertical center of FIRST line
-	double fit_para_x = 0.47, fit_para_y = 0.44;
+	double fit_para_x = 0.17, fit_para_y = 0.94;
 	TLatex* textgaus = new TLatex();
 	textgaus->SetNDC();
 	textgaus->SetTextFont(132);
 	textgaus->SetTextSize(para_textsize);
 	textgaus->SetTextAlign(12); // left, vertically centered
-	sprintf(paraprint, "Weighted average = %.2f #pm %.2f", p0, p0err);
+	sprintf(paraprint, "Weighted average = %.2f#pm %.2f", p0, p0err);
 	textgaus->DrawLatex(fit_para_x, fit_para_y, paraprint);
 	sprintf(paraprint, "#chi^{2}/#it{NDF} = %.1f / %.0f = %.2f", parChi2, parNDF, parChi2 / parNDF);
 	textgaus->DrawLatex(fit_para_x, fit_para_y - para_dy, paraprint);
-	sprintf(paraprint, "Internal uncertainty = %.2f #pm %.2f", p0, p0err);
+	sprintf(paraprint, "Internal uncertainty = %.2f#pm %.2f", p0, p0err);
 	textgaus->DrawLatex(fit_para_x, fit_para_y - 2 * para_dy, paraprint);
 	if (sqrt(parChi2 / parNDF) > 1)
 	{
-		sprintf(paraprint, "External uncertainty = %.2f #pm %.2f", p0, p0err * sqrt(parChi2 / parNDF));
+		sprintf(paraprint, "External uncertainty = %.2f#pm %.2f", p0, p0err * sqrt(parChi2 / parNDF));
 		textgaus->DrawLatex(fit_para_x, fit_para_y - 3 * para_dy, paraprint);
 	}
 
