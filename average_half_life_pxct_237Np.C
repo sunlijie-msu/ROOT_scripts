@@ -164,7 +164,7 @@ void average_half_life_pxct_237Np()// graph-pol0 fit several points to get the w
 	graph->GetXaxis()->SetTitleSize(0.07);
 	graph->GetYaxis()->SetTitleSize(0.07);
 	graph->GetXaxis()->SetRangeUser(0,16);
-	graph->GetYaxis()->SetRangeUser(54, 75);
+	graph->GetYaxis()->SetRangeUser(52.5, 75);
 	graph->GetXaxis()->SetNdivisions(000);//n = n1 + 100*n2 + 10000*n3
 	graph->GetYaxis()->SetNdivisions(505);
 	graph->SetMarkerStyle(kFullSquare);
@@ -242,11 +242,11 @@ void average_half_life_pxct_237Np()// graph-pol0 fit several points to get the w
 	};
 	for (int ii = 0; ii < number; ii++)
 	{
-		double y_top_user = y_value[ii] - y_error[ii] - 1.2;//just below the lower end of the error bar
+		double y_top_user = y_value[ii] - y_error[ii] - 0.8;//just below the lower end of the error bar
 		TLatex* reftext = new TLatex(x_value[ii], y_top_user, ref_label[ii]);//data coordinates: follows each point
 		reftext->SetNDC(kFALSE); //axis data coordinates, instead of normalized coordinates where (0,0)=bottom-left and (1,1)=top-right
 		reftext->SetTextFont(132);
-		reftext->SetTextSize(0.03);
+		reftext->SetTextSize(0.036);
 		reftext->SetTextAngle(90);//read bottom-to-top
 		reftext->SetTextAlign(kHAlignRight + kVAlignCenter);//corner nearest the anchor: text hangs down, centred on the point
 		reftext->Draw();
@@ -270,15 +270,15 @@ void average_half_life_pxct_237Np()// graph-pol0 fit several points to get the w
 	textgaus->SetTextFont(132);
 	textgaus->SetTextSize(para_textsize);
 	textgaus->SetTextAlign(12); // left, vertically centered
-	sprintf(paraprint, "Weighted average = %.2f#pm %.2f", p0, p0err);
+	sprintf(paraprint, "Weighted average = %.2f #pm %.2f", p0, p0err);
 	textgaus->DrawLatex(fit_para_x, fit_para_y, paraprint);
 	sprintf(paraprint, "#chi^{2}/#it{NDF} = %.1f / %.0f = %.2f", parChi2, parNDF, parChi2 / parNDF);
 	textgaus->DrawLatex(fit_para_x, fit_para_y - para_dy, paraprint);
-	sprintf(paraprint, "Internal uncertainty = %.2f#pm %.2f", p0, p0err);
+	sprintf(paraprint, "Internal uncertainty = %.2f #pm %.2f", p0, p0err);
 	textgaus->DrawLatex(fit_para_x, fit_para_y - 2 * para_dy, paraprint);
 	if (sqrt(parChi2 / parNDF) > 1)
 	{
-		sprintf(paraprint, "External uncertainty = %.2f#pm %.2f", p0, p0err * sqrt(parChi2 / parNDF));
+		sprintf(paraprint, "External uncertainty = %.2f #pm %.2f", p0, p0err * sqrt(parChi2 / parNDF));
 		textgaus->DrawLatex(fit_para_x, fit_para_y - 3 * para_dy, paraprint);
 	}
 
