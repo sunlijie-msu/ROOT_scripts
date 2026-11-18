@@ -222,6 +222,36 @@ void average_half_life_pxct_237Np()// graph-pol0 fit several points to get the w
 	//pol0->Draw("C same");//fit line
 	graph->Draw("P same");//data points and error bars above the band
 
+	// Rotated reference label under each data point.
+	const char* ref_label[number] = {
+		"Beling 1952",
+		"Vartapetian 1958",
+		"Unik 1960",
+		"Oberhofer 1968",
+		"Garg 1971",
+		"McBeth 1972",
+		"McBeth 1972",
+		"Miller 1972",
+		"Bishop 1974",
+		"Finck 1985",
+		"Vretenar 2019",
+		"Dutsov 2021",
+		"Takacs 2021",
+		"Santos 2023",
+		"Present work"
+	};
+	for (int ii = 0; ii < number; ii++)
+	{
+		double y_top_user = y_value[ii] - y_error[ii] - 1.2;//just below the lower end of the error bar
+		TLatex* reftext = new TLatex(x_value[ii], y_top_user, ref_label[ii]);//data coordinates: follows each point
+		reftext->SetNDC(kFALSE); //axis data coordinates, instead of normalized coordinates where (0,0)=bottom-left and (1,1)=top-right
+		reftext->SetTextFont(132);
+		reftext->SetTextSize(0.03);
+		reftext->SetTextAngle(90);//read bottom-to-top
+		reftext->SetTextAlign(kHAlignRight + kVAlignCenter);//corner nearest the anchor: text hangs down, centred on the point
+		reftext->Draw();
+	}
+
 	// Write Fit Results on Canvas
 	p0 = pol0->GetParameter(0);
 	p0err = pol0->GetParError(0);
