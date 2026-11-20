@@ -391,7 +391,7 @@ void peakfit_cascadedecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_
 			textstat->SetTextFont(132);
 			textstat->SetTextSize(para_textsize);
 			textstat->SetTextAlign(32); // right, vertically centered
-			sprintf(paraprint, "#chi^{2}/#it{NDF} = %.1f / %.1f = %.2f", parChi[ii], parNDF[ii], parChi[ii] / parNDF[ii]);
+			sprintf(paraprint, "#chi^{2}/#nu = %.1f / %.1f = %.2f", parChi[ii], parNDF[ii], parChi[ii] / parNDF[ii]);
 			textstat->DrawLatex(stat_x, stat_y, paraprint);
 			sprintf(paraprint, "#it{p}-value = %.3f", p_value[ii]);
 			textstat->DrawLatex(stat_x, stat_y - para_dy, paraprint);

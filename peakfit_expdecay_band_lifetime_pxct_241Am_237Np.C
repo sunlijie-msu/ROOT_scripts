@@ -107,7 +107,7 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 		Which_MSD = 26; // 26 for MSD26;
 		Ea_central = 5479; // 5479 for MSD26; 5421 for MSDtotal, based on LISE++ calculation
 		if (Which_MSD == 26)	bin_start_low = 160; // Don't change
-		bin_start_high = bin_start_low + 680; // 10*T1/2 = 10*68 = 680
+		bin_start_high = bin_start_low + 68*10; // 10*T1/2 = 10*68 = 680
 		Ea_gate_start = 4; // Useless now; Original intent: iterate alpha-gate half-widths:
 		Ea_gate_end = 20; // Useless now; Original intent: iterate alpha-gate half-widths:
 		msd_e_cut_low = 5459; // for single peak fit
@@ -254,7 +254,7 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 			int Total_decays_guess = 2000 * i;
 			fEMG[ii]->SetParameters(1e6, 67.8, 1);//initial value
 			//fEMG[ii]->SetParameters(2e6, 68, 2);//initial value Fake test
-			fEMG[ii]->SetParLimits(0, 1e6, 10e6);//N59
+			fEMG[ii]->SetParLimits(0, 0.5e6, 10e6);//N59
 			fEMG[ii]->SetParLimits(1, 40, 140);//T59
 			fEMG[ii]->SetParLimits(2, 0, 10);//B
 			fEMG[ii]->SetParNames("Total_decays", "Half_life_59", "Background");
@@ -374,7 +374,7 @@ void peakfit_expdecay_band_lifetime_pxct_241Am_237Np() // gets htiming_lege_msd2
 			textstat->SetTextFont(132);
 			textstat->SetTextSize(para_textsize);
 			textstat->SetTextAlign(32); // right, vertically centered
-			sprintf(paraprint, "#chi^{2}/#it{NDF} = %.1f / %.1f = %.2f", parChi[ii], parNDF[ii], parChi[ii] / parNDF[ii]);
+			sprintf(paraprint, "#chi^{2}/#nu = %.1f / %.1f = %.2f", parChi[ii], parNDF[ii], parChi[ii] / parNDF[ii]);
 			textstat->DrawLatex(stat_x, stat_y, paraprint);
 			sprintf(paraprint, "#it{p}-value = %.3f", p_value[ii]);
 			textstat->DrawLatex(stat_x, stat_y - para_dy, paraprint);
